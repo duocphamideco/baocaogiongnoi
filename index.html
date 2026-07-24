@@ -60,6 +60,12 @@
   .dropzone.drag{border-color:#6366f1;background:#eef2ff;}
   .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .shake{animation:shake .4s ease}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spin{animation:spin 1s linear infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .floaty{animation:floaty 4s ease-in-out infinite}
   @media print{
     body *{visibility:hidden !important;}
     #printArea, #printArea *{visibility:visible !important;}
@@ -72,11 +78,50 @@
   .print-doc p{white-space:pre-wrap;font-size:13px;line-height:1.7;margin:0}
   .print-doc .meta{display:flex;justify-content:space-between;font-size:12px;color:#475569;margin-bottom:8px}
   .print-doc ul.att{margin:4px 0 0 18px;font-size:12px;color:#334155}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .spin{animation:spin 1s linear infinite}
 </style>
 </head>
 <body class="text-slate-800 min-h-screen">
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen" class="fixed inset-0 z-[70] grid place-items-center p-4">
+  <div class="absolute inset-0 bg-gradient-to-br from-brand-900 via-brand-700 to-purple-800"></div>
+  <div class="absolute inset-0 opacity-30" style="background-image:radial-gradient(circle at 20% 20%, rgba(255,255,255,.18) 0, transparent 40%), radial-gradient(circle at 80% 70%, rgba(168,85,247,.35) 0, transparent 45%);"></div>
+  <div class="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/10 blur-2xl floaty"></div>
+  <div class="absolute bottom-10 right-10 w-56 h-56 rounded-full bg-purple-400/20 blur-3xl floaty" style="animation-delay:1.5s"></div>
+
+  <div class="relative w-full max-w-md">
+    <div id="loginCard" class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-8 border border-white/40">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand-600 to-purple-600 grid place-items-center shadow-soft">
+        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      </div>
+      <h1 class="mt-4 text-center font-extrabold text-2xl text-slate-900">BÁO CÁO <span class="gradient-text"> GIỌNG NÓI</span></h1>
+      <p class="mt-1 text-center text-sm text-slate-500">Ứng dụng phát triển bởi MTRIET </p>
+      <div class="mt-6">
+        <label class="text-xs font-semibold text-slate-600">Mật khẩu đăng nhập</label>
+        <div class="relative mt-1">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="loginPass" type="password" placeholder="Nhập mật khẩu…" autocomplete="current-password" class="w-full pl-9 pr-10 py-3 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+          <button id="toggleLoginPass" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-slate-100 grid place-items-center text-slate-400" title="Hiện/ẩn mật khẩu">
+            <svg id="eyeIcon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <label class="mt-3 flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+          <input id="rememberMe" type="checkbox" checked class="accent-brand-600 w-4 h-4" />
+          Ghi nhớ đăng nhập trên thiết bị này
+        </label>
+        <button id="loginBtn" class="mt-4 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Đăng nhập
+        </button>
+        <p id="loginErr" class="hidden mt-3 text-rose-600 text-xs text-center font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
+      </div>
+    </div>
+    <p class="text-center text-white/60 text-xs mt-4">© IDECO · Hệ thống báo cáo công việc nội bộ</p>
+  </div>
+</div>
+
+<!-- ============ APP ROOT ============ -->
+<div id="appRoot" class="hidden">
 
 <!-- HEADER -->
 <header class="sticky top-0 z-30 backdrop-blur bg-white/80 border-b border-slate-200/70">
@@ -85,17 +130,23 @@
       <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </div>
     <div class="leading-tight">
-      <div class="font-extrabold text-slate-900 text-lg tracking-tight">BÁO CÁO <span class="gradient-text"> VOICE </span></div>
-      <div class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Được phát triển bởi: MTRIET </div>
+      <div class="font-extrabold text-slate-900 text-lg tracking-tight">Voice<span class="gradient-text">Report</span></div>
+      <div class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Báo cáo công việc tháng bằng giọng nói</div>
     </div>
-    <div class="ml-auto flex items-center gap-3">
-      <span id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold">
+    <div class="ml-auto flex items-center gap-2">
+      <span id="syncStatus" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold">
         <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Đang kết nối…
       </span>
       <div id="monthBadge" class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold border border-brand-100">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span></span>
       </div>
+      <button id="settingsBtn" title="Cài đặt" class="w-9 h-9 rounded-full hover:bg-slate-100 grid place-items-center text-slate-500 transition">
+        <svg class="w-4.5 h-4.5" style="width:18px;height:18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button id="logoutBtn" title="Đăng xuất" class="w-9 h-9 rounded-full hover:bg-rose-50 grid place-items-center text-slate-500 hover:text-rose-600 transition">
+        <svg class="w-4.5 h-4.5" style="width:18px;height:18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
       <div id="avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-xs font-bold shadow">NV</div>
     </div>
   </div>
@@ -127,14 +178,14 @@
       <div class="grid md:grid-cols-5 items-center">
         <div class="md:col-span-3 p-6 sm:p-8">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Nhận diện giọng nói tiếng Việt · Đồng bộ Firebase thời gian thực
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Quyết đưa công nghệ nâng tầm năng lực phát triển mời
           </span>
-          <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Đọc báo cáo — hệ thống tự ghi thành văn bản chuyên nghiệp</h1>
-          <p class="mt-2 text-slate-600 text-sm sm:text-base max-w-xl">Tiết kiệm hàng giờ soạn thảo mỗi tháng. Chỉ cần bấm micro và đọc, VoiceReport chuyển giọng nói thành báo cáo công việc chuẩn mẫu, đính kèm file Excel/PDF/PowerPoint, và lưu ngay lên hệ thống cho quản lý theo dõi.</p>
+          <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Đọc báo cáo — hệ thống tự chuyển thành văn bản chuẩn mực</h1>
+          <p class="mt-2 text-slate-600 text-sm sm:text-base max-w-xl">Các bạn có thể báo cáo giọng nói- tinh chỉnh lại và được hỗ trợ bởi ứng dụng chuyên nghiệp được phát triển riêng cho IDECO chúng ta. Kèm file Excel/PDF/PowerPoint và đồng bộ Firebase thời gian thực.</p>
           <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center shrink-0">🎙️</span><div><div class="font-semibold text-slate-800">Ghi âm từng mục</div><div class="text-xs text-slate-500">Chọn mục cần đọc</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center shrink-0">✨</span><div><div class="font-semibold text-slate-800">Văn phong chuyên nghiệp</div><div class="text-xs text-slate-500">Tự chuẩn hóa câu chữ</div></div></div>
             <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-purple-50 text-purple-600 grid place-items-center shrink-0">📎</span><div><div class="font-semibold text-slate-800">Đính kèm file</div><div class="text-xs text-slate-500">Excel · PDF · PPTX</div></div></div>
-            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0">👥</span><div><div class="font-semibold text-slate-800">Danh sách NV</div><div class="text-xs text-slate-500">Xem · Xóa · Thêm người mới</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0">👥</span><div><div class="font-semibold text-slate-800">Danh sách NV</div><div class="text-xs text-slate-500">Xem · Xóa · Thêm mới</div></div></div>
           </div>
           <button id="heroStart" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
@@ -142,7 +193,7 @@
           </button>
         </div>
         <div class="md:col-span-2 bg-gradient-to-br from-brand-50 to-purple-50 h-full grid place-items-center p-6">
-          <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/10d2ec37b-b923-4f0a-bd1d-d9b8f6f96d8a.png" alt="Minh họa đọc báo cáo bằng giọng nói" class="w-full max-w-[340px] drop-shadow-sm rounded-2xl" />
+          <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1ed1d79e5-7c59-4c1e-abc2-c9617cfd1d1c.png" alt="Minh họa đọc báo cáo bằng giọng nói" class="w-full max-w-[340px] drop-shadow-sm rounded-2xl" />
         </div>
       </div>
     </div>
@@ -181,8 +232,15 @@
               <input id="f_position" type="text" placeholder="Nhân viên / Chuyên viên / Trưởng nhóm" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
             </label>
             <label class="block">
-              <span class="text-xs font-semibold text-slate-600">Phòng ban / Bộ phận</span>
-              <input id="f_dept" type="text" placeholder="Phòng Kinh doanh" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+              <span class="text-xs font-semibold text-slate-600">Bộ phận <span class="text-rose-500">*</span></span>
+              <select id="f_dept" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm bg-white">
+                <option value="">— Chọn bộ phận —</option>
+                <option>Kinh doanh</option>
+                <option>Kế toán</option>
+                <option>Kho</option>
+                <option>Giao nhân</option>
+                <option>SOP</option>
+              </select>
             </label>
             <div class="grid grid-cols-2 gap-3">
               <label class="block">
@@ -216,7 +274,7 @@
             </div>
             <div class="mt-2 text-sm font-semibold text-slate-700">Kéo thả tệp vào đây</div>
             <div class="text-xs text-slate-400 mt-0.5">hoặc <span class="text-brand-600 underline">bấm để chọn tệp</span></div>
-            <input id="fileInput" type="file" multiple accept=".xlsx,.xls,.csv,.pdf,.pptx,.ppt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint" class="hidden" />
+            <input id="fileInput" type="file" multiple accept=".xlsx,.xls,.csv,.pdf,.pptx,.ppt" class="hidden" />
           </div>
           <ul id="fileList" class="mt-3 space-y-2"></ul>
         </div>
@@ -289,16 +347,28 @@
               <select id="targetSelect" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm bg-white font-medium"></select>
             </div>
 
+            <!-- SMART OPTIONS -->
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-brand-50 border border-brand-100 text-[11px] text-brand-700 font-semibold cursor-pointer select-none">
+                <input id="smartMode" type="checkbox" checked class="accent-brand-600 w-3.5 h-3.5" />
+                ✨ Văn phong báo cáo
+              </label>
+              <label class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-600 font-semibold cursor-pointer select-none">
+                <input id="autoCap" type="checkbox" checked class="accent-brand-600 w-3.5 h-3.5" />
+                Aa Tự viết hoa
+              </label>
+            </div>
+            <button id="normalizeBtn" class="mt-2 w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-brand-300 hover:text-brand-600 transition">
+              ✨ Chuẩn hóa văn phong mục đang đọc
+            </button>
+
             <!-- LIVE -->
             <div class="mt-4">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold text-slate-600">Nhận diện trực tiếp</span>
-                <label class="flex items-center gap-1.5 text-[11px] text-slate-500 cursor-pointer select-none">
-                  <input id="autoCap" type="checkbox" checked class="accent-brand-600 w-3.5 h-3.5" />
-                  Tự viết hoa
-                </label>
               </div>
               <div id="liveBox" class="mt-1 min-h-[56px] rounded-xl bg-slate-50 border border-slate-100 p-3 text-sm text-slate-500 italic">Nội dung giọng nói sẽ hiện tại đây…</div>
+              <div class="mt-2 text-[10px] text-slate-400 leading-relaxed">💡 Mẹo: nói <b class="text-slate-500">"chấm"</b>, <b class="text-slate-500">"phẩy"</b>, <b class="text-slate-500">"xuống dòng"</b>, <b class="text-slate-500">"gạch đầu dòng"</b> để tạo dấu câu &amp; định dạng.</div>
             </div>
           </div>
 
@@ -311,9 +381,9 @@
             <div class="font-semibold text-slate-800 text-sm flex items-center gap-2">💡 Mẹo đọc hiệu quả</div>
             <ul class="mt-2 space-y-1.5 text-xs text-slate-600 list-disc list-inside">
               <li>Nói rõ ràng, tốc độ vừa phải, ngắt nghỉ theo câu.</li>
-              <li>Chọn đúng mục cần đọc trước khi bấm micro.</li>
+              <li>Hệ thống tự bỏ từ thừa (à, ừ, ùm, dạ, vâng…) và viết hoa đầu câu.</li>
+              <li>Số liệu đọc tự nhiên: "hai mươi phần trăm" → <b>20%</b>.</li>
               <li>Dùng phím tắt <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">M</kbd> để bật/tắt micro.</li>
-              <li>Chèn mẫu câu có sẵn rồi đọc bổ sung chi tiết.</li>
               <li>Đính kèm file minh chứng (bảng số liệu, slide…) nếu có.</li>
             </ul>
           </div>
@@ -327,7 +397,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
       <div class="relative flex-1">
         <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="searchReports" type="text" placeholder="Tìm theo tên, phòng ban, tháng…" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+        <input id="searchReports" type="text" placeholder="Tìm theo tên, bộ phận, tháng…" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
       </div>
       <button id="addNextFromList" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold text-sm hover:opacity-95 shadow-sm whitespace-nowrap">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -361,7 +431,7 @@
         </table>
       </div>
       <div id="reportsEmpty" class="hidden text-center py-14 px-6">
-        <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1bcea6f76-64ac-4158-94ce-cc80cc498d40.png" alt="Chưa có báo cáo" class="w-56 mx-auto opacity-90" />
+        <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/111a4da54-daef-4696-83e2-775279b66de8.png" alt="Chưa có báo cáo" class="w-56 mx-auto opacity-90" />
         <h3 class="mt-4 font-bold text-slate-800 text-lg">Chưa có báo cáo nào</h3>
         <p class="text-sm text-slate-500 mt-1">Hãy đọc báo cáo công việc tháng đầu tiên bằng giọng nói.</p>
         <button id="emptyCreate" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft">
@@ -388,6 +458,8 @@
   </section>
 </main>
 
+</div><!-- /appRoot -->
+
 <!-- VIEW MODAL -->
 <div id="viewModal" class="hidden fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm grid place-items-center p-4">
   <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-2xl max-h-[88vh] overflow-hidden flex flex-col">
@@ -408,6 +480,64 @@
   </div>
 </div>
 
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm grid place-items-center p-4">
+  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-md overflow-hidden">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-gradient-to-r from-brand-50 to-purple-50">
+      <h3 class="font-bold text-slate-900 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-white text-brand-600 grid place-items-center shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        Cài đặt hệ thống
+      </h3>
+      <button data-close-settings class="w-8 h-8 rounded-lg hover:bg-white/60 grid place-items-center text-slate-500">✕</button>
+    </div>
+    <div class="p-6">
+      <!-- STEP 1 -->
+      <div id="setStep1">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-6 h-6 rounded-full bg-brand-600 text-white text-xs font-bold grid place-items-center">1</span>
+          <span class="font-semibold text-slate-800 text-sm">Xác thực quản trị viên</span>
+        </div>
+        <p class="text-xs text-slate-500 mb-3 ml-8">Nhập mật khẩu quản trị để được phép đổi mật khẩu đăng nhập ứng dụng.</p>
+        <div class="ml-8">
+          <input id="adminPass" type="password" placeholder="Mật khẩu quản trị" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+          <p id="adminErr" class="hidden mt-2 text-rose-600 text-xs font-medium">Mật khẩu quản trị không đúng.</p>
+          <button id="adminVerify" class="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            Xác nhận
+          </button>
+        </div>
+      </div>
+      <!-- STEP 2 -->
+      <div id="setStep2" class="hidden">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold grid place-items-center">✓</span>
+          <span class="font-semibold text-slate-800 text-sm">Đổi mật khẩu đăng nhập ứng dụng</span>
+        </div>
+        <p class="text-xs text-slate-500 mb-3 ml-8">Mật khẩu mới áp dụng cho màn hình đăng nhập của tất cả người dùng trên thiết bị này.</p>
+        <div class="ml-8 space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Mật khẩu mới</label>
+            <input id="newPass" type="password" placeholder="Tối thiểu 6 ký tự" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Nhập lại mật khẩu mới</label>
+            <input id="newPass2" type="password" placeholder="Nhập lại để xác nhận" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+          </div>
+          <div class="flex gap-2 pt-1">
+            <button id="savePass" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white text-sm font-semibold hover:opacity-95 shadow-soft">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Lưu mật khẩu
+            </button>
+            <button id="resetPass" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50" title="Khôi phục mật khẩu mặc định">↺ Mặc định</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRM MODAL -->
 <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm grid place-items-center p-4">
   <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 text-center">
@@ -422,7 +552,7 @@
 </div>
 
 <!-- TOASTS -->
-<div id="toasts" class="fixed bottom-5 right-5 z-[60] space-y-2 w-[min(92vw,340px)]"></div>
+<div id="toasts" class="fixed bottom-5 right-5 z-[80] space-y-2 w-[min(92vw,340px)]"></div>
 
 <!-- PRINT AREA -->
 <div id="printArea"></div>
@@ -442,6 +572,45 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const REPORTS_REF = db.ref('monthly_reports');
+
+/* ===================== AUTH ===================== */
+const ADMIN_PASSWORD = 'minhtriet1973';
+const DEFAULT_APP_PASS = 'ideco@2026';
+function getAppPass(){ return localStorage.getItem('vr_app_pass') || DEFAULT_APP_PASS; }
+let sessionAuthed = false;
+function isAuthed(){ return sessionAuthed || localStorage.getItem('vr_auth')==='1'; }
+function showLogin(){
+  $('#appRoot').classList.add('hidden');
+  $('#loginScreen').classList.remove('hidden');
+  setTimeout(()=> $('#loginPass').focus(), 60);
+}
+function showApp(){
+  $('#loginScreen').classList.add('hidden');
+  $('#appRoot').classList.remove('hidden');
+}
+function attemptLogin(){
+  const pw = $('#loginPass').value;
+  if(pw === getAppPass()){
+    if($('#rememberMe').checked) localStorage.setItem('vr_auth','1');
+    else sessionAuthed = true;
+    $('#loginErr').classList.add('hidden');
+    $('#loginPass').value = '';
+    showApp();
+    toast('Đăng nhập thành công. Chào mừng bạn!','success');
+    setTimeout(()=> $('#f_name').focus(), 200);
+  } else {
+    $('#loginErr').classList.remove('hidden');
+    const card = $('#loginCard'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    $('#loginPass').select();
+  }
+}
+function doLogout(){
+  localStorage.removeItem('vr_auth');
+  sessionAuthed = false;
+  $('#loginPass').value = '';
+  showLogin();
+  toast('Đã đăng xuất.','info');
+}
 
 /* ===================== DATA & STATE ===================== */
 const SECTIONS = [
@@ -466,23 +635,23 @@ const ICONS = {
 };
 
 const ACCEPTED_EXT = ['xlsx','xls','csv','pdf','pptx','ppt'];
-const MAX_FILE_SIZE = 1.5 * 1024 * 1024; // 1.5MB
+const MAX_FILE_SIZE = 1.5 * 1024 * 1024;
 const MAX_FILES = 5;
 
 const now = new Date();
 let draft = {
   info: { name:'', position:'', dept:'', month: now.getMonth()+1, year: now.getFullYear() },
   sections: { completed:'', unfinished:'', causes:'', plan:'', proposals:'' },
-  attachments: [], // {id,name,size,type,dataUrl}
+  attachments: [],
   updatedAt: null
 };
-let reports = []; // from Firebase
+let reports = [];
 let targetSection = 'completed';
 let isRecording = false;
 let speechSupported = true;
 let recognition = null;
-let baseText = '';
-let finalSinceStart = '';
+let rawBase = '';
+let rawFinal = '';
 let autoCap = true;
 let timerId = null;
 let recStartTs = 0;
@@ -506,7 +675,6 @@ function loadDraft(){
 }
 function saveDraft(){
   draft.updatedAt = Date.now();
-  // exclude attachments (too big for localStorage)
   const toSave = { info: draft.info, sections: draft.sections, updatedAt: draft.updatedAt };
   try{ localStorage.setItem('vr_draft', JSON.stringify(toSave)); }catch(e){}
   const s = $('#saveStatus'); if(s){ s.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Đã lưu nháp'; }
@@ -517,7 +685,6 @@ function scheduleSave(){
 }
 function wordCount(t){ return (t||'').trim() ? (t||'').trim().split(/\s+/).length : 0; }
 function capSentences(s){ return (s||'').replace(/(^|[.!?]\s+)(\S)/g, (m,pre,ch)=> pre + ch.toUpperCase()); }
-function applyFormat(s){ return autoCap ? capSentences(s) : s; }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function initials(name){ const p=(name||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return 'NV'; return ((p[p.length-1][0]||'')+(p.length>1?p[0][0]:'')).toUpperCase(); }
@@ -538,6 +705,131 @@ function toast(msg, type='success'){
   el.innerHTML = `<span class="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-xs font-bold">${icons[type]||'ℹ'}</span><span>${esc(msg)}</span>`;
   $('#toasts').appendChild(el);
   setTimeout(()=>{ el.style.transition='all .3s'; el.style.opacity='0'; el.style.transform='translateY(10px)'; setTimeout(()=>el.remove(),300); }, 3400);
+}
+
+/* ===================== SMART TEXT PROCESSING ===================== */
+const SMART_PUNCT = [
+  ['chấm hỏi','?'],['chấm than','!'],['chấm cảm thán','!'],['ba chấm','...'],
+  ['chấm xuống dòng','.'],['gạch đầu dòng','\n-'],['gạch dòng','\n-'],['xuống dòng','\n'],
+  ['hai chấm',':'],['chấm phẩy',';'],
+  ['mở ngoặc đơn','('],['đóng ngoặc đơn',')'],['mở ngoặc','('],['đóng ngoặc',')'],
+  ['phẩy',','],['chấm','.']
+];
+const VN_DIGITS = {không:0,một:1,hai:2,ba:3,bốn:4,năm:5,sáu:6,bảy:7,tám:8,chín:9,mốt:1,tư:4,lăm:5};
+const VN_NUM_WORDS = new Set([...Object.keys(VN_DIGITS),'mười','mươi','trăm','nghìn','ngàn','triệu','tỷ','tỉ','lẻ','linh']);
+const VN_SINGLE_CONVERT = new Set(['mười','nghìn','ngàn','triệu','tỷ','tỉ']);
+const VN_BIG = ['mười','mươi','trăm','nghìn','ngàn','triệu','tỷ','tỉ','lẻ','linh'];
+const FILLER_MULTI = ['kiểu như là','kiểu như','đại loại là','đại loại','nói chung là','nói chung','ý là','à thì','ừ thì','à mà','thì là','cái kiểu','vâng dạ'];
+const FILLER_SINGLE = ['à','ừ','ừm','ùm','ờ','ờm','ơ','ạ','dạ','vâng','hả','hở','hử','nhỉ','nhé','nha','nhen','hén','uh','uk','hmm','hừm','ừh','àh','ờh','hì','hehe'];
+const CONNECTORS = ['ngoài ra','bên cạnh đó','thêm vào đó','tuy nhiên','vì vậy','do đó','mặt khác','nhìn chung','tóm lại','hơn nữa','không những thế','đồng thời','một là','hai là','ba là','thứ nhất','đáng chú ý'];
+
+function parseVNNumber(tokens){
+  let section=0, cur=0, hasCur=false;
+  for(const raw of tokens){
+    const t = raw.toLowerCase();
+    if(VN_DIGITS[t]!==undefined){ cur=VN_DIGITS[t]; hasCur=true; continue; }
+    if(t==='mười'){ if(!hasCur) cur=1; section+=cur*10; cur=0; hasCur=false; continue; }
+    if(t==='mươi'){ if(hasCur) section+=cur*10; cur=0; hasCur=false; continue; }
+    if(t==='trăm'){ if(hasCur) section+=cur*100; cur=0; hasCur=false; continue; }
+    if(t==='lẻ'||t==='linh'){ cur=0; hasCur=true; continue; }
+    if(t==='nghìn'||t==='ngàn'){ if(hasCur){section+=cur;cur=0;hasCur=false;} const big=Math.floor(section/1e6)*1e6; section=big+(section-big)*1000; continue; }
+    if(t==='triệu'){ if(hasCur){section+=cur;cur=0;hasCur=false;} const big=Math.floor(section/1e9)*1e9; section=big+(section-big)*1e6; continue; }
+    if(t==='tỷ'||t==='tỉ'){ if(hasCur){section+=cur;cur=0;hasCur=false;} section=section*1e9; continue; }
+  }
+  if(hasCur) section+=cur;
+  return section;
+}
+function convertNumbers(text){
+  const tokens = text.split(/\s+/);
+  const out = [];
+  let i = 0;
+  while(i < tokens.length){
+    const clean = (tokens[i]||'').toLowerCase().replace(/[^a-zà-ỹ]/g,'');
+    if(clean && VN_NUM_WORDS.has(clean)){
+      const run = [];
+      while(i < tokens.length){
+        const c2 = (tokens[i]||'').toLowerCase().replace(/[^a-zà-ỹ]/g,'');
+        if(c2 && VN_NUM_WORDS.has(c2)){ run.push(c2); i++; } else break;
+      }
+      const hasBig = run.some(w=>VN_BIG.includes(w));
+      if((run.length>=2 && hasBig) || VN_SINGLE_CONVERT.has(run[0])){
+        out.push(String(parseVNNumber(run)));
+      } else {
+        out.push(...run);
+      }
+    } else { out.push(tokens[i]); i++; }
+  }
+  return out.join(' ');
+}
+function removeFillers(t){
+  FILLER_MULTI.forEach(m=>{
+    const re = new RegExp('(^|[\\s,.!?;:])' + m.replace(/\s+/g,'\\s+') + '(?=[\\s,.!?;:]|$)','gi');
+    t = t.replace(re,'$1');
+  });
+  const re = new RegExp('(^|[\\s,.!?;:])(' + FILLER_SINGLE.join('|') + ')(?=[\\s,.!?;:]|$)','gi');
+  t = t.replace(re,'$1');
+  return t;
+}
+function splitConnectors(t){
+  CONNECTORS.forEach(c=>{
+    const re = new RegExp('([a-zà-ỹ0-9%‰)])\\s+(' + c.replace(/\s+/g,'\\s+') + ')(?=\\s)','gi');
+    t = t.replace(re, (m,pre,conn)=> pre + '. ' + conn);
+  });
+  return t;
+}
+function insertComma(line){
+  if(!line || /[,.!?;]/.test(line)) return line;
+  const words = line.split(/\s+/);
+  if(words.length < 14) return line;
+  const markers = ['và','nhưng','còn','hoặc','sau đó','tiếp theo','đồng thời','vì','do','nên','để','với'];
+  for(let i=6;i<words.length-3;i++){
+    if(markers.includes(words[i].toLowerCase())){
+      return words.slice(0,i).join(' ') + ', ' + words.slice(i).join(' ');
+    }
+  }
+  return line;
+}
+function smartProcess(input){
+  let t = (input||'').trim();
+  if(!t) return '';
+  t = t.replace(/\s+/g,' ').toLowerCase();
+  // protect compound words containing "chấm"
+  t = t.replace(/chấm\s+công/g,'⟦cc⟧').replace(/chấm\s+thầu/g,'⟦ct⟧').replace(/điểm\s+chấm/g,'⟦dc⟧');
+  // percent / permille
+  t = t.replace(/phần\s+trăm/g,' % ').replace(/phần\s+nghìn/g,' ‰ ').replace(/phần\s+ngàn/g,' ‰ ');
+  // spoken punctuation (multi-word first)
+  SMART_PUNCT.forEach(([w,p])=>{
+    const re = new RegExp('(^|[\\s])' + w.replace(/\s+/g,'\\s+') + '(?=[\\s,.!?;:)\n]|$)','g');
+    t = t.replace(re, (m,pre)=> pre + p);
+  });
+  // restore protected
+  t = t.replace(/⟦cc⟧/g,'chấm công').replace(/⟦ct⟧/g,'chấm thầu').replace(/⟦dc⟧/g,'điểm chấm');
+  // numbers
+  t = convertNumbers(t);
+  // fillers (two passes)
+  t = removeFillers(t); t = removeFillers(t);
+  // chat abbreviations
+  t = t.replace(/\bko\b/g,'không');
+  // connector sentence splitting
+  t = splitConnectors(t);
+  // per-line comma insertion
+  t = t.split('\n').map(insertComma).join('\n');
+  // cleanup whitespace
+  t = t.replace(/[ \t]+/g,' ');
+  t = t.replace(/\s*\n\s*/g,'\n');
+  t = t.replace(/\s+([,.!?;:)%‰])/g,'$1');
+  t = t.replace(/([,.!?;:)(])([a-zà-ỹ0-9])/gi,'$1 $2');
+  t = t.replace(/([,;:!?])\1+/g,'$1');
+  t = t.replace(/\.{4,}/g,'...');
+  t = t.replace(/,\s*\./g,'.');
+  t = t.replace(/^[,.!?;:\s-]+/,'');
+  t = t.replace(/\n[-\s,.!?;:]+/g,'\n- ');
+  // capitalize
+  t = t.replace(/(^|[.!?]\s+|\n-?\s*)([a-zà-ỹ])/g, (m,pre,ch)=> pre + ch.toUpperCase());
+  t = t.trim();
+  // final period
+  if(t && !/[.!?]$/.test(t)) t += '.';
+  return t;
 }
 
 /* ===================== BUILD SECTION CARDS ===================== */
@@ -562,6 +854,7 @@ function buildSectionCards(){
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
               Đọc mục này
             </button>
+            <button class="sec-norm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-600 transition" data-norm="${sec.id}" title="Chuẩn hóa văn phong mục này">✨ Chuẩn hóa</button>
             <button class="sec-clear text-xs font-semibold text-slate-400 hover:text-rose-500 px-2 py-1.5" data-clear="${sec.id}">Xóa</button>
             <span class="text-[11px] text-slate-300">|</span>
             ${sec.phrases.map(p=>`<button class="chip text-[11px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-brand-50 hover:text-brand-700" data-phrase="${sec.id}" data-text="${esc(p)}">+ ${esc(p.length>34?p.slice(0,34)+'…':p)}</button>`).join('')}
@@ -578,15 +871,25 @@ function buildSectionCards(){
       updateProgress();
       scheduleSave();
       if(isRecording && e.isTrusted && ta.dataset.sec === targetSection){
-        baseText = ta.value.trim(); finalSinceStart = '';
+        rawBase = ta.value; rawFinal = '';
       }
     });
   });
   $$('.sec-mic').forEach(b=> b.addEventListener('click', ()=> onSectionMic(b.dataset.target)));
+  $$('.sec-norm').forEach(b=> b.addEventListener('click', ()=> normalizeSection(b.dataset.norm)));
   $$('.sec-clear').forEach(b=> b.addEventListener('click', ()=>{
     const id=b.dataset.clear; draft.sections[id]=''; const ta=$(`textarea[data-sec="${id}"]`); ta.value=''; updateWordCount(id); updateProgress(); scheduleSave();
   }));
   $$('[data-phrase]').forEach(b=> b.addEventListener('click', ()=> insertPhrase(b.dataset.phrase, b.dataset.text)));
+}
+
+function normalizeSection(secId){
+  const ta = $(`textarea[data-sec="${secId}"]`);
+  if(!ta.value.trim()){ toast('Mục này chưa có nội dung để chuẩn hóa.','info'); return; }
+  ta.value = smartProcess(ta.value);
+  draft.sections[secId] = ta.value;
+  updateWordCount(secId); updateProgress(); scheduleSave();
+  toast('Đã chuẩn hóa văn phong mục này.','success');
 }
 
 function insertPhrase(secId, text){
@@ -713,6 +1016,7 @@ function bindInfoInputs(){
     draft.info[map[id]] = e.target.value; scheduleSave();
     if(id==='f_name') updateAvatar();
   }));
+  $('#f_dept').addEventListener('change', e=>{ draft.info.dept = e.target.value; scheduleSave(); });
   $('#f_month').addEventListener('change', e=>{ draft.info.month = +e.target.value; updateHeader(); scheduleSave(); });
   $('#f_year').addEventListener('change', e=>{ draft.info.year = +e.target.value; updateHeader(); scheduleSave(); });
 }
@@ -735,17 +1039,19 @@ function initSpeech(){
     let interim = '';
     for(let i=ev.resultIndex;i<ev.results.length;i++){
       const res = ev.results[i];
-      if(res.isFinal) finalSinceStart += res[0].transcript + ' ';
+      if(res.isFinal) rawFinal += res[0].transcript + ' ';
       else interim += res[0].transcript;
     }
     const ta = $(`textarea[data-sec="${targetSection}"]`);
-    const combined = (baseText + ' ' + finalSinceStart).trim();
-    ta.value = applyFormat(combined) + (interim ? ' ' : '');
+    const combined = (rawBase + ' ' + rawFinal).replace(/\s+/g,' ').trim();
+    const smart = $('#smartMode').checked;
+    const processed = smart ? smartProcess(combined) : (autoCap ? capSentences(combined) : combined);
+    ta.value = processed + (interim.trim() ? ' ' + interim.trim() : '');
     draft.sections[targetSection] = ta.value;
     updateWordCount(targetSection); updateProgress();
-    $('#liveBox').innerHTML = interim
-      ? `<span class="text-slate-700 not-italic">${esc(applyFormat(combined))}</span> <span class="text-brand-500 not-italic">${esc(interim)}</span>`
-      : `<span class="text-slate-700 not-italic">${esc(applyFormat(combined)) || 'Đang lắng nghe… hãy đọc nội dung.'}</span>`;
+    $('#liveBox').innerHTML = interim.trim()
+      ? `<span class="text-slate-700 not-italic">${esc(processed)}</span> <span class="text-brand-500 not-italic">${esc(interim.trim())}</span>`
+      : `<span class="text-slate-700 not-italic">${esc(processed)||'Đang lắng nghe… hãy đọc nội dung.'}</span>`;
   };
   recognition.onerror = (ev)=>{
     if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
@@ -770,7 +1076,7 @@ function disableMics(){
 function onSectionMic(id){
   if(!speechSupported){ toast('Trình duyệt không hỗ trợ nhận diện giọng nói.','error'); return; }
   if(isRecording && targetSection===id){ stopRec(); return; }
-  selectTarget(id, true);
+  selectTarget(id);
   if(!isRecording) startRec();
 }
 function selectTarget(id){
@@ -779,13 +1085,13 @@ function selectTarget(id){
   refreshSectionMicStates();
   if(isRecording){
     const ta = $(`textarea[data-sec="${id}"]`);
-    baseText = ta.value.trim(); finalSinceStart = '';
+    rawBase = ta.value; rawFinal = '';
   }
 }
 function startRec(){
   if(!speechSupported || isRecording) return;
   const ta = $(`textarea[data-sec="${targetSection}"]`);
-  baseText = ta.value.trim(); finalSinceStart = '';
+  rawBase = ta.value; rawFinal = '';
   isRecording = true;
   updateMicUI(); startTimer();
   $('#liveBox').innerHTML = '<span class="text-slate-400">Đang lắng nghe… hãy đọc nội dung.</span>';
@@ -797,7 +1103,8 @@ function stopRec(){
   try{ recognition.stop(); }catch(e){}
   stopTimer(); updateMicUI();
   const ta = $(`textarea[data-sec="${targetSection}"]`);
-  ta.value = applyFormat(ta.value);
+  const smart = $('#smartMode').checked;
+  ta.value = smart ? smartProcess(ta.value) : (autoCap ? capSentences(ta.value) : ta.value);
   draft.sections[targetSection] = ta.value;
   updateWordCount(targetSection); updateProgress(); scheduleSave();
   $('#liveBox').innerHTML = '<span class="text-slate-400">Đã dừng. Bấm micro để đọc tiếp.</span>';
@@ -854,6 +1161,7 @@ function collectReport(){
 }
 function validate(){
   if(!(draft.info.name||'').trim()){ toast('Vui lòng nhập họ và tên người báo cáo.','error'); $('#f_name').focus(); return false; }
+  if(!(draft.info.dept||'').trim()){ toast('Vui lòng chọn bộ phận.','error'); $('#f_dept').focus(); return false; }
   const any = SECTIONS.some(s => (draft.sections[s.id]||'').trim().length > 0);
   if(!any){ toast('Báo cáo cần có ít nhất một mục nội dung.','error'); return false; }
   return true;
@@ -901,7 +1209,6 @@ function clearForm(){
 }
 function addNextPerson(){
   if(isRecording) stopRec();
-  // warn if current form has unsaved content
   const hasContent = (draft.info.name||'').trim() || SECTIONS.some(s=>(draft.sections[s.id]||'').trim()) || draft.attachments.length;
   const doReset = ()=>{
     resetDraftForNextPerson(true);
@@ -926,7 +1233,7 @@ function reportToHTML(r){
     <h1>BÁO CÁO CÔNG VIỆC THÁNG</h1>
     <div style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">${MONTHS[(r.month||1)-1]} / ${r.year||''}</div>
     <div class="meta"><span><b>Họ và tên:</b> ${esc(r.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.position||'—')}</span></div>
-    <div class="meta"><span><b>Phòng ban:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
+    <div class="meta"><span><b>Bộ phận:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
     ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections&&r.sections[s.id]||'').trim() || '—')}</p>`).join('')}
     ${attachmentsHTML(r.attachments)}
     <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
@@ -937,7 +1244,7 @@ function reportToHTML(r){
 }
 function reportToText(r){
   let t = `BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.month||1)-1]} / ${r.year||''}\n`;
-  t += `Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nPhòng ban: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
+  t += `Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nBộ phận: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
   SECTIONS.forEach(s=>{ t += `${s.num}. ${s.title}\n${(r.sections&&r.sections[s.id]||'').trim()||'—'}\n\n`; });
   if(r.attachments && r.attachments.length){
     t += `TỆP ĐÍNH KÈM:\n`; r.attachments.forEach(a=> t += `- ${a.name} (${formatBytes(a.size)})\n`); t += '\n';
@@ -984,6 +1291,7 @@ function currentFormReport(){
 function updateReportCount(){ $('#reportCount').textContent = reports.length; }
 function renderReports(){
   const tbody = $('#reportsTbody'); const empty = $('#reportsEmpty');
+  if(!tbody) return;
   const q = ($('#searchReports').value||'').trim().toLowerCase();
   let list = reports.slice();
   if(q){
@@ -1010,7 +1318,7 @@ function renderReports(){
           </div>
         </div>
       </td>
-      <td class="px-4 py-3 text-slate-700">${esc(r.dept||'—')}</td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[11px] font-semibold">${esc(r.dept||'—')}</span></td>
       <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
       <td class="px-4 py-3 text-slate-600 text-xs whitespace-nowrap">${dateStr}</td>
       <td class="px-4 py-3">
@@ -1056,7 +1364,7 @@ function openView(id){
     <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 rounded-xl p-3 mb-4">
       <div><span class="text-slate-500">Họ tên:</span> <b>${esc(r.name||'—')}</b></div>
       <div><span class="text-slate-500">Chức vụ:</span> <b>${esc(r.position||'—')}</b></div>
-      <div><span class="text-slate-500">Phòng ban:</span> <b>${esc(r.dept||'—')}</b></div>
+      <div><span class="text-slate-500">Bộ phận:</span> <b>${esc(r.dept||'—')}</b></div>
       <div><span class="text-slate-500">Ngày lập:</span> <b>${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—'}</b></div>
     </div>
     ${SECTIONS.map(s=>`
@@ -1085,7 +1393,6 @@ function openView(id){
           }).join('')}
         </ul>
       </div>` : ''}`;
-  // bind download buttons
   $$('.att-dl', body).forEach(b=> b.addEventListener('click', ()=>{
     const a = atts[+b.dataset.idx]; if(!a || !a.dataUrl) return;
     const link = document.createElement('a');
@@ -1103,6 +1410,45 @@ function showConfirm(title, msg, okText, cb){
 }
 function closeConfirm(){ $('#confirmModal').classList.add('hidden'); confirmCb=null; }
 
+/* ===================== SETTINGS MODAL ===================== */
+function openSettings(){
+  $('#settingsModal').classList.remove('hidden');
+  resetSettings();
+  setTimeout(()=> $('#adminPass').focus(), 60);
+}
+function closeSettings(){ $('#settingsModal').classList.add('hidden'); resetSettings(); }
+function resetSettings(){
+  $('#setStep1').classList.remove('hidden'); $('#setStep2').classList.add('hidden');
+  $('#adminPass').value=''; $('#newPass').value=''; $('#newPass2').value='';
+  $('#adminErr').classList.add('hidden');
+}
+function verifyAdmin(){
+  if($('#adminPass').value === ADMIN_PASSWORD){
+    $('#setStep1').classList.add('hidden'); $('#setStep2').classList.remove('hidden');
+    $('#adminErr').classList.add('hidden');
+    setTimeout(()=> $('#newPass').focus(), 60);
+  } else {
+    $('#adminErr').classList.remove('hidden');
+    const s = $('#setStep1'); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake');
+    $('#adminPass').select();
+  }
+}
+function saveNewPass(){
+  const p1 = $('#newPass').value, p2 = $('#newPass2').value;
+  if(p1.length < 6){ toast('Mật khẩu mới phải có ít nhất 6 ký tự.','error'); return; }
+  if(p1 !== p2){ toast('Mật khẩu nhập lại không khớp.','error'); return; }
+  localStorage.setItem('vr_app_pass', p1);
+  toast('Đã lưu mật khẩu đăng nhập mới. Áp dụng từ lần đăng nhập sau.','success');
+  closeSettings();
+}
+function resetAppPass(){
+  showConfirm('Khôi phục mật khẩu mặc định?','Mật khẩu đăng nhập ứng dụng sẽ trở về giá trị mặc định ban đầu.','Khôi phục',()=>{
+    localStorage.removeItem('vr_app_pass');
+    toast('Đã khôi phục mật khẩu mặc định.','info');
+    closeSettings();
+  });
+}
+
 /* ===================== STATS ===================== */
 function renderStats(){
   const total = reports.length;
@@ -1110,7 +1456,6 @@ function renderStats(){
   const avgComp = total ? Math.round(reports.reduce((a,r)=>{
     const f = SECTIONS.filter(s=>(r.sections&&r.sections[s.id]||'').trim().length>8).length; return a + f/SECTIONS.length*100;
   },0)/total) : 0;
-  const totalWords = reports.reduce((a,r)=> a + SECTIONS.reduce((b,s)=> b + wordCount(r.sections&&r.sections[s.id]),0), 0);
   const totalAtts = reports.reduce((a,r)=> a + (r.attachments||[]).length, 0);
 
   const cards = [
@@ -1165,10 +1510,10 @@ function bindSyncStatus(){
   const el = $('#syncStatus');
   db.ref('.info/connected').on('value', snap=>{
     if(snap.val()===true){
-      el.className = 'hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100';
+      el.className = 'hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100';
       el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Đã đồng bộ Firebase';
     } else {
-      el.className = 'hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100';
+      el.className = 'hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100';
       el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Mất kết nối';
     }
   });
@@ -1214,6 +1559,7 @@ function init(){
     if(aside) window.scrollTo({top: aside.offsetTop-100, behavior:'smooth'});
   });
   $('#autoCap').addEventListener('change', e=>{ autoCap = e.target.checked; });
+  $('#normalizeBtn').addEventListener('click', ()=> normalizeSection(targetSection));
 
   $('#submitBtn').addEventListener('click', submitReport);
   $('#clearBtn').addEventListener('click', clearForm);
@@ -1241,15 +1587,49 @@ function init(){
   $('#confirmOk').addEventListener('click', ()=>{ const cb=confirmCb; closeConfirm(); if(cb) cb(); });
   $('#confirmModal').addEventListener('click', e=>{ if(e.target.id==='confirmModal') closeConfirm(); });
 
+  // Settings
+  $('#settingsBtn').addEventListener('click', openSettings);
+  $$('[data-close-settings]').forEach(b=> b.addEventListener('click', closeSettings));
+  $('#settingsModal').addEventListener('click', e=>{ if(e.target.id==='settingsModal') closeSettings(); });
+  $('#adminVerify').addEventListener('click', verifyAdmin);
+  $('#savePass').addEventListener('click', saveNewPass);
+  $('#resetPass').addEventListener('click', resetAppPass);
+  $('#adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') verifyAdmin(); });
+  $('#newPass2').addEventListener('keydown', e=>{ if(e.key==='Enter') saveNewPass(); });
+
+  // Logout
+  $('#logoutBtn').addEventListener('click', doLogout);
+
+  // Login
+  $('#loginBtn').addEventListener('click', attemptLogin);
+  $('#loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') attemptLogin(); });
+  $('#toggleLoginPass').addEventListener('click', ()=>{
+    const inp = $('#loginPass');
+    const isPw = inp.type === 'password';
+    inp.type = isPw ? 'text' : 'password';
+    $('#eyeIcon').style.opacity = isPw ? '0.5' : '1';
+  });
+
+  // Keyboard shortcuts
   document.addEventListener('keydown', e=>{
-    if((e.ctrlKey||e.metaKey) && (e.key==='m'||e.key==='M')){ e.preventDefault(); if(speechSupported) toggleMic(); }
-    if(e.key==='Escape'){ if(!$('#viewModal').classList.contains('hidden')) closeView(); if(!$('#confirmModal').classList.contains('hidden')) closeConfirm(); }
+    if((e.ctrlKey||e.metaKey) && (e.key==='m'||e.key==='M')){
+      if(!$('#loginScreen').classList.contains('hidden')) return;
+      e.preventDefault(); if(speechSupported) toggleMic();
+    }
+    if(e.key==='Escape'){
+      if(!$('#viewModal').classList.contains('hidden')) closeView();
+      else if(!$('#settingsModal').classList.contains('hidden')) closeSettings();
+      else if(!$('#confirmModal').classList.contains('hidden')) closeConfirm();
+    }
   });
 
   updateReportCount();
   renderReports();
   renderStats();
   updateMicUI();
+
+  // Auth gate
+  if(isAuthed()) showApp(); else showLogin();
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>
