@@ -24,14 +24,14 @@
           disp: ['"Space Grotesk"','"Be Vietnam Pro"','monospace'],
         },
         colors: {
-          ink:   {900:'#0E1915',800:'#14231E',700:'#1B2F28',600:'#24392F',500:'#3A5248',100:'#E3E9E6',50:'#F2F5F3'},
+          ink:   {900:'#0F1B17',800:'#14231E',700:'#1B2F28',600:'#24392F',500:'#3A5248',100:'#E3E9E6',50:'#F2F5F3'},
           pine:  {50:'#E9F3EF',100:'#D5E8E0',200:'#B2D4C7',400:'#2AA387',500:'#12866D',600:'#0E7057',700:'#0B5C47',800:'#094A3A'},
           gold:  {50:'#FCF4E3',100:'#F8E8C6',300:'#F0C878',400:'#ECB85C',500:'#E5A63E',600:'#CE8F27'},
-          signal:{50:'#FFEDE9',100:'#FFD8D1',300:'#FF8A78',400:'#FF6250',500:'#FF4433',600:'#E8321F'},
+          signal:{50:'#FCEAE6',100:'#F8D5CD',400:'#E5533C',500:'#D9482F',600:'#C23C25'},
         },
         boxShadow: {
-          card:'0 1px 2px rgba(14,25,21,.05),0 10px 28px -14px rgba(14,25,21,.14)',
-          soft:'0 16px 40px -14px rgba(14,25,21,.35)',
+          card:'0 1px 2px rgba(15,27,23,.05),0 10px 28px -14px rgba(15,27,23,.14)',
+          soft:'0 14px 36px -14px rgba(15,27,23,.28)',
         }
       }
     }
@@ -44,51 +44,32 @@
     background-image:
       radial-gradient(900px 480px at 100% -8%, rgba(18,134,109,.07), transparent 60%),
       radial-gradient(760px 420px at -8% 14%, rgba(229,166,62,.07), transparent 55%),
-      radial-gradient(circle at 1px 1px, rgba(14,25,21,.045) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, rgba(15,27,23,.045) 1px, transparent 0);
     background-size:auto,auto,22px 22px;
   }
   .tab-panel{animation:fadeUp .35s ease both;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .guide-anim{animation:fadeUp .4s ease both;}
 
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
   .reveal.revealed{opacity:1;transform:none;}
 
-  /* ---- rich dark surfaces ---- */
-  .dark-surface{
-    background-color:#0E1915;
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0),
-      radial-gradient(circle at 85% -10%, rgba(229,166,62,.16), transparent 50%),
-      radial-gradient(circle at 5% 112%, rgba(18,134,109,.24), transparent 55%),
-      radial-gradient(circle at 50% 55%, rgba(255,68,51,.06), transparent 60%),
-      linear-gradient(180deg,#182721,#0E1915);
-    background-size:22px 22px,auto,auto,auto,auto;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 18px 44px -16px rgba(14,25,21,.55);
-  }
-  .app-header{
-    background:
-      radial-gradient(circle at 92% -30%, rgba(229,166,62,.14), transparent 45%),
-      radial-gradient(circle at -5% 130%, rgba(18,134,109,.22), transparent 50%),
-      linear-gradient(180deg,#1A2A23,#0E1915);
-    border-bottom:1px solid rgba(255,255,255,.09);
-    box-shadow:0 8px 30px -12px rgba(14,25,21,.6);
-  }
-  .studio::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#12866D,#E5A63E,#FF4433);opacity:.9;border-radius:16px 16px 0 0;}
-
-  /* studio waveform */
   .wave{display:flex;align-items:center;gap:2px;height:46px;}
-  .wave span{flex:1;min-width:2px;border-radius:2px;background:linear-gradient(180deg,#ECB85C,#FF4433);height:100%;transform:scaleY(.1);transform-origin:center;opacity:.3;}
+  .wave span{flex:1;min-width:2px;border-radius:2px;background:linear-gradient(180deg,#ECB85C,#D9482F);height:100%;transform:scaleY(.1);transform-origin:center;opacity:.35;}
   .wave.live span{opacity:1;animation:waveBar 1s ease-in-out infinite;}
   @keyframes waveBar{0%,100%{transform:scaleY(.1)}50%{transform:scaleY(1)}}
 
-  /* record button — bright red */
-  .rec-btn{background:linear-gradient(180deg,#FF6250,#E8321F);box-shadow:0 12px 30px -6px rgba(255,68,51,.65), inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s ease, box-shadow .2s ease;color:#fff;}
-  .rec-btn:hover{transform:scale(1.06);box-shadow:0 16px 36px -6px rgba(255,68,51,.75), inset 0 1px 0 rgba(255,255,255,.35);}
+  .rec-btn{background:linear-gradient(180deg,#E5533C,#C23C25);box-shadow:0 10px 26px -6px rgba(217,72,47,.55), inset 0 1px 0 rgba(255,255,255,.28);transition:transform .15s ease, box-shadow .2s ease;color:#fff;}
+  .rec-btn:hover{transform:scale(1.06)}
   .rec-btn:active{transform:scale(.95)}
-  .rec-ring{position:absolute;inset:0;border-radius:9999px;border:2px solid rgba(255,68,51,.65);opacity:0;pointer-events:none;}
+  .rec-ring{position:absolute;inset:0;border-radius:9999px;border:2px solid rgba(217,72,47,.55);opacity:0;pointer-events:none;}
   .mic-rec .rec-ring{animation:ringPulse 1.5s ease-out infinite;}
-  @keyframes ringPulse{0%{transform:scale(1);opacity:.65}100%{transform:scale(1.9);opacity:0}}
+  @keyframes ringPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
 
+  .studio{background:
+    radial-gradient(circle at 82% -12%, rgba(229,166,62,.14), transparent 52%),
+    radial-gradient(circle at 8% 112%, rgba(18,134,109,.22), transparent 52%),
+    #0F1B17;}
   .dark-select{background:#1B2F28;border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:.75rem;padding:.6rem .75rem;font-size:.875rem;outline:none;width:100%;}
   .dark-select:focus{border-color:#E5A63E;}
   .dark-toggle{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:.65rem;padding:.5rem .65rem;font-size:11px;font-weight:600;color:rgba(255,255,255,.78);cursor:pointer;transition:all .15s;}
@@ -111,6 +92,10 @@
 
   .ai-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#F0C878,#E5A63E);color:#5b3d05;font-weight:800;box-shadow:0 4px 12px -4px rgba(229,166,62,.6);}
 
+  /* guide stepper line */
+  .guide-step{position:relative;}
+  .guide-step:not(:last-child)::before{content:'';position:absolute;left:15px;top:40px;bottom:-2px;width:2px;background:linear-gradient(180deg,#D5E8E0,rgba(213,232,224,.15));}
+
   @keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
   .toast{animation:toastIn .25s ease both;}
   @keyframes pop{0%{transform:scale(.96);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -127,17 +112,16 @@
   .chip:hover{transform:translateY(-1px)}
   .nav-btn{position:relative;transition:color .15s ease;}
   .nav-btn.active{color:#ECB85C;}
-  .nav-btn.active::after{content:'';position:absolute;left:.75rem;right:.75rem;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#E5A63E,#FF6250);}
-  .sec-mic.active{background:#FF4433;color:#fff;border-color:#FF4433;box-shadow:0 8px 20px -8px rgba(255,68,51,.65)}
+  .nav-btn.active::after{content:'';position:absolute;left:.75rem;right:.75rem;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:#E5A63E;}
+  .sec-mic.active{background:#D9482F;color:#fff;border-color:#D9482F;box-shadow:0 8px 20px -8px rgba(217,72,47,.6)}
   .dropzone.drag{border-color:#12866D;background:#E9F3EF;}
   .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
   .login-bg{background:
-    radial-gradient(circle at 18% 22%, rgba(18,134,109,.38), transparent 45%),
-    radial-gradient(circle at 82% 78%, rgba(229,166,62,.26), transparent 45%),
-    radial-gradient(circle at 60% 40%, rgba(255,68,51,.12), transparent 50%),
-    linear-gradient(160deg,#0E1915,#14231E 55%,#0B5C47);}
+    radial-gradient(circle at 18% 22%, rgba(18,134,109,.35), transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(229,166,62,.25), transparent 45%),
+    linear-gradient(160deg,#0F1B17,#14231E 55%,#0B5C47);}
 
   @media print{
     body *{visibility:hidden !important;}
@@ -159,7 +143,6 @@
 <div id="loginScreen" class="fixed inset-0 z-[70] grid place-items-center p-4">
   <div class="absolute inset-0 login-bg"></div>
   <div class="absolute inset-0 opacity-[0.05]" style="background-image:radial-gradient(circle at 1px 1px,#fff 1px,transparent 0);background-size:26px 26px;"></div>
-
   <div class="relative w-full max-w-3xl grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
     <div class="relative hidden md:block min-h-[480px]">
       <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1ed1d79e5-7c59-4c1e-abc2-c9617cfd1d1c.png" alt="Đọc báo cáo bằng giọng nói" class="absolute inset-0 w-full h-full object-cover" />
@@ -195,7 +178,7 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Đăng nhập
         </button>
-        <p id="loginErr" class="hidden mt-3 text-signal-500 text-xs text-center font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
+        <p id="loginErr" class="hidden mt-3 text-signal-600 text-xs text-center font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
       </div>
     </div>
   </div>
@@ -204,15 +187,14 @@
 <!-- ============ APP ROOT ============ -->
 <div id="appRoot" class="hidden">
 
-<!-- HEADER (dark, richer) -->
-<header class="app-header sticky top-0 z-30 text-white">
+<header class="sticky top-0 z-30 bg-ink-900 text-white border-b border-white/10 shadow-soft">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pine-600 to-pine-800 grid place-items-center shrink-0 shadow ring-1 ring-white/15">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pine-600 to-pine-800 grid place-items-center shrink-0 shadow">
       <svg class="w-5 h-5 text-gold-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </div>
     <div class="leading-tight">
-      <div class="font-extrabold text-lg tracking-tight">Voice<span class="text-gold-400 font-disp">Report</span></div>
-      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Báo cáo công việc tháng · AI</div>
+      <div class="font-extrabold text-lg tracking-tight">IDECO <span class="text-gold-400 font-disp">BÁO CÁO THÁNG </span></div>
+      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Hãy luôn từ hào chúng ta tiên phong công nghệ- hiệu quả đặt Mục tiêu DS</div>
     </div>
     <div class="ml-auto flex items-center gap-2">
       <span id="syncStatus" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white/60 text-xs font-semibold">
@@ -231,13 +213,17 @@
       <button id="logoutBtn" title="Đăng xuất" class="w-9 h-9 rounded-full hover:bg-signal-500/20 grid place-items-center text-white/70 hover:text-signal-400 transition">
         <svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
-      <div id="avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-ink-900 grid place-items-center text-xs font-bold shadow ring-1 ring-white/20">NV</div>
+      <div id="avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-ink-900 grid place-items-center text-xs font-bold shadow">NV</div>
     </div>
   </div>
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto">
     <button data-tab="create" class="nav-btn active px-4 py-3 text-sm font-semibold flex items-center gap-2 whitespace-nowrap">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
       Tạo báo cáo
+    </button>
+    <button data-tab="guide" class="nav-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 whitespace-nowrap text-white/60 hover:text-white">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Hướng dẫn
     </button>
     <button data-tab="reports" class="nav-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 whitespace-nowrap text-white/60 hover:text-white">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -255,14 +241,12 @@
 
   <!-- ============ CREATE TAB ============ -->
   <section id="tab-create" class="tab-panel">
-
-    <!-- COMMAND STRIP -->
-    <div class="reveal dark-surface relative overflow-hidden rounded-2xl text-white p-6 sm:p-7 mb-6">
-      <svg class="strip-wave absolute inset-y-0 right-0 h-full w-[900px] opacity-[0.18] pointer-events-none" viewBox="0 0 900 120" preserveAspectRatio="none">
+    <div class="reveal relative overflow-hidden rounded-2xl bg-ink-900 text-white p-6 sm:p-7 mb-6 shadow-soft">
+      <svg class="strip-wave absolute inset-y-0 right-0 h-full w-[900px] opacity-[0.16] pointer-events-none" viewBox="0 0 900 120" preserveAspectRatio="none">
         <path d="M0,60 C75,10 150,110 300,60 C375,10 450,110 600,60 C675,10 750,110 900,60" stroke="#E5A63E" fill="none" stroke-width="2"/>
-        <path d="M0,60 C75,110 150,10 300,60 C375,110 450,10 600,60 C675,110 750,10 900,60" stroke="#FF6250" fill="none" stroke-width="2"/>
+        <path d="M0,60 C75,110 150,10 300,60 C375,110 450,10 600,60 C675,110 750,10 900,60" stroke="#12866D" fill="none" stroke-width="2"/>
       </svg>
-      <div class="relative z-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <div class="relative flex flex-wrap items-center gap-x-8 gap-y-4">
         <div>
           <div class="font-disp text-[10px] tracking-[0.3em] text-gold-400 uppercase">Báo cáo công việc tháng</div>
           <div id="stripMonth" class="font-disp text-4xl sm:text-5xl font-bold mt-1 leading-none">Tháng 7 · 2026</div>
@@ -280,17 +264,8 @@
       </div>
     </div>
 
-    <!-- EDIT BANNER -->
-    <div id="editBanner" class="hidden reveal revealed mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-gold-300 bg-gold-50 px-4 py-3">
-      <span class="w-8 h-8 rounded-lg bg-gold-400 text-ink-900 grid place-items-center font-bold">✏️</span>
-      <div class="text-sm text-ink-800">Đang chỉnh sửa báo cáo của <b id="editName"></b> <span class="text-ink-500">·</span> <span id="editPeriod" class="font-disp font-semibold text-gold-600"></span></div>
-      <button id="cancelEditBtn" class="ml-auto text-xs font-semibold text-signal-500 hover:text-signal-600 hover:bg-signal-50 px-3 py-1.5 rounded-lg transition">✕ Hủy chỉnh sửa</button>
-    </div>
-
     <div class="grid lg:grid-cols-3 gap-6">
-      <!-- FORM -->
       <div class="lg:col-span-2 space-y-5">
-
         <div class="reveal flex items-center gap-3">
           <div class="flex-1 h-2 rounded-full bg-ink-100 overflow-hidden">
             <div id="progressBar" class="h-full bg-gradient-to-r from-pine-500 to-gold-500 transition-all duration-500" style="width:0%"></div>
@@ -298,7 +273,6 @@
           <span id="progressText" class="text-xs font-semibold text-ink-500 whitespace-nowrap font-disp">0/5 mục</span>
         </div>
 
-        <!-- INFO CARD -->
         <div class="reveal bg-white rounded-2xl shadow-card border border-ink-100 p-5 sm:p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="w-8 h-8 rounded-lg bg-pine-50 text-pine-600 grid place-items-center">
@@ -326,7 +300,7 @@
                 <option>Kinh doanh</option>
                 <option>Kế toán</option>
                 <option>Kho</option>
-                <option>Giao nhân</option>
+                <option>Giao nhận</option>
                 <option>SOP</option>
               </select>
             </label>
@@ -343,10 +317,8 @@
           </div>
         </div>
 
-        <!-- SECTION CARDS -->
         <div id="sectionCards" class="space-y-5"></div>
 
-        <!-- ATTACHMENTS -->
         <div class="reveal bg-white rounded-2xl shadow-card border border-ink-100 p-5 sm:p-6">
           <div class="flex items-center gap-2 mb-1">
             <span class="w-8 h-8 rounded-lg bg-gold-50 text-gold-600 grid place-items-center">
@@ -355,7 +327,7 @@
             <h2 class="font-bold text-ink-900">Tệp đính kèm</h2>
             <span class="text-[11px] text-ink-400 ml-auto font-disp">Tối đa 5 tệp · 1.5MB/tệp</span>
           </div>
-          <p class="text-xs text-ink-500 mb-3">Hỗ trợ Excel (.xlsx, .xls, .csv), PDF (.pdf), PowerPoint (.pptx, .ppt). Kéo thả hoặc bấm để chọn. <b class="text-gold-600">Riêng bộ phận Kế toán:</b> tệp sẽ được bảo vệ bằng mật khẩu khi xem/tải.</p>
+          <p class="text-xs text-ink-500 mb-3">Hỗ trợ Excel (.xlsx, .xls, .csv), PDF (.pdf), PowerPoint (.pptx, .ppt). Kéo thả hoặc bấm để chọn.</p>
           <div id="dropzone" class="dropzone border-2 border-dashed border-ink-100 rounded-xl p-5 text-center cursor-pointer hover:border-pine-400 hover:bg-pine-50/50 transition">
             <div class="w-10 h-10 mx-auto rounded-full bg-pine-50 text-pine-600 grid place-items-center">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -367,9 +339,11 @@
           <ul id="fileList" class="mt-3 space-y-2"></ul>
         </div>
 
-        <!-- ACTION BAR -->
         <div class="reveal bg-white rounded-2xl shadow-card border border-ink-100 p-4 sm:p-5 flex flex-wrap items-center gap-3">
-          <button id="submitBtn" class="btn-lift inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white font-semibold text-sm shadow-soft"></button>
+          <button id="submitBtn" class="btn-lift inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white font-semibold text-sm shadow-soft">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+            Nộp báo cáo
+          </button>
           <button id="aiAllBtn" class="btn-lift inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 font-bold text-sm shadow" title="AI viết lại toàn bộ báo cáo chuyên nghiệp hơn">
             ✨ AI Viết lại toàn bộ
           </button>
@@ -389,7 +363,7 @@
               <button data-export="copy" class="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 flex items-center gap-2">📋 Sao chép văn bản</button>
             </div>
           </div>
-          <button id="clearBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-ink-400 font-semibold text-sm hover:text-signal-500 hover:bg-signal-50 transition ml-auto">
+          <button id="clearBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-ink-400 font-semibold text-sm hover:text-signal-600 hover:bg-signal-50 transition ml-auto">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             Xóa trắng
           </button>
@@ -397,11 +371,10 @@
         </div>
       </div>
 
-      <!-- STUDIO (voice panel) -->
       <aside class="lg:col-span-1">
         <div class="lg:sticky lg:top-32 space-y-4">
-          <div class="studio dark-surface reveal relative overflow-hidden rounded-2xl text-white p-5">
-            <div class="relative z-10">
+          <div class="studio reveal relative overflow-hidden rounded-2xl text-white p-5 shadow-soft">
+            <div class="relative">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span id="studioDot" class="w-2 h-2 rounded-full bg-signal-500"></span>
@@ -409,7 +382,6 @@
                 </div>
                 <span id="recStatus" class="text-[11px] font-semibold px-2 py-1 rounded-full bg-white/10 text-white/60">Sẵn sàng</span>
               </div>
-
               <div class="mt-6 flex flex-col items-center">
                 <div id="micWrap" class="relative">
                   <span class="rec-ring"></span>
@@ -422,20 +394,16 @@
                 <div id="recTimer" class="font-disp text-3xl font-bold mt-4 text-white/90 tracking-wider">00:00</div>
                 <div id="micLabel" class="text-xs text-white/50 mt-1">Bấm để bắt đầu đọc</div>
               </div>
-
               <div id="wave" class="wave mt-5"></div>
-
               <div class="mt-5">
                 <label class="text-[10px] font-semibold text-white/50 uppercase tracking-wider font-disp">Đang đọc vào mục</label>
                 <select id="targetSelect" class="dark-select mt-1"></select>
               </div>
-
               <div class="mt-4 grid grid-cols-2 gap-2">
                 <label class="dark-toggle"><input id="smartMode" type="checkbox" checked />✨ Văn phong báo cáo</label>
                 <label class="dark-toggle"><input id="autoCap" type="checkbox" checked />Aa Tự viết hoa</label>
               </div>
               <button id="normalizeBtn" class="dark-outline-btn mt-2">✨ Chuẩn hóa mục đang đọc</button>
-
               <div class="mt-4">
                 <div class="text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1 font-disp">Nhận diện trực tiếp</div>
                 <div id="liveBox" class="live-box">Nội dung giọng nói sẽ hiện tại đây…</div>
@@ -443,24 +411,56 @@
               </div>
             </div>
           </div>
-
           <div id="supportWarn" class="hidden rounded-2xl border border-gold-300 bg-gold-50 p-4 text-sm text-gold-600">
             <div class="font-semibold flex items-center gap-2">⚠️ Trình duyệt chưa hỗ trợ</div>
             <p class="mt-1 text-xs">Tính năng nhận diện giọng nói hoạt động tốt nhất trên <b>Chrome / Edge</b> (máy tính). Bạn vẫn có thể gõ tay báo cáo bình thường.</p>
           </div>
-
           <div class="reveal rounded-2xl border border-ink-100 bg-white p-4 shadow-card">
             <div class="font-semibold text-ink-800 text-sm flex items-center gap-2">💡 Mẹo đọc hiệu quả</div>
             <ul class="mt-2 space-y-1.5 text-xs text-ink-500 list-disc list-inside">
               <li>Nói rõ ràng, tốc độ vừa phải, ngắt nghỉ theo câu.</li>
               <li>Hệ thống tự bỏ từ thừa (à, ừ, ùm, dạ, vâng…) và viết hoa đầu câu.</li>
               <li>Số liệu đọc tự nhiên: "hai mươi phần trăm" → <b>20%</b>.</li>
-              <li>Dùng phím tắt <kbd class="px-1.5 py-0.5 rounded bg-ink-50 border border-ink-100 text-[10px] font-disp">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-ink-50 border border-ink-100 text-[10px] font-disp">M</kbd> để bật/tắt micro.</li>
+              <li>Xem tab <b class="text-pine-600">Hướng dẫn</b> để biết nội dung cần báo cáo theo bộ phận.</li>
               <li>Bấm <b class="text-gold-600">✨ AI</b> để viết lại chuyên nghiệp, đúng chính tả, có cấu trúc.</li>
             </ul>
           </div>
         </div>
       </aside>
+    </div>
+  </section>
+
+  <!-- ============ GUIDE TAB ============ -->
+  <section id="tab-guide" class="tab-panel hidden">
+    <!-- Handbook header -->
+    <div class="reveal relative overflow-hidden rounded-2xl bg-ink-900 text-white p-6 sm:p-7 mb-6 shadow-soft">
+      <svg class="absolute -right-6 -bottom-8 w-64 h-64 opacity-[0.08] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="#ECB85C" stroke-width="1"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h6M9 11h6"/></svg>
+      <div class="relative flex flex-wrap items-center gap-x-8 gap-y-4">
+        <div class="max-w-xl">
+          <div class="font-disp text-[10px] tracking-[0.3em] text-gold-400 uppercase">Sổ tay nghiệp vụ</div>
+          <div class="text-3xl sm:text-4xl font-extrabold mt-1 leading-tight">Hướng dẫn báo cáo cuối tháng</div>
+          <div class="text-sm text-white/60 mt-2">Chọn bộ phận của bạn để xem nội dung cần báo cáo, mẫu câu gợi ý và khung trình bày chuẩn — áp dụng ngay vào biểu mẫu chỉ với một bấm.</div>
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px]">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15"><span class="w-4 h-4 rounded-full bg-gold-400 text-ink-900 grid place-items-center font-disp font-bold text-[9px]">1</span>Chọn bộ phận</span>
+            <span class="text-white/30">→</span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15"><span class="w-4 h-4 rounded-full bg-gold-400 text-ink-900 grid place-items-center font-disp font-bold text-[9px]">2</span>Xem nội dung cần có</span>
+            <span class="text-white/30">→</span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15"><span class="w-4 h-4 rounded-full bg-gold-400 text-ink-900 grid place-items-center font-disp font-bold text-[9px]">3</span>Áp dụng &amp; đọc</span>
+          </div>
+        </div>
+        <div class="ml-auto flex gap-7">
+          <div><div class="font-disp text-3xl font-bold text-gold-400">5</div><div class="text-[10px] uppercase tracking-wider text-white/50">Bộ phận</div></div>
+          <div><div class="font-disp text-3xl font-bold text-pine-400">5</div><div class="text-[10px] uppercase tracking-wider text-white/50">Mục chuẩn</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[250px_1fr] gap-6 items-start">
+      <aside>
+        <div class="text-[10px] font-disp uppercase tracking-[0.2em] text-ink-400 mb-2 px-1">Bộ phận của bạn</div>
+        <div id="guideDeptList" class="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0"></div>
+      </aside>
+      <div id="guideContent"></div>
     </div>
   </section>
 
@@ -476,7 +476,6 @@
         Thêm báo cáo người tiếp theo
       </button>
     </div>
-
     <div class="reveal bg-white rounded-2xl shadow-card border border-ink-100 overflow-hidden">
       <div class="px-5 py-4 flex items-center justify-between border-b border-ink-100 bg-ink-50/60">
         <h3 class="font-bold text-ink-900 flex items-center gap-2">
@@ -496,7 +495,7 @@
               <th class="text-left px-4 py-3">Bộ phận</th>
               <th class="text-left px-4 py-3">Kỳ báo cáo</th>
               <th class="text-left px-4 py-3">Ngày báo cáo</th>
-              <th class="text-right px-4 py-3 w-52">Thao tác</th>
+              <th class="text-right px-4 py-3 w-32">Thao tác</th>
             </tr>
           </thead>
           <tbody id="reportsTbody" class="divide-y divide-ink-100"></tbody>
@@ -544,7 +543,6 @@
     </div>
     <div id="viewBody" class="p-6 overflow-y-auto text-sm leading-relaxed"></div>
     <div class="p-4 border-t border-ink-100 flex flex-wrap gap-2 justify-end bg-ink-50/60">
-      <button id="viewEditBtn" class="px-4 py-2 rounded-xl border border-gold-300 bg-gold-50 text-gold-600 text-sm font-semibold hover:bg-gold-100">✏️ Sửa</button>
       <button data-view-action="copy" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">📋 Sao chép</button>
       <button data-view-action="doc" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">📄 Tải Word</button>
       <button data-view-action="print" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">🖨️ In</button>
@@ -593,7 +591,7 @@
         <p class="text-xs text-ink-500 mb-3 ml-8">Nhập mật khẩu quản trị để đổi mật khẩu đăng nhập &amp; cấu hình AI.</p>
         <div class="ml-8">
           <input id="adminPass" type="password" placeholder="Mật khẩu quản trị" class="w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm" />
-          <p id="adminErr" class="hidden mt-2 text-signal-500 text-xs font-medium">Mật khẩu quản trị không đúng.</p>
+          <p id="adminErr" class="hidden mt-2 text-signal-600 text-xs font-medium">Mật khẩu quản trị không đúng.</p>
           <button id="adminVerify" class="btn-lift mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-ink-900 text-white text-sm font-semibold hover:bg-ink-800">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
             Xác nhận
@@ -657,26 +655,6 @@
   </div>
 </div>
 
-<!-- FILE PASSWORD MODAL (Kế toán) -->
-<div id="filePassModal" class="hidden fixed inset-0 z-[60] bg-ink-900/70 backdrop-blur-sm grid place-items-center p-4">
-  <div id="filePassCard" class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 text-center">
-    <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 text-ink-900 grid place-items-center text-2xl shadow">🔒</div>
-    <h3 class="mt-3 font-bold text-ink-900">Tệp được bảo vệ</h3>
-    <p id="filePassName" class="mt-1 text-sm font-semibold text-ink-700 break-all"></p>
-    <p class="mt-1 text-xs text-ink-500">Tệp thuộc bộ phận <b class="text-gold-600">Kế toán</b> — cần mật khẩu để mở / tải xuống.</p>
-    <input id="filePassInput" type="password" placeholder="Nhập mật khẩu…" class="mt-4 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm text-center" />
-    <p id="filePassErr" class="hidden mt-2 text-signal-500 text-xs font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
-    <label class="mt-3 flex items-center justify-center gap-2 text-xs text-ink-600 cursor-pointer select-none">
-      <input id="filePassRemember" type="checkbox" class="accent-gold-500 w-4 h-4" />
-      Ghi nhớ cho phiên này
-    </label>
-    <div class="mt-4 flex gap-2">
-      <button id="filePassCancel" class="flex-1 px-4 py-2.5 rounded-xl border border-ink-100 text-sm font-semibold hover:bg-ink-50">Hủy</button>
-      <button id="filePassOk" class="btn-lift flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-sm font-bold shadow">🔓 Mở &amp; Tải</button>
-    </div>
-  </div>
-</div>
-
 <!-- CONFIRM MODAL -->
 <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4">
   <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 text-center">
@@ -690,10 +668,7 @@
   </div>
 </div>
 
-<!-- TOASTS -->
 <div id="toasts" class="fixed bottom-5 right-5 z-[80] space-y-2 w-[min(92vw,340px)]"></div>
-
-<!-- PRINT AREA -->
 <div id="printArea"></div>
 
 <script>
@@ -724,17 +699,17 @@ function showApp(){ $('#loginScreen').classList.add('hidden'); $('#appRoot').cla
 function attemptLogin(){
   const pw = $('#loginPass').value;
   if(pw === getAppPass()){
-    if($('#rememberMe').checked) localStorage.setItem('vr_auth','1'); else sessionAuthed=true;
+    if($('#rememberMe').checked) localStorage.setItem('vr_auth','1'); else sessionAuthed = true;
     $('#loginErr').classList.add('hidden'); $('#loginPass').value='';
     showApp(); toast('Đăng nhập thành công. Chào mừng bạn!','success');
     setTimeout(()=>$('#f_name').focus(),200);
   } else {
     $('#loginErr').classList.remove('hidden');
-    const card=document.querySelector('#loginScreen .relative');card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+    const card = document.querySelector('#loginScreen .relative'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
     $('#loginPass').select();
   }
 }
-function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; acctUnlocked=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
+function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
 
 /* ===================== DATA & STATE ===================== */
 const SECTIONS = [
@@ -760,13 +735,122 @@ const ACCEPTED_EXT = ['xlsx','xls','csv','pdf','pptx','ppt'];
 const MAX_FILE_SIZE = 1.5 * 1024 * 1024;
 const MAX_FILES = 5;
 
+/* ===================== GUIDES (per department) ===================== */
+const GUIDES = {
+  kinhdoanh: {
+    key:'kinhdoanh', deptName:'Kinh doanh', icon:'📈', short:'Doanh số & khách hàng',
+    tagline:'Báo cáo doanh số, khách hàng, công nợ và tình hình thị trường.',
+    badgeBg:'bg-pine-50 border-pine-100', badgeText:'text-pine-600', checkText:'text-pine-500', iconBg:'bg-pine-100', headerBg:'bg-gradient-to-r from-pine-50 to-transparent',
+    checklist:{
+      completed:['Doanh thu đạt được so với chỉ tiêu (số tiền & %)','Số khách hàng mới ký hợp đồng / mở mã','Số khách hàng đã chăm sóc, tư vấn, báo giá','Hợp đồng, đơn hàng đã chốt (giá trị)','Công nợ đã thu hồi trong tháng','Chương trình khuyến mãi / marketing đã triển khai','Thông tin thị trường, đối thủ cạnh tranh ghi nhận'],
+      unfinished:['Doanh thu còn thiếu so với chỉ tiêu (số cụ thể)','Khách hàng tiềm năng chưa tiếp cận / chưa chốt','Hợp đồng đang đàm phán, chưa ký','Công nợ quá hạn chưa thu hồi được'],
+      causes:['Khách quan: biến động thị trường, đối thủ, giá cả, mùa vụ','Chủ quan: kỹ năng chốt đơn, chưa theo sát khách hàng, báo giá chậm'],
+      plan:['Mục tiêu doanh thu tháng tới (số cụ thể)','Số khách hàng mới dự kiến','Danh sách khách hàng trọng điểm cần chăm sóc','Chương trình / ưu đãi dự kiến triển khai'],
+      proposals:['Chính sách giá, chiết khấu, khuyến mãi','Hỗ trợ tài liệu bán hàng, catalogue, marketing','Ngân sách chăm sóc khách hàng, công tác phí']
+    },
+    tips:['Luôn kèm số liệu cụ thể: doanh thu, %, số khách','So sánh với chỉ tiêu và tháng trước để thấy xu hướng','Nêu rõ khách hàng trọng điểm cần theo dõi','Dùng gạch đầu dòng, mỗi ý một dòng ngắn gọn'],
+    example:'Doanh thu tháng đạt 1 tỷ 250 triệu, bằng 104% chỉ tiêu được giao. Ký mới 12 khách hàng, chăm sóc định kỳ 45 khách. Thu hồi công nợ đạt 92% tổng nợ đến hạn. Triển khai chương trình khuyến mãi hè, doanh số tăng 18% so với tháng trước.',
+    template:{
+      completed:'• Doanh thu tháng đạt: .../... chỉ tiêu (đạt ...%).\n• Số khách hàng mới ký hợp đồng: ... khách.\n• Số khách hàng đã chăm sóc, tư vấn: ... khách.\n• Hợp đồng / đơn hàng đã chốt: ... (tổng giá trị ...).\n• Công nợ đã thu hồi: .../...\n• Chương trình khuyến mãi đã triển khai: ...',
+      unfinished:'• Doanh thu còn thiếu: ... (lý do ...).\n• Khách hàng tiềm năng chưa tiếp cận: ... khách.\n• Hợp đồng đang đàm phán, chưa ký: ...',
+      causes:'• Khách quan: thị trường ..., đối thủ ..., giá cả ...\n• Chủ quan: kỹ năng chốt đơn ..., theo sát khách hàng chưa ...',
+      plan:'• Mục tiêu doanh thu tháng tới: ...\n• Số khách hàng mới dự kiến: ...\n• Khách hàng trọng điểm cần chăm sóc: ...\n• Chương trình / ưu đãi dự kiến: ...',
+      proposals:'• Đề xuất chính sách giá / chiết khấu: ...\n• Hỗ trợ tài liệu bán hàng / marketing: ...\n• Ngân sách chăm sóc khách hàng: ...'
+    }
+  },
+  ketoan: {
+    key:'ketoan', deptName:'Kế toán', icon:'🧾', short:'Chứng từ & thuế',
+    tagline:'Báo cáo chứng từ, hóa đơn, công nợ, thuế và sổ sách kế toán.',
+    badgeBg:'bg-amber-50 border-amber-100', badgeText:'text-amber-600', checkText:'text-amber-500', iconBg:'bg-amber-100', headerBg:'bg-gradient-to-r from-amber-50 to-transparent',
+    checklist:{
+      completed:['Số hóa đơn đầu ra đã xuất trong tháng','Số chứng từ đầu vào đã hạch toán','Đối chiếu ngân hàng, quỹ tiền mặt','Báo cáo công nợ phải thu / phải trả','Kê khai thuế GTGT, TNCN (đúng hạn / trễ)','Tính lương, BHXH, khấu hao định kỳ'],
+      unfinished:['Hóa đơn / chứng từ còn thiếu (từ bộ phận nào)','Đối chiếu công nợ chưa hoàn thành với ai','Hồ sơ thuế, hoàn thuế đang chờ xử lý'],
+      causes:['Khách quan: quy định thuế thay đổi, ngân hàng chậm đối chiếu','Chủ quan: chứng từ từ các bộ phận nộp chậm, chưa đủ'],
+      plan:['Hoàn thiện sổ sách, chứng từ tháng còn thiếu','Kế hoạch thu / chi, lịch thanh toán công nợ','Rà soát chi phí, tối ưu dòng tiền'],
+      proposals:['Phần mềm kế toán, hóa đơn điện tử','Quy định thời hạn nộp chứng từ cho các bộ phận','Đào tạo nghiệp vụ thuế, kế toán mới']
+    },
+    tips:['Ghi rõ số lượng hóa đơn, chứng từ cụ thể','Nêu rõ hạn chót kê khai thuế đã / chưa hoàn thành','Chỉ rõ bộ phận còn thiếu chứng từ để phối hợp','Đính kèm bảng công nợ, sao kê ngân hàng nếu có'],
+    example:'Đã xuất 156 hóa đơn đầu ra, hạch toán 210 chứng từ đầu vào. Hoàn thành đối chiếu ngân hàng và quỹ tiền mặt. Lập báo cáo công nợ phải thu 890 triệu, phải trả 420 triệu. Kê khai thuế GTGT, TNCN đúng hạn.',
+    template:{
+      completed:'• Số hóa đơn đầu ra đã xuất: ... hóa đơn.\n• Số chứng từ đầu vào đã hạch toán: ... chứng từ.\n• Đối chiếu ngân hàng, quỹ tiền mặt: hoàn thành / chưa ...\n• Báo cáo công nợ phải thu / phải trả: đã lập ...\n• Kê khai thuế (GTGT, TNCN): đúng hạn / chưa ...\n• Tính lương & BHXH tháng ...: hoàn thành.',
+      unfinished:'• Hóa đơn / chứng từ còn thiếu: ... (từ bộ phận ...).\n• Đối chiếu công nợ chưa xong với: ...\n• Hồ sơ thuế / hoàn thuế đang chờ: ...',
+      causes:'• Khách quan: quy định thuế thay đổi ..., ngân hàng chậm đối chiếu ...\n• Chủ quan: chứng từ từ các bộ phận nộp chậm, chưa đủ ...',
+      plan:'• Hoàn thiện sổ sách, chứng từ tháng ...\n• Lên kế hoạch thu / chi, lịch thanh toán công nợ ...\n• Rà soát chi phí, tối ưu ...',
+      proposals:'• Đề xuất phần mềm kế toán / hóa đơn điện tử ...\n• Quy định thời hạn nộp chứng từ cho các bộ phận ...'
+    }
+  },
+  kho: {
+    key:'kho', deptName:'Kho', icon:'📦', short:'Nhập – xuất – tồn',
+    tagline:'Báo cáo nhập – xuất – tồn, kiểm kê và bảo quản hàng hóa.',
+    badgeBg:'bg-orange-50 border-orange-100', badgeText:'text-orange-600', checkText:'text-orange-500', iconBg:'bg-orange-100', headerBg:'bg-gradient-to-r from-orange-50 to-transparent',
+    checklist:{
+      completed:['Số phiếu nhập, số phiếu xuất trong tháng','Tổng giá trị hàng tồn kho cuối kỳ','Kết quả kiểm kê: khớp / chênh lệch (chi tiết)','Sắp xếp, bảo quản hàng hóa theo khu vực','Kiểm tra tồn kho tối thiểu, cảnh báo hết hàng','Xử lý hàng hư hỏng, quá hạn, chậm luân chuyển'],
+      unfinished:['Chênh lệch kiểm kê chưa xử lý','Hàng chậm luân chuyển tồn lâu (mã hàng)','Khu vực kho quá tải, cần giải phóng'],
+      causes:['Khách quan: nhà cung cấp giao chậm, đơn hàng tăng đột biến','Chủ quan: ghi chép phiếu chưa kịp thời, sắp xếp chưa tối ưu'],
+      plan:['Kiểm kê định kỳ (ngày cụ thể)','Tối ưu không gian, sơ đồ kho','Duy trì tồn kho tối thiểu cho nhóm hàng chủ lực'],
+      proposals:['Thêm kệ, pallet, xe nâng, dụng cụ bảo quản','Phần mềm quản lý kho, máy quét mã vạch','Nhân sự hỗ trợ mùa cao điểm']
+    },
+    tips:['Số liệu nhập – xuất – tồn phải khớp với sổ sách','Ghi rõ chênh lệch kiểm kê và hướng xử lý','Đính kèm biên bản kiểm kê / file Excel tồn kho','Cảnh báo sớm hàng sắp hết, sắp quá hạn'],
+    example:'Thực hiện 78 phiếu nhập, 95 phiếu xuất. Tổng giá trị tồn kho cuối kỳ 3,2 tỷ. Kiểm kê định kỳ ngày 28: khớp 98,5%, chênh lệch 2 mã hàng trị giá 12 triệu đang làm rõ. Hàng hóa sắp xếp theo khu vực A-B-C.',
+    template:{
+      completed:'• Số phiếu nhập: ..., số phiếu xuất: ...\n• Tổng giá trị hàng tồn kho cuối kỳ: ...\n• Kết quả kiểm kê: khớp / chênh lệch ... (chi tiết ...).\n• Sắp xếp, bảo quản hàng hóa theo khu vực: ...\n• Kiểm tra tồn kho tối thiểu / cảnh báo hết hàng: ...\n• Xử lý hàng hư hỏng / quá hạn: ...',
+      unfinished:'• Chênh lệch kiểm kê chưa xử lý: ...\n• Hàng chậm luân chuyển tồn lâu: ... (mã hàng ...).\n• Khu vực kho quá tải: ...',
+      causes:'• Khách quan: nhà cung cấp giao chậm, đơn hàng tăng đột biến ...\n• Chủ quan: ghi chép phiếu chưa kịp thời, sắp xếp chưa tối ưu ...',
+      plan:'• Kiểm kê định kỳ ngày .../...\n• Tối ưu không gian, sơ đồ kho ...\n• Duy trì tồn kho tối thiểu cho nhóm hàng ...',
+      proposals:'• Đề xuất thêm kệ / pallet / xe nâng ...\n• Phần mềm quản lý kho / máy quét mã vạch ...'
+    }
+  },
+  giaonhan: {
+    key:'giaonhan', deptName:'Giao nhận', icon:'🚚', short:'Đơn hàng & COD',
+    tagline:'Báo cáo đơn hàng đã giao, tỷ lệ đúng hẹn, COD và phương tiện.',
+    badgeBg:'bg-sky-50 border-sky-100', badgeText:'text-sky-600', checkText:'text-sky-500', iconBg:'bg-sky-100', headerBg:'bg-gradient-to-r from-sky-50 to-transparent',
+    checklist:{
+      completed:['Tổng số đơn đã giao thành công','Tỷ lệ giao đúng hẹn (%)','Tiền COD đã thu và nộp về kế toán','Số đơn hoàn / trả (kèm lý do)','Tình trạng phương tiện, bảo dưỡng','Tuyến đường / khu vực phụ trách'],
+      unfinished:['Đơn giao trễ (số lượng, lý do)','Đơn hư hỏng, mất mát','COD chưa thu / chưa nộp'],
+      causes:['Khách quan: thời tiết, kẹt xe, khách vắng / không nghe máy','Chủ quan: sắp xếp tuyến chưa hợp lý, kiểm tra hàng chưa kỹ'],
+      plan:['Tối ưu tuyến đường, cam kết thời gian giao','Bảo dưỡng phương tiện định kỳ','Giảm tỷ lệ hoàn / trễ xuống dưới mức ...%'],
+      proposals:['Hỗ trợ xăng xe, bảo dưỡng phương tiện','App / phần mềm theo dõi giao nhận','Nhân sự hỗ trợ mùa cao điểm']
+    },
+    tips:['Ghi tỷ lệ đúng hẹn và số đơn cụ thể','Nêu rõ lý do từng đơn trễ / hư hỏng','Đối chiếu COD đã thu với kế toán trước khi báo cáo','Đính kèm bảng kê đơn hàng nếu có'],
+    example:'Giao thành công 412/420 đơn, tỷ lệ đúng hẹn 96%. Thu COD 285 triệu, đã nộp đủ về kế toán. 5 đơn hoàn do khách vắng, 3 đơn trễ do mưa bão. Xe tải 500kg đã bảo dưỡng định kỳ ngày 15.',
+    template:{
+      completed:'• Tổng đơn đã giao: ... đơn.\n• Tỷ lệ giao đúng hẹn: ...%.\n• Tiền COD đã thu & nộp: .../...\n• Số đơn hoàn / trả: ... (lý do ...).\n• Tình trạng phương tiện, bảo dưỡng: ...\n• Tuyến đường / khu vực phụ trách: ...',
+      unfinished:'• Đơn giao trễ: ... đơn (lý do ...).\n• Đơn hư hỏng / mất mát: ...\n• COD chưa thu / chưa nộp: ...',
+      causes:'• Khách quan: thời tiết, kẹt xe, khách vắng / không nghe máy ...\n• Chủ quan: sắp xếp tuyến chưa hợp lý, kiểm tra hàng chưa kỹ ...',
+      plan:'• Tối ưu tuyến đường, cam kết thời gian giao ...\n• Bảo dưỡng phương tiện định kỳ ...\n• Giảm tỷ lệ hoàn xuống dưới ...%',
+      proposals:'• Hỗ trợ xăng xe / bảo dưỡng ...\n• App / phần mềm theo dõi giao nhận ...'
+    }
+  },
+  sop: {
+    key:'sop', deptName:'SOP', icon:'📋', short:'Quy trình & GDP',
+    tagline:'Báo cáo xây dựng SOP, tuân thủ GDP, đào tạo và khắc phục.',
+    badgeBg:'bg-violet-50 border-violet-100', badgeText:'text-violet-600', checkText:'text-violet-500', iconBg:'bg-violet-100', headerBg:'bg-gradient-to-r from-violet-50 to-transparent',
+    checklist:{
+      completed:['Số SOP / quy trình đã ban hành, cập nhật (mã tài liệu)','Số cuộc kiểm tra tuân thủ GDP đã thực hiện','Đào tạo quy trình cho nhân sự (số người / lớp)','Số điểm không phù hợp (NC) ghi nhận','Số hành động khắc phục đã hoàn thành'],
+      unfinished:['SOP / quy trình chưa ban hành','Điểm không phù hợp chưa đóng','Lớp đào tạo chưa tổ chức'],
+      causes:['Khách quan: quy định mới ban hành, yêu cầu từ cơ quan quản lý','Chủ quan: các bộ phận phối hợp chậm, phê duyệt tài liệu kéo dài'],
+      plan:['Ban hành các SOP còn lại (trước ngày cụ thể)','Lịch đánh giá nội bộ GDP tháng tới','Đào tạo lại cho bộ phận liên quan'],
+      proposals:['Phần mềm quản lý tài liệu, quy trình','Thành lập / bổ sung đội đánh giá nội bộ','Kinh phí đào tạo, chứng nhận GDP']
+    },
+    tips:['Liệt kê mã SOP đã ban hành / cập nhật','Theo dõi điểm NC đến khi đóng hẳn','Ghi rõ số người được đào tạo, kèm danh sách','Đính kèm biên bản kiểm tra, hình ảnh minh chứng'],
+    example:'Ban hành 3 SOP mới (mã SOP-KHO-07, SOP-BH-11, SOP-KT-04), cập nhật 2 quy trình. Hoàn thành 2 cuộc kiểm tra tuân thủ GDP tại kho và vận chuyển. Đào tạo quy trình mới cho 25 nhân sự. Ghi nhận 4 điểm NC, đã đóng 3.',
+    template:{
+      completed:'• Số SOP / quy trình đã ban hành, cập nhật: ... (mã ...).\n• Số cuộc kiểm tra tuân thủ GDP đã thực hiện: ...\n• Đào tạo quy trình cho nhân sự: ... người / lớp ...\n• Số điểm không phù hợp (NC) ghi nhận: ...\n• Hành động khắc phục đã hoàn thành: .../...',
+      unfinished:'• SOP / quy trình chưa ban hành: ...\n• Điểm không phù hợp chưa đóng: ...\n• Lớp đào tạo chưa tổ chức: ...',
+      causes:'• Khách quan: quy định mới ban hành, yêu cầu từ cơ quan quản lý ...\n• Chủ quan: các bộ phận phối hợp chậm, phê duyệt tài liệu kéo dài ...',
+      plan:'• Ban hành các SOP còn lại trước ngày ...\n• Lịch đánh giá nội bộ GDP tháng ...\n• Đào tạo lại cho bộ phận ...',
+      proposals:'• Phần mềm quản lý tài liệu / quy trình ...\n• Thành lập / bổ sung đội đánh giá nội bộ ...'
+    }
+  }
+};
+let activeGuide = 'kinhdoanh';
+
 const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JxeXMAjFtlRIWys4NznQ4LXou26sblM59e4b_qV1Xvsg';
 let geminiApiKey = DEFAULT_GEMINI_KEY;
 let geminiModel = 'gemini-2.0-flash';
 
 const now = new Date();
 let draft = {
-  editingId: null,
   info: { name:'', position:'', dept:'', month: now.getMonth()+1, year: now.getFullYear() },
   sections: { completed:'', unfinished:'', causes:'', plan:'', proposals:'' },
   attachments: [],
@@ -786,11 +870,6 @@ let saveTimer = null;
 let currentViewId = null;
 let confirmCb = null;
 let aiResultsStore = {};
-let pendingFile = null;
-let acctUnlocked = false;
-
-const SUBMIT_HTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg> Nộp báo cáo';
-const UPDATE_HTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Cập nhật báo cáo';
 
 /* ===================== HELPERS ===================== */
 const $ = (s, r=document) => r.querySelector(s);
@@ -798,10 +877,10 @@ const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
 
 function loadDraft(){
-  try{ const d=JSON.parse(localStorage.getItem('vr_draft')); if(d){ draft.info=Object.assign(draft.info,d.info||{}); draft.sections=Object.assign(draft.sections,d.sections||{});} }catch(e){}
+  try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d){ draft.info=Object.assign(draft.info,d.info||{}); draft.sections=Object.assign(draft.sections,d.sections||{});} }catch(e){}
 }
 function saveDraft(){
-  draft.updatedAt=Date.now();
+  draft.updatedAt = Date.now();
   try{ localStorage.setItem('vr_draft', JSON.stringify({info:draft.info,sections:draft.sections,updatedAt:draft.updatedAt})); }catch(e){}
   const s=$('#saveStatus'); if(s) s.innerHTML='<span class="w-1.5 h-1.5 rounded-full bg-pine-400"></span>Đã lưu nháp';
 }
@@ -818,7 +897,7 @@ function formatBytes(b){ if(!b) return '0 B'; const u=['B','KB','MB','GB']; let 
 function fileExt(name){ const m=/\.([a-z0-9]+)$/i.exec(name||''); return (m?m[1]:'').toLowerCase(); }
 function fileKind(ext){
   if(['xlsx','xls','csv'].includes(ext)) return {label:'Excel',color:'bg-emerald-100 text-emerald-700',icon:'📊'};
-  if(ext==='pdf') return {label:'PDF',color:'bg-signal-50 text-signal-500',icon:'📕'};
+  if(ext==='pdf') return {label:'PDF',color:'bg-signal-50 text-signal-600',icon:'📕'};
   if(['pptx','ppt'].includes(ext)) return {label:'PowerPoint',color:'bg-orange-100 text-orange-700',icon:'📽️'};
   return {label:ext.toUpperCase()||'FILE',color:'bg-ink-100 text-ink-600',icon:'📄'};
 }
@@ -829,7 +908,7 @@ function toast(msg,type='success'){
   el.className='toast flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-soft '+(colors[type]||colors.info);
   el.innerHTML=`<span class="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-xs font-bold">${icons[type]||'ℹ'}</span><span>${esc(msg)}</span>`;
   $('#toasts').appendChild(el);
-  setTimeout(()=>{el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateY(10px);';setTimeout(()=>el.remove(),300);},3400);
+  setTimeout(()=>{el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateY(10px)';setTimeout(()=>el.remove(),300);},3400);
 }
 
 /* ===================== SMART TEXT PROCESSING ===================== */
@@ -972,7 +1051,10 @@ async function callGemini(prompt){
 function typewriter(el,text,speed=10){
   return new Promise(resolve=>{
     let i=0; el.value='';
-    const iv=setInterval(()=>{i+=speed;el.value=text.slice(0,i);el.scrollTop=el.scrollHeight;if(i>=text.length){clearInterval(iv);el.value=text;resolve();}},16);
+    const iv=setInterval(()=>{
+      i+=speed; el.value=text.slice(0,i); el.scrollTop=el.scrollHeight;
+      if(i>=text.length){clearInterval(iv);el.value=text;resolve();}
+    },16);
   });
 }
 function buildAIBlock(sec){
@@ -1012,7 +1094,7 @@ async function runAIRewrite(secIds){
     }catch(err){
       if(err.message==='no-key'){ closeAIModal(); return; }
       loading.classList.add('hidden'); output.classList.remove('hidden'); output.value=original;
-      status.textContent='Lỗi'; status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-signal-50 text-signal-500';
+      status.textContent='Lỗi'; status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-signal-50 text-signal-600';
       toast('AI lỗi: '+err.message,'error');
     }
   }
@@ -1020,7 +1102,8 @@ async function runAIRewrite(secIds){
 function applyAIResults(){
   let count=0;
   for(const id in aiResultsStore){
-    const block=$(`.ai-block[data-sec="${id}"]`); if(!block) continue;
+    const block=$(`.ai-block[data-sec="${id}"]`);
+    if(!block) continue;
     const val=block.querySelector('.ai-output').value;
     const ta=$(`textarea[data-sec="${id}"]`);
     ta.value=val; draft.sections[id]=val;
@@ -1037,6 +1120,93 @@ function aiAll(){
   const ids=SECTIONS.filter(s=>(draft.sections[s.id]||'').trim()).map(s=>s.id);
   if(!ids.length){ toast('Chưa có nội dung nào để AI viết lại.','info'); return; }
   runAIRewrite(ids);
+}
+
+/* ===================== GUIDE FUNCTIONS ===================== */
+function renderGuideDepts(){
+  const wrap=$('#guideDeptList'); wrap.innerHTML='';
+  Object.values(GUIDES).forEach(g=>{
+    const isActive=activeGuide===g.key;
+    const btn=document.createElement('button');
+    btn.className='guide-dept flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition shrink-0 w-full lg:w-auto '+(isActive?'bg-ink-900 text-white border-ink-900 shadow-soft':'bg-white text-ink-700 border-ink-100 hover:border-pine-300 hover:bg-pine-50/40');
+    btn.innerHTML=`<span class="w-9 h-9 rounded-lg grid place-items-center text-lg shrink-0 ${isActive?'bg-gold-400/20':'bg-ink-50'}">${g.icon}</span>
+      <span class="min-w-0"><span class="block font-bold text-sm truncate">${g.deptName}</span><span class="block text-[10px] truncate ${isActive?'text-white/60':'text-ink-400'}">${g.short}</span></span>`;
+    btn.addEventListener('click',()=>{activeGuide=g.key;renderGuideDepts();renderGuideContent();});
+    wrap.appendChild(btn);
+  });
+}
+function renderGuideContent(){
+  const g=GUIDES[activeGuide];
+  const wrap=$('#guideContent');
+  wrap.innerHTML=`
+    <div class="guide-anim bg-white rounded-2xl shadow-card border border-ink-100 overflow-hidden">
+      <div class="p-6 border-b border-ink-100 ${g.headerBg}">
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="w-14 h-14 rounded-2xl ${g.iconBg} grid place-items-center text-3xl shrink-0">${g.icon}</span>
+          <div class="flex-1 min-w-[220px]">
+            <h2 class="text-xl font-extrabold text-ink-900">Bộ phận ${g.deptName}</h2>
+            <p class="text-sm text-ink-500 mt-0.5">${g.tagline}</p>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="copyGuideTemplate('${g.key}')" class="btn-lift inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-ink-100 bg-white text-ink-700 text-xs font-semibold hover:bg-ink-50">📋 Sao chép mẫu</button>
+            <button onclick="applyGuideTemplate('${g.key}')" class="btn-lift inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white text-xs font-semibold shadow">✍️ Áp dụng vào biểu mẫu</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid lg:grid-cols-3 gap-6 p-6">
+        <div class="lg:col-span-2">
+          <h3 class="font-bold text-ink-900 mb-5 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-md bg-pine-50 text-pine-600 grid place-items-center"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+            Nội dung cần báo cáo theo 5 mục chuẩn
+          </h3>
+          ${SECTIONS.map(s=>`
+            <div class="guide-step pl-12 pb-7 relative">
+              <span class="absolute left-0 top-0 w-8 h-8 rounded-lg ${g.badgeBg} ${g.badgeText} border grid place-items-center font-disp font-bold text-sm">${s.num}</span>
+              <div class="font-bold text-ink-800 text-sm leading-snug">${s.title}</div>
+              <ul class="mt-2 space-y-1.5">
+                ${g.checklist[s.id].map(p=>`<li class="flex items-start gap-2 text-[13px] text-ink-600 leading-relaxed"><svg class="w-4 h-4 mt-0.5 ${g.checkText} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>${p}</span></li>`).join('')}
+              </ul>
+            </div>`).join('')}
+        </div>
+        <div class="space-y-4">
+          <div class="rounded-xl border border-gold-300 bg-gold-50/60 p-4">
+            <div class="font-bold text-ink-800 text-sm flex items-center gap-2">💡 Mẹo trình bày</div>
+            <ul class="mt-2 space-y-1.5 text-xs text-ink-600 list-disc list-inside leading-relaxed">
+              ${g.tips.map(t=>`<li>${t}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="rounded-xl border border-pine-200 bg-pine-50/50 p-4">
+            <div class="font-bold text-ink-800 text-sm flex items-center gap-2">📝 Ví dụ mục I</div>
+            <p class="mt-2 text-xs text-ink-600 leading-relaxed">${g.example}</p>
+          </div>
+          <div class="rounded-xl border border-ink-100 bg-ink-50/60 p-4">
+            <div class="font-bold text-ink-800 text-sm flex items-center gap-2">🎙️ Gợi ý cách đọc</div>
+            <p class="mt-2 text-xs text-ink-600 leading-relaxed">Bấm <b>Áp dụng vào biểu mẫu</b>, sau đó đọc thay thế các chỗ <b class="font-disp">...</b> bằng số liệu thực tế của bạn. AI sẽ tự viết lại chuyên nghiệp.</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+function applyGuideTemplate(key){
+  const g=GUIDES[key];
+  const hasContent=SECTIONS.some(s=>(draft.sections[s.id]||'').trim());
+  const doApply=()=>{
+    draft.info.dept=g.deptName;
+    SECTIONS.forEach(s=>{ if(g.template[s.id]) draft.sections[s.id]=g.template[s.id]; });
+    saveDraft(); loadDraftToForm();
+    switchTab('create');
+    toast('Đã áp dụng khung báo cáo '+g.deptName+'. Đọc hoặc điền số liệu của bạn.','success');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  if(hasContent) showConfirm('Áp dụng khung mẫu?','Nội dung hiện tại trong biểu mẫu sẽ được thay bằng khung mẫu của bộ phận '+g.deptName+'.','Áp dụng',doApply);
+  else doApply();
+}
+function copyGuideTemplate(key){
+  const g=GUIDES[key];
+  let txt=`KHUNG BÁO CÁO CUỐI THÁNG — BỘ PHẬN ${g.deptName.toUpperCase()}\n${'='.repeat(42)}\n\n`;
+  SECTIONS.forEach(s=>{ txt+=`${s.num}. ${s.title}\n${g.template[s.id]}\n\n`; });
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast('Đã sao chép khung mẫu '+g.deptName+'.','success')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
 }
 
 /* ===================== BUILD SECTION CARDS ===================== */
@@ -1115,15 +1285,14 @@ function updateProgress(){
 function renderAttachments(){
   const ul=$('#fileList');ul.innerHTML='';
   if(!draft.attachments.length){ul.innerHTML='<li class="text-xs text-ink-400 italic">Chưa có tệp đính kèm.</li>';return;}
-  const isAcct=(draft.info.dept==='Kế toán');
   draft.attachments.forEach((f,idx)=>{
     const k=fileKind(fileExt(f.name));
     const li=document.createElement('li');
     li.className='flex items-center gap-3 p-3 rounded-xl border border-ink-100 bg-ink-50/50';
     li.innerHTML=`
-      <span class="w-10 h-10 rounded-lg ${k.color} grid place-items-center text-lg shrink-0">${isAcct?'🔒':k.icon}</span>
+      <span class="w-10 h-10 rounded-lg ${k.color} grid place-items-center text-lg shrink-0">${k.icon}</span>
       <div class="flex-1 min-w-0">
-        <div class="text-sm font-semibold text-ink-800 truncate">${esc(f.name)} ${isAcct?'<span class="text-[10px] px-1.5 py-0.5 rounded bg-gold-100 text-gold-600 font-bold align-middle">Bảo mật</span>':''}</div>
+        <div class="text-sm font-semibold text-ink-800 truncate">${esc(f.name)}</div>
         <div class="text-[11px] text-ink-500 flex items-center gap-2">
           <span class="px-1.5 py-0.5 rounded bg-white border border-ink-100 font-semibold">${k.label}</span>
           <span class="font-disp">${formatBytes(f.size)}</span>
@@ -1160,33 +1329,6 @@ function bindAttachments(){
   renderAttachments();
 }
 
-/* ===================== KẾ TOÁN FILE PROTECTION ===================== */
-function doDownload(a){
-  const link=document.createElement('a');link.href=a.dataUrl;link.download=a.name;
-  document.body.appendChild(link);link.click();link.remove();
-}
-function requestAcctFile(a){
-  if(acctUnlocked){ doDownload(a); toast('Đã tải tệp được bảo vệ.','success'); return; }
-  pendingFile=a;
-  $('#filePassName').textContent=a.name;
-  $('#filePassInput').value='';
-  $('#filePassErr').classList.add('hidden');
-  $('#filePassModal').classList.remove('hidden');
-  setTimeout(()=>$('#filePassInput').focus(),60);
-}
-function tryAcctUnlock(){
-  if($('#filePassInput').value===ADMIN_PASSWORD){
-    if($('#filePassRemember').checked) acctUnlocked=true;
-    $('#filePassModal').classList.add('hidden');
-    if(pendingFile){ doDownload(pendingFile); toast('Đã mở khóa & tải tệp.','success'); pendingFile=null; }
-  } else {
-    $('#filePassErr').classList.remove('hidden');
-    const c=$('#filePassCard');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');
-    $('#filePassInput').select();
-  }
-}
-function closeFilePass(){ $('#filePassModal').classList.add('hidden'); pendingFile=null; }
-
 /* ===================== FORM <-> DRAFT ===================== */
 function populateInfoSelects(){
   $('#f_month').innerHTML=MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
@@ -1205,7 +1347,7 @@ function loadDraftToForm(){
 function bindInfoInputs(){
   const map={f_name:'name',f_position:'position',f_dept:'dept'};
   Object.keys(map).forEach(id=>$('#'+id).addEventListener('input',e=>{draft.info[map[id]]=e.target.value;scheduleSave();if(id==='f_name')updateAvatar();}));
-  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();renderAttachments();});
+  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();});
   $('#f_month').addEventListener('change',e=>{draft.info.month=+e.target.value;updateHeader();scheduleSave();});
   $('#f_year').addEventListener('change',e=>{draft.info.year=+e.target.value;updateHeader();scheduleSave();});
 }
@@ -1302,38 +1444,6 @@ function startTimer(){recStartTs=Date.now();timerId=setInterval(()=>{const s=Mat
 function stopTimer(){clearInterval(timerId);timerId=null;}
 function buildWaveform(){const w=$('#wave');w.innerHTML='';for(let i=0;i<28;i++){const s=document.createElement('span');s.style.animationDelay=(Math.random()*0.8)+'s';s.style.animationDuration=(0.7+Math.random()*0.6)+'s';w.appendChild(s);}}
 
-/* ===================== EDIT MODE ===================== */
-function showEditBanner(r){
-  $('#editName').textContent=r.name||'';
-  $('#editPeriod').textContent=`${MONTHS[(r.month||1)-1]}/${r.year||''}`;
-  $('#editBanner').classList.remove('hidden');
-  $('#submitBtn').innerHTML=UPDATE_HTML;
-}
-function hideEditBanner(){
-  $('#editBanner').classList.add('hidden');
-  $('#submitBtn').innerHTML=SUBMIT_HTML;
-}
-function editReport(id){
-  const r=reports.find(x=>x.id===id);if(!r)return;
-  if(isRecording)stopRec();
-  draft.editingId=id;
-  draft.info={name:r.name||'',position:r.position||'',dept:r.dept||'',month:r.month||now.getMonth()+1,year:r.year||now.getFullYear()};
-  draft.sections={completed:'',unfinished:'',causes:'',plan:'',proposals:'',...(r.sections||{})};
-  draft.attachments=(r.attachments||[]).map(a=>({id:uid(),name:a.name,size:a.size,type:a.type||'',dataUrl:a.dataUrl}));
-  saveDraft();loadDraftToForm();
-  showEditBanner(r);
-  switchTab('create');
-  window.scrollTo({top:0,behavior:'smooth'});
-  toast('Đã tải báo cáo vào biểu mẫu để chỉnh sửa.','info');
-  setTimeout(()=>$('#f_name').focus(),200);
-}
-function cancelEdit(){
-  draft.editingId=null;
-  resetDraftForNextPerson(true);
-  hideEditBanner();
-  toast('Đã hủy chỉnh sửa.','info');
-}
-
 /* ===================== COLLECT / VALIDATE / SUBMIT ===================== */
 function collectReport(){
   return {
@@ -1352,30 +1462,18 @@ function validate(){
 }
 function submitReport(){
   if(!validate())return;
-  const btn=$('#submitBtn'),current=btn.innerHTML;
+  const btn=$('#submitBtn'),original=btn.innerHTML;
   btn.disabled=true;btn.innerHTML='<svg class="w-4 h-4 spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Đang gửi…';
   const payload=collectReport();
-  const wasEdit=!!draft.editingId;
-  let op;
-  if(wasEdit){
-    const orig=reports.find(r=>r.id===draft.editingId);
-    if(orig&&orig.createdAt) payload.createdAt=orig.createdAt;
-    payload.updatedAt=firebase.database.ServerValue.TIMESTAMP;
-    op=REPORTS_REF.child(draft.editingId).set(payload);
-  } else {
-    op=REPORTS_REF.push(payload);
-  }
-  op.then(()=>{
-    btn.disabled=false;
+  REPORTS_REF.push(payload).then(()=>{
+    btn.disabled=false;btn.innerHTML=original;
     if(isRecording)stopRec();
-    draft.editingId=null;hideEditBanner();
-    toast(wasEdit?`Đã cập nhật báo cáo của ${payload.name}! ✏️`:`Đã nộp báo cáo của ${payload.name} thành công! 🎉`,'success');
+    toast(`Đã nộp báo cáo của ${payload.name} thành công! 🎉`,'success');
     resetDraftForNextPerson(true);switchTab('reports');
     setTimeout(()=>toast('Sẵn sàng thêm báo cáo cho người tiếp theo.','info'),600);
-  }).catch(err=>{btn.disabled=false;btn.innerHTML=current;console.error(err);toast('Không gửi được báo cáo. Vui lòng kiểm tra kết nối.','error');});
+  }).catch(err=>{btn.disabled=false;btn.innerHTML=original;console.error(err);toast('Không gửi được báo cáo. Vui lòng kiểm tra kết nối.','error');});
 }
 function resetDraftForNextPerson(keepMonth){
-  draft.editingId=null;hideEditBanner();
   draft.info={name:'',position:'',dept:'',month:keepMonth?(draft.info.month||now.getMonth()+1):(now.getMonth()+1),year:keepMonth?(draft.info.year||now.getFullYear()):now.getFullYear()};
   draft.sections={completed:'',unfinished:'',causes:'',plan:'',proposals:''};
   draft.attachments=[];saveDraft();loadDraftToForm();
@@ -1464,7 +1562,6 @@ function renderReports(){
     tr.className='hover:bg-pine-50/40 transition';
     const dateStr=r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—';
     const attCount=(r.attachments||[]).length;
-    const isAcct=(r.dept==='Kế toán');
     tr.innerHTML=`
       <td class="px-4 py-3 text-ink-400 font-semibold font-disp">${i+1}</td>
       <td class="px-4 py-3">
@@ -1472,28 +1569,24 @@ function renderReports(){
           <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pine-500 to-pine-700 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
           <div class="min-w-0">
             <div class="font-bold text-ink-900 truncate">${esc(r.name||'—')}</div>
-            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · ${isAcct?'🔒':'📎'} ${attCount} tệp`:''}</div>
+            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}</div>
           </div>
         </div>
       </td>
-      <td class="px-4 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md ${isAcct?'bg-gold-50 text-gold-600':'bg-pine-50 text-pine-700'} text-[11px] font-semibold">${isAcct?'🔒 ':''}${esc(r.dept||'—')}</span></td>
-      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-ink-50 text-ink-600 text-[11px] font-semibold font-disp">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-gold-50 text-gold-600 text-[11px] font-semibold">${esc(r.dept||'—')}</span></td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-pine-50 text-pine-700 text-[11px] font-semibold font-disp">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
       <td class="px-4 py-3 text-ink-600 text-xs whitespace-nowrap font-disp">${dateStr}</td>
       <td class="px-4 py-3">
         <div class="flex items-center justify-end gap-1.5">
           <button class="act-view inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-pine-50 text-pine-700 text-xs font-semibold hover:bg-pine-100" title="Xem lại">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Xem
           </button>
-          <button class="act-edit inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-50 text-gold-600 text-xs font-semibold hover:bg-gold-100" title="Sửa báo cáo">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Sửa
-          </button>
-          <button class="act-del inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-signal-50 text-signal-500 text-xs font-semibold hover:bg-signal-100" title="Xóa">
+          <button class="act-del inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-signal-50 text-signal-600 text-xs font-semibold hover:bg-signal-100" title="Xóa">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Xóa
           </button>
         </div>
       </td>`;
     tr.querySelector('.act-view').addEventListener('click',()=>openView(r.id));
-    tr.querySelector('.act-edit').addEventListener('click',()=>editReport(r.id));
     tr.querySelector('.act-del').addEventListener('click',()=>deleteReport(r.id));
     tbody.appendChild(tr);
   });
@@ -1510,7 +1603,6 @@ function openView(id){
   const r=reports.find(x=>x.id===id);if(!r)return;
   currentViewId=id;
   const body=$('#viewBody');const atts=r.attachments||[];
-  const isAcct=(r.dept==='Kế toán');
   body.innerHTML=`
     <div class="text-center mb-4">
       <div class="text-xs font-semibold text-pine-600 uppercase tracking-wide font-disp">Báo cáo công việc tháng</div>
@@ -1532,26 +1624,26 @@ function openView(id){
     ${atts.length?`
       <div class="mb-2">
         <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
-          <span class="w-6 h-6 rounded-md ${isAcct?'bg-gold-50 text-gold-600':'bg-pine-50 text-pine-600'} grid place-items-center text-[11px]">${isAcct?'🔒':'📎'}</span>Tệp đính kèm (${atts.length})
+          <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})
         </div>
-        ${isAcct?'<p class="text-[11px] text-gold-600 font-semibold mb-2">🔒 Tệp của bộ phận Kế toán được bảo vệ — cần mật khẩu để tải xuống.</p>':''}
         <ul class="space-y-2">
           ${atts.map((a,i)=>{
             const k=fileKind(fileExt(a.name));
-            return `<li class="flex items-center gap-3 p-2.5 rounded-xl border ${isAcct?'border-gold-200 bg-gold-50/50':'border-ink-100 bg-ink-50/50'}">
-              <span class="w-9 h-9 rounded-lg ${isAcct?'bg-gold-100 text-gold-600':k.color} grid place-items-center text-base shrink-0">${isAcct?'🔒':k.icon}</span>
+            return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-ink-100 bg-ink-50/50">
+              <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
               <div class="flex-1 min-w-0">
                 <div class="text-sm font-semibold text-ink-800 truncate">${esc(a.name)}</div>
                 <div class="text-[11px] text-ink-500">${k.label} · ${formatBytes(a.size)}</div>
               </div>
-              <button class="att-dl px-3 py-1.5 rounded-lg ${isAcct?'bg-gold-500 hover:bg-gold-600 text-ink-900':'bg-pine-600 hover:bg-pine-700 text-white'} text-xs font-semibold shrink-0" data-idx="${i}">${isAcct?'🔒 Tải xuống':'Tải xuống'}</button>
+              <button class="att-dl px-3 py-1.5 rounded-lg bg-pine-600 text-white text-xs font-semibold hover:bg-pine-700 shrink-0" data-idx="${i}">Tải xuống</button>
             </li>`;
           }).join('')}
         </ul>
       </div>`:''}`;
   $$('.att-dl',body).forEach(b=>b.addEventListener('click',()=>{
     const a=atts[+b.dataset.idx];if(!a||!a.dataUrl)return;
-    if(isAcct) requestAcctFile(a); else { doDownload(a); toast('Đã tải tệp.','success'); }
+    const link=document.createElement('a');link.href=a.dataUrl;link.download=a.name;
+    document.body.appendChild(link);link.click();link.remove();
   }));
   $('#viewModal').classList.remove('hidden');
 }
@@ -1657,8 +1749,9 @@ function renderStats(){
 /* ===================== TABS ===================== */
 function switchTab(name){
   $$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
-  ['create','reports','stats'].forEach(t=>$('#tab-'+t).classList.toggle('hidden',t!==name));
+  ['create','guide','reports','stats'].forEach(t=>$('#tab-'+t).classList.toggle('hidden',t!==name));
   const panel=$('#tab-'+name);panel.classList.remove('tab-panel');void panel.offsetWidth;panel.classList.add('tab-panel');
+  if(name==='guide'){renderGuideDepts();renderGuideContent();}
   if(name==='reports')renderReports();
   if(name==='stats')renderStats();
 }
@@ -1709,8 +1802,6 @@ function init(){
   bindReportsListener();
   loadAISettings();
 
-  $('#submitBtn').innerHTML=SUBMIT_HTML;
-
   $('#targetSelect').innerHTML=SECTIONS.map(s=>`<option value="${s.id}">${s.num}. ${s.title}</option>`).join('');
   $('#targetSelect').value=targetSection;
   $('#targetSelect').addEventListener('change',e=>selectTarget(e.target.value));
@@ -1728,7 +1819,6 @@ function init(){
 
   $('#submitBtn').addEventListener('click',submitReport);
   $('#clearBtn').addEventListener('click',clearForm);
-  $('#cancelEditBtn').addEventListener('click',cancelEdit);
   $('#nextPersonBtn').addEventListener('click',addNextPerson);
   $('#nextPersonBtn2').addEventListener('click',addNextPerson);
   $('#addNextFromList').addEventListener('click',addNextPerson);
@@ -1744,17 +1834,11 @@ function init(){
 
   $$('[data-close-view]').forEach(b=>b.addEventListener('click',closeView));
   $('#viewModal').addEventListener('click',e=>{if(e.target.id==='viewModal')closeView();});
-  $('#viewEditBtn').addEventListener('click',()=>{const id=currentViewId;closeView();if(id)editReport(id);});
   $$('[data-view-action]').forEach(b=>b.addEventListener('click',()=>{const r=reports.find(x=>x.id===currentViewId);if(r)doExport(b.dataset.viewAction,r);}));
 
   $$('[data-close-ai]').forEach(b=>b.addEventListener('click',closeAIModal));
   $('#aiModal').addEventListener('click',e=>{if(e.target.id==='aiModal')closeAIModal();});
   $('#aiApply').addEventListener('click',applyAIResults);
-
-  $('#filePassCancel').addEventListener('click',closeFilePass);
-  $('#filePassOk').addEventListener('click',tryAcctUnlock);
-  $('#filePassInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryAcctUnlock();});
-  $('#filePassModal').addEventListener('click',e=>{if(e.target.id==='filePassModal')closeFilePass();});
 
   $('#confirmCancel').addEventListener('click',closeConfirm);
   $('#confirmOk').addEventListener('click',()=>{const cb=confirmCb;closeConfirm();if(cb)cb();});
@@ -1783,8 +1867,7 @@ function init(){
       e.preventDefault();if(speechSupported)toggleMic();
     }
     if(e.key==='Escape'){
-      if(!$('#filePassModal').classList.contains('hidden'))closeFilePass();
-      else if(!$('#viewModal').classList.contains('hidden'))closeView();
+      if(!$('#viewModal').classList.contains('hidden'))closeView();
       else if(!$('#aiModal').classList.contains('hidden'))closeAIModal();
       else if(!$('#settingsModal').classList.contains('hidden'))closeSettings();
       else if(!$('#confirmModal').classList.contains('hidden'))closeConfirm();
