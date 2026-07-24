@@ -50,6 +50,7 @@
   .tab-panel{animation:fadeUp .35s ease both;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   .guide-anim{animation:fadeUp .4s ease both;}
+  .att-pop{animation:fadeUp .35s ease both;}
 
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
   .reveal.revealed{opacity:1;transform:none;}
@@ -92,7 +93,6 @@
 
   .ai-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#F0C878,#E5A63E);color:#5b3d05;font-weight:800;box-shadow:0 4px 12px -4px rgba(229,166,62,.6);}
 
-  /* guide stepper line */
   .guide-step{position:relative;}
   .guide-step:not(:last-child)::before{content:'';position:absolute;left:15px;top:40px;bottom:-2px;width:2px;background:linear-gradient(180deg,#D5E8E0,rgba(213,232,224,.15));}
 
@@ -104,6 +104,8 @@
   .shake{animation:shake .4s ease}
   @keyframes spin{to{transform:rotate(360deg)}}
   .spin{animation:spin 1s linear infinite}
+  @keyframes lockWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+  .lock-wiggle{animation:lockWiggle .5s ease}
 
   textarea{resize:vertical;}
   textarea::-webkit-scrollbar{width:8px}
@@ -148,7 +150,7 @@
       <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1ed1d79e5-7c59-4c1e-abc2-c9617cfd1d1c.png" alt="Đọc báo cáo bằng giọng nói" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/25 to-transparent"></div>
       <div class="absolute bottom-0 p-7 text-white">
-        <div class="font-disp text-[11px] tracking-[0.28em] text-gold-400 uppercase">IDECO · VoiceReport</div>
+        <div class="font-disp text-[11px] tracking-[0.28em] text-gold-400 uppercase">IDECO- VOICE developed by MTRIET</div>
         <div class="text-[26px] font-extrabold mt-2 leading-snug">Đọc báo cáo bằng giọng nói.<br/><span class="text-gold-300">AI</span> viết lại chuyên nghiệp.</div>
         <div class="mt-3 flex items-center gap-2 text-[12px] text-white/70">
           <span class="w-1.5 h-1.5 rounded-full bg-pine-400 animate-pulse"></span> Đồng bộ Firebase thời gian thực
@@ -193,8 +195,8 @@
       <svg class="w-5 h-5 text-gold-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </div>
     <div class="leading-tight">
-      <div class="font-extrabold text-lg tracking-tight">IDECO <span class="text-gold-400 font-disp">BÁO CÁO THÁNG </span></div>
-      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Hãy luôn từ hào chúng ta tiên phong công nghệ- hiệu quả đặt Mục tiêu DS</div>
+      <div class="font-extrabold text-lg tracking-tight">IDECO REPORT <span class="text-gold-400 font-disp">PROFESSIONALLY</span></div>
+      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Báo cáo công việc cuối tháng - Mọi thành viên áp dụng</div>
     </div>
     <div class="ml-auto flex items-center gap-2">
       <span id="syncStatus" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white/60 text-xs font-semibold">
@@ -303,6 +305,7 @@
                 <option>Giao nhận</option>
                 <option>SOP</option>
               </select>
+              <span id="deptLockNote" class="hidden mt-1.5 text-[11px] text-amber-700 flex items-center gap-1">🔒 Bộ phận Kế toán: tệp đính kèm sẽ được bảo vệ bằng mật khẩu khi xem.</span>
             </label>
             <div class="grid grid-cols-2 gap-3">
               <label class="block">
@@ -419,7 +422,7 @@
             <div class="font-semibold text-ink-800 text-sm flex items-center gap-2">💡 Mẹo đọc hiệu quả</div>
             <ul class="mt-2 space-y-1.5 text-xs text-ink-500 list-disc list-inside">
               <li>Nói rõ ràng, tốc độ vừa phải, ngắt nghỉ theo câu.</li>
-              <li>Hệ thống tự bỏ từ thừa (à, ừ, ùm, dạ, vâng…) và viết hoa đầu câu.</li>
+              <li>Hệ thống phân tích AI thông minh  và viết hoa đầu câu.</li>
               <li>Số liệu đọc tự nhiên: "hai mươi phần trăm" → <b>20%</b>.</li>
               <li>Xem tab <b class="text-pine-600">Hướng dẫn</b> để biết nội dung cần báo cáo theo bộ phận.</li>
               <li>Bấm <b class="text-gold-600">✨ AI</b> để viết lại chuyên nghiệp, đúng chính tả, có cấu trúc.</li>
@@ -432,7 +435,6 @@
 
   <!-- ============ GUIDE TAB ============ -->
   <section id="tab-guide" class="tab-panel hidden">
-    <!-- Handbook header -->
     <div class="reveal relative overflow-hidden rounded-2xl bg-ink-900 text-white p-6 sm:p-7 mb-6 shadow-soft">
       <svg class="absolute -right-6 -bottom-8 w-64 h-64 opacity-[0.08] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="#ECB85C" stroke-width="1"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h6M9 11h6"/></svg>
       <div class="relative flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -693,6 +695,7 @@ const ADMIN_PASSWORD = 'minhtriet1973';
 const DEFAULT_APP_PASS = 'ideco@2026';
 function getAppPass(){ return localStorage.getItem('vr_app_pass') || DEFAULT_APP_PASS; }
 let sessionAuthed = false;
+let ketoanUnlocked = false; // mở khóa tệp đính kèm Kế toán trong phiên làm việc
 function isAuthed(){ return sessionAuthed || localStorage.getItem('vr_auth')==='1'; }
 function showLogin(){ $('#appRoot').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); setTimeout(()=>$('#loginPass').focus(),60); }
 function showApp(){ $('#loginScreen').classList.add('hidden'); $('#appRoot').classList.remove('hidden'); }
@@ -709,7 +712,7 @@ function attemptLogin(){
     $('#loginPass').select();
   }
 }
-function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
+function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; ketoanUnlocked=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
 
 /* ===================== DATA & STATE ===================== */
 const SECTIONS = [
@@ -760,7 +763,7 @@ const GUIDES = {
   },
   ketoan: {
     key:'ketoan', deptName:'Kế toán', icon:'🧾', short:'Chứng từ & thuế',
-    tagline:'Báo cáo chứng từ, hóa đơn, công nợ, thuế và sổ sách kế toán.',
+    tagline:'Báo cáo chứng từ, hóa đơn, công nợ, thuế và sổ sách kế toán. Tệp đính kèm được bảo vệ bằng mật khẩu.',
     badgeBg:'bg-amber-50 border-amber-100', badgeText:'text-amber-600', checkText:'text-amber-500', iconBg:'bg-amber-100', headerBg:'bg-gradient-to-r from-amber-50 to-transparent',
     checklist:{
       completed:['Số hóa đơn đầu ra đã xuất trong tháng','Số chứng từ đầu vào đã hạch toán','Đối chiếu ngân hàng, quỹ tiền mặt','Báo cáo công nợ phải thu / phải trả','Kê khai thuế GTGT, TNCN (đúng hạn / trễ)','Tính lương, BHXH, khấu hao định kỳ'],
@@ -769,7 +772,7 @@ const GUIDES = {
       plan:['Hoàn thiện sổ sách, chứng từ tháng còn thiếu','Kế hoạch thu / chi, lịch thanh toán công nợ','Rà soát chi phí, tối ưu dòng tiền'],
       proposals:['Phần mềm kế toán, hóa đơn điện tử','Quy định thời hạn nộp chứng từ cho các bộ phận','Đào tạo nghiệp vụ thuế, kế toán mới']
     },
-    tips:['Ghi rõ số lượng hóa đơn, chứng từ cụ thể','Nêu rõ hạn chót kê khai thuế đã / chưa hoàn thành','Chỉ rõ bộ phận còn thiếu chứng từ để phối hợp','Đính kèm bảng công nợ, sao kê ngân hàng nếu có'],
+    tips:['Ghi rõ số lượng hóa đơn, chứng từ cụ thể','Nêu rõ hạn chót kê khai thuế đã / chưa hoàn thành','Chỉ rõ bộ phận còn thiếu chứng từ để phối hợp','Đính kèm bảng công nợ, sao kê (tệp sẽ được khóa bảo mật)'],
     example:'Đã xuất 156 hóa đơn đầu ra, hạch toán 210 chứng từ đầu vào. Hoàn thành đối chiếu ngân hàng và quỹ tiền mặt. Lập báo cáo công nợ phải thu 890 triệu, phải trả 420 triệu. Kê khai thuế GTGT, TNCN đúng hạn.',
     template:{
       completed:'• Số hóa đơn đầu ra đã xuất: ... hóa đơn.\n• Số chứng từ đầu vào đã hạch toán: ... chứng từ.\n• Đối chiếu ngân hàng, quỹ tiền mặt: hoàn thành / chưa ...\n• Báo cáo công nợ phải thu / phải trả: đã lập ...\n• Kê khai thuế (GTGT, TNCN): đúng hạn / chưa ...\n• Tính lương & BHXH tháng ...: hoàn thành.',
@@ -875,6 +878,9 @@ let aiResultsStore = {};
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+function isKetoanDept(r){ return r && (r.dept||'').trim().toLowerCase()==='kế toán'; }
+function isLocked(r){ return r && !r.__draft && isKetoanDept(r) && !ketoanUnlocked; }
 
 function loadDraft(){
   try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d){ draft.info=Object.assign(draft.info,d.info||{}); draft.sections=Object.assign(draft.sections,d.sections||{});} }catch(e){}
@@ -1138,6 +1144,7 @@ function renderGuideDepts(){
 function renderGuideContent(){
   const g=GUIDES[activeGuide];
   const wrap=$('#guideContent');
+  const lockNote = g.key==='ketoan' ? `<div class="mt-3 flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50/70 px-3 py-2.5 text-[11px] text-amber-800"><span class="text-sm leading-none">🔒</span><span><b>Lưu ý bảo mật:</b> Tệp đính kèm trong báo cáo Kế toán sẽ được khóa. Người xem phải nhập mật khẩu mới có thể xem / tải xuống.</span></div>` : '';
   wrap.innerHTML=`
     <div class="guide-anim bg-white rounded-2xl shadow-card border border-ink-100 overflow-hidden">
       <div class="p-6 border-b border-ink-100 ${g.headerBg}">
@@ -1152,6 +1159,7 @@ function renderGuideContent(){
             <button onclick="applyGuideTemplate('${g.key}')" class="btn-lift inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white text-xs font-semibold shadow">✍️ Áp dụng vào biểu mẫu</button>
           </div>
         </div>
+        ${lockNote}
       </div>
       <div class="grid lg:grid-cols-3 gap-6 p-6">
         <div class="lg:col-span-2">
@@ -1342,14 +1350,18 @@ function loadDraftToForm(){
   $('#f_month').value=draft.info.month||now.getMonth()+1;
   $('#f_year').value=draft.info.year||now.getFullYear();
   SECTIONS.forEach(s=>{$(`textarea[data-sec="${s.id}"]`).value=draft.sections[s.id]||'';});
-  updateAllWordCounts();updateProgress();updateHeader();updateAvatar();renderAttachments();
+  updateAllWordCounts();updateProgress();updateHeader();updateAvatar();renderAttachments();updateDeptLockNote();
 }
 function bindInfoInputs(){
   const map={f_name:'name',f_position:'position',f_dept:'dept'};
   Object.keys(map).forEach(id=>$('#'+id).addEventListener('input',e=>{draft.info[map[id]]=e.target.value;scheduleSave();if(id==='f_name')updateAvatar();}));
-  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();});
+  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();updateDeptLockNote();});
   $('#f_month').addEventListener('change',e=>{draft.info.month=+e.target.value;updateHeader();scheduleSave();});
   $('#f_year').addEventListener('change',e=>{draft.info.year=+e.target.value;updateHeader();scheduleSave();});
+}
+function updateDeptLockNote(){
+  const note=$('#deptLockNote');
+  if(note) note.classList.toggle('hidden', !isKetoanDept(draft.info));
 }
 function updateHeader(){
   const label=`${MONTHS[(draft.info.month||1)-1]}, ${draft.info.year||now.getFullYear()}`;
@@ -1494,8 +1506,12 @@ function addNextPerson(){
 }
 
 /* ===================== EXPORT ===================== */
-function attachmentsHTML(atts){
-  if(!atts||!atts.length)return'';
+function attachmentsHTML(r){
+  const atts=r.attachments||[];
+  if(!atts.length)return'';
+  if(isLocked(r)){
+    return `<h2>Tệp đính kèm</h2><p><i>🔒 ${atts.length} tệp đính kèm được bảo vệ bằng mật khẩu (bộ phận Kế toán).</i></p>`;
+  }
   return `<h2>Tệp đính kèm</h2><ul class="att">${atts.map(a=>`<li>${esc(a.name)} <span style="color:#94a3b8">(${formatBytes(a.size)})</span></li>`).join('')}</ul>`;
 }
 function reportToHTML(r){
@@ -1505,7 +1521,7 @@ function reportToHTML(r){
     <div class="meta"><span><b>Họ và tên:</b> ${esc(r.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.position||'—')}</span></div>
     <div class="meta"><span><b>Bộ phận:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
     ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>`).join('')}
-    ${attachmentsHTML(r.attachments)}
+    ${attachmentsHTML(r)}
     <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
       <div style="text-align:center"><div>Người lập báo cáo</div><div style="height:48px"></div><div>${esc(r.name||'')}</div></div>
       <div style="text-align:center"><div>Xác nhận của quản lý</div><div style="height:48px"></div><div>…………………</div></div>
@@ -1516,7 +1532,11 @@ function reportToText(r){
   let t=`BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.month||1)-1]} / ${r.year||''}\n`;
   t+=`Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nBộ phận: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
   SECTIONS.forEach(s=>{t+=`${s.num}. ${s.title}\n${(r.sections&&r.sections[s.id]||'').trim()||'—'}\n\n`;});
-  if(r.attachments&&r.attachments.length){t+=`TỆP ĐÍNH KÈM:\n`;r.attachments.forEach(a=>t+=`- ${a.name} (${formatBytes(a.size)})\n`);t+='\n';}
+  const atts=r.attachments||[];
+  if(atts.length){
+    if(isLocked(r)){ t+=`TỆP ĐÍNH KÈM: 🔒 ${atts.length} tệp được bảo vệ bằng mật khẩu.\n\n`; }
+    else { t+=`TỆP ĐÍNH KÈM:\n`; atts.forEach(a=>t+=`- ${a.name} (${formatBytes(a.size)})\n`); t+='\n'; }
+  }
   t+=`Người lập báo cáo: ${r.name||''}`;
   return t;
 }
@@ -1543,7 +1563,7 @@ function fallbackCopy(txt){
   ta.remove();
 }
 function currentFormReport(){
-  return {name:draft.info.name,position:draft.info.position,dept:draft.info.dept,month:draft.info.month,year:draft.info.year,sections:draft.sections,attachments:draft.attachments.map(a=>({name:a.name,size:a.size})),createdAt:Date.now()};
+  return {__draft:true,name:draft.info.name,position:draft.info.position,dept:draft.info.dept,month:draft.info.month,year:draft.info.year,sections:draft.sections,attachments:draft.attachments.map(a=>({name:a.name,size:a.size})),createdAt:Date.now()};
 }
 
 /* ===================== REPORTS LIST ===================== */
@@ -1562,6 +1582,7 @@ function renderReports(){
     tr.className='hover:bg-pine-50/40 transition';
     const dateStr=r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—';
     const attCount=(r.attachments||[]).length;
+    const isKt=isKetoanDept(r);
     tr.innerHTML=`
       <td class="px-4 py-3 text-ink-400 font-semibold font-disp">${i+1}</td>
       <td class="px-4 py-3">
@@ -1569,11 +1590,11 @@ function renderReports(){
           <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pine-500 to-pine-700 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
           <div class="min-w-0">
             <div class="font-bold text-ink-900 truncate">${esc(r.name||'—')}</div>
-            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}</div>
+            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp${isKt?' 🔒':''}`:''}</div>
           </div>
         </div>
       </td>
-      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-gold-50 text-gold-600 text-[11px] font-semibold">${esc(r.dept||'—')}</span></td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-gold-50 text-gold-600 text-[11px] font-semibold">${esc(r.dept||'—')}${isKt?' <span title="Tệp đính kèm được bảo vệ">🔒</span>':''}</span></td>
       <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-pine-50 text-pine-700 text-[11px] font-semibold font-disp">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
       <td class="px-4 py-3 text-ink-600 text-xs whitespace-nowrap font-disp">${dateStr}</td>
       <td class="px-4 py-3">
@@ -1598,11 +1619,51 @@ function deleteReport(id){
   });
 }
 
-/* ===================== VIEW MODAL ===================== */
-function openView(id){
-  const r=reports.find(x=>x.id===id);if(!r)return;
-  currentViewId=id;
-  const body=$('#viewBody');const atts=r.attachments||[];
+/* ===================== VIEW MODAL (with Kế toán attachment lock) ===================== */
+function attachmentsViewHTML(r){
+  const atts=r.attachments||[];
+  if(!atts.length) return '';
+  if(isLocked(r)){
+    return `
+    <div class="mb-2 att-pop">
+      <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
+        <span class="w-6 h-6 rounded-md bg-amber-50 text-amber-600 grid place-items-center text-[11px]">🔒</span>Tệp đính kèm (${atts.length}) — Được bảo vệ
+      </div>
+      <div class="rounded-xl border border-amber-300 bg-amber-50/70 p-5 text-center">
+        <div id="lockIcon" class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-600 grid place-items-center text-2xl">🔒</div>
+        <div class="font-bold text-ink-900 mt-2 text-sm">Tệp đính kèm được bảo vệ</div>
+        <p class="text-xs text-ink-500 mt-1 max-w-sm mx-auto leading-relaxed">Báo cáo của bộ phận <b class="text-amber-700">Kế toán</b> chứa dữ liệu nhạy cảm. Nhập mật khẩu để xem và tải xuống <b>${atts.length}</b> tệp đính kèm.</p>
+        <div class="mt-3 max-w-xs mx-auto flex gap-2">
+          <input id="attPass" type="password" placeholder="Mật khẩu…" class="flex-1 px-3 py-2 rounded-xl border border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 outline-none text-sm" />
+          <button id="attUnlock" class="btn-lift px-4 py-2 rounded-xl bg-amber-500 text-white text-sm font-bold hover:bg-amber-600 shrink-0">Mở khóa</button>
+        </div>
+        <p id="attPassErr" class="hidden text-signal-600 text-xs mt-2 font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
+      </div>
+    </div>`;
+  }
+  return `
+  <div class="mb-2 att-pop">
+    <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
+      <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})${isKetoanDept(r)?' <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 border border-emerald-100">🔓 Đã mở khóa</span>':''}
+    </div>
+    <ul class="space-y-2">
+      ${atts.map((a,i)=>{
+        const k=fileKind(fileExt(a.name));
+        return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-ink-100 bg-ink-50/50">
+          <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-ink-800 truncate">${esc(a.name)}</div>
+            <div class="text-[11px] text-ink-500">${k.label} · ${formatBytes(a.size)}</div>
+          </div>
+          <button class="att-dl px-3 py-1.5 rounded-lg bg-pine-600 text-white text-xs font-semibold hover:bg-pine-700 shrink-0" data-idx="${i}">Tải xuống</button>
+        </li>`;
+      }).join('')}
+    </ul>
+  </div>`;
+}
+function renderViewBody(r){
+  const body=$('#viewBody');
+  const atts=r.attachments||[];
   body.innerHTML=`
     <div class="text-center mb-4">
       <div class="text-xs font-semibold text-pine-600 uppercase tracking-wide font-disp">Báo cáo công việc tháng</div>
@@ -1611,7 +1672,7 @@ function openView(id){
     <div class="grid grid-cols-2 gap-3 text-xs bg-ink-50 rounded-xl p-3 mb-4">
       <div><span class="text-ink-500">Họ tên:</span> <b>${esc(r.name||'—')}</b></div>
       <div><span class="text-ink-500">Chức vụ:</span> <b>${esc(r.position||'—')}</b></div>
-      <div><span class="text-ink-500">Bộ phận:</span> <b>${esc(r.dept||'—')}</b></div>
+      <div><span class="text-ink-500">Bộ phận:</span> <b>${esc(r.dept||'—')}${isKetoanDept(r)?' 🔒':''}</b></div>
       <div><span class="text-ink-500">Ngày lập:</span> <b>${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—'}</b></div>
     </div>
     ${SECTIONS.map(s=>`
@@ -1621,30 +1682,35 @@ function openView(id){
         </div>
         <p class="text-ink-600 whitespace-pre-wrap leading-relaxed">${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>
       </div>`).join('')}
-    ${atts.length?`
-      <div class="mb-2">
-        <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
-          <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})
-        </div>
-        <ul class="space-y-2">
-          ${atts.map((a,i)=>{
-            const k=fileKind(fileExt(a.name));
-            return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-ink-100 bg-ink-50/50">
-              <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
-              <div class="flex-1 min-w-0">
-                <div class="text-sm font-semibold text-ink-800 truncate">${esc(a.name)}</div>
-                <div class="text-[11px] text-ink-500">${k.label} · ${formatBytes(a.size)}</div>
-              </div>
-              <button class="att-dl px-3 py-1.5 rounded-lg bg-pine-600 text-white text-xs font-semibold hover:bg-pine-700 shrink-0" data-idx="${i}">Tải xuống</button>
-            </li>`;
-          }).join('')}
-        </ul>
-      </div>`:''}`;
+    ${attachmentsViewHTML(r)}`;
+  // bind unlock (Kế toán)
+  const unlockBtn=$('#attUnlock');
+  if(unlockBtn){
+    const doUnlock=()=>{
+      if($('#attPass').value===ADMIN_PASSWORD){
+        ketoanUnlocked=true;
+        renderViewBody(r);
+        toast('Đã mở khóa tệp đính kèm Kế toán.','success');
+      } else {
+        $('#attPassErr').classList.remove('hidden');
+        const p=$('#attPass'); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake'); p.select();
+        const li=$('#lockIcon'); if(li){ li.classList.remove('lock-wiggle'); void li.offsetWidth; li.classList.add('lock-wiggle'); }
+      }
+    };
+    unlockBtn.addEventListener('click',doUnlock);
+    $('#attPass').addEventListener('keydown',e=>{if(e.key==='Enter')doUnlock();});
+  }
+  // bind downloads
   $$('.att-dl',body).forEach(b=>b.addEventListener('click',()=>{
     const a=atts[+b.dataset.idx];if(!a||!a.dataUrl)return;
     const link=document.createElement('a');link.href=a.dataUrl;link.download=a.name;
     document.body.appendChild(link);link.click();link.remove();
   }));
+}
+function openView(id){
+  const r=reports.find(x=>x.id===id);if(!r)return;
+  currentViewId=id;
+  renderViewBody(r);
   $('#viewModal').classList.remove('hidden');
 }
 function closeView(){$('#viewModal').classList.add('hidden');currentViewId=null;}
