@@ -50,7 +50,6 @@
   .tab-panel{animation:fadeUp .35s ease both;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   .guide-anim{animation:fadeUp .4s ease both;}
-  .att-pop{animation:fadeUp .35s ease both;}
 
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
   .reveal.revealed{opacity:1;transform:none;}
@@ -104,8 +103,6 @@
   .shake{animation:shake .4s ease}
   @keyframes spin{to{transform:rotate(360deg)}}
   .spin{animation:spin 1s linear infinite}
-  @keyframes lockWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
-  .lock-wiggle{animation:lockWiggle .5s ease}
 
   textarea{resize:vertical;}
   textarea::-webkit-scrollbar{width:8px}
@@ -150,7 +147,7 @@
       <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1ed1d79e5-7c59-4c1e-abc2-c9617cfd1d1c.png" alt="Đọc báo cáo bằng giọng nói" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/25 to-transparent"></div>
       <div class="absolute bottom-0 p-7 text-white">
-        <div class="font-disp text-[11px] tracking-[0.28em] text-gold-400 uppercase">IDECO- VOICE developed by MTRIET</div>
+        <div class="font-disp text-[11px] tracking-[0.28em] text-gold-400 uppercase">IDECO · VoiceReport</div>
         <div class="text-[26px] font-extrabold mt-2 leading-snug">Đọc báo cáo bằng giọng nói.<br/><span class="text-gold-300">AI</span> viết lại chuyên nghiệp.</div>
         <div class="mt-3 flex items-center gap-2 text-[12px] text-white/70">
           <span class="w-1.5 h-1.5 rounded-full bg-pine-400 animate-pulse"></span> Đồng bộ Firebase thời gian thực
@@ -195,8 +192,8 @@
       <svg class="w-5 h-5 text-gold-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </div>
     <div class="leading-tight">
-      <div class="font-extrabold text-lg tracking-tight">IDECO REPORT <span class="text-gold-400 font-disp">PROFESSIONALLY</span></div>
-      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Báo cáo công việc cuối tháng - Mọi thành viên áp dụng</div>
+      <div class="font-extrabold text-lg tracking-tight">Voice<span class="text-gold-400 font-disp">Report</span></div>
+      <div class="text-[10px] text-white/50 -mt-0.5 hidden sm:block font-disp tracking-wider uppercase">Báo cáo công việc tháng · AI</div>
     </div>
     <div class="ml-auto flex items-center gap-2">
       <span id="syncStatus" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white/60 text-xs font-semibold">
@@ -305,7 +302,6 @@
                 <option>Giao nhận</option>
                 <option>SOP</option>
               </select>
-              <span id="deptLockNote" class="hidden mt-1.5 text-[11px] text-amber-700 flex items-center gap-1">🔒 Bộ phận Kế toán: tệp đính kèm sẽ được bảo vệ bằng mật khẩu khi xem.</span>
             </label>
             <div class="grid grid-cols-2 gap-3">
               <label class="block">
@@ -318,6 +314,9 @@
               </label>
             </div>
           </div>
+          <p class="mt-3 text-[11px] text-ink-400 flex items-center gap-1.5">
+            <span class="text-gold-600">✨</span> Chọn bộ phận để AI tự gợi ý đủ nội dung báo cáo chuẩn theo sổ tay hướng dẫn.
+          </p>
         </div>
 
         <div id="sectionCards" class="space-y-5"></div>
@@ -398,10 +397,25 @@
                 <div id="micLabel" class="text-xs text-white/50 mt-1">Bấm để bắt đầu đọc</div>
               </div>
               <div id="wave" class="wave mt-5"></div>
+
+              <!-- TARGET -->
               <div class="mt-5">
                 <label class="text-[10px] font-semibold text-white/50 uppercase tracking-wider font-disp">Đang đọc vào mục</label>
                 <select id="targetSelect" class="dark-select mt-1"></select>
               </div>
+
+              <!-- MICROPHONE DEVICE -->
+              <div class="mt-4">
+                <div class="flex items-center justify-between">
+                  <label class="text-[10px] font-semibold text-white/50 uppercase tracking-wider font-disp">Micro thu âm</label>
+                  <button id="refreshMics" class="text-white/40 hover:text-gold-400 transition" title="Làm mới danh sách micro">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  </button>
+                </div>
+                <select id="micDevice" class="dark-select mt-1"></select>
+                <p class="mt-1 text-[10px] text-white/35 leading-relaxed">Chọn micro tích hợp của máy hoặc thiết bị thu âm ngoài (USB/Bluetooth). Tốt nhất trên Chrome/Edge.</p>
+              </div>
+
               <div class="mt-4 grid grid-cols-2 gap-2">
                 <label class="dark-toggle"><input id="smartMode" type="checkbox" checked />✨ Văn phong báo cáo</label>
                 <label class="dark-toggle"><input id="autoCap" type="checkbox" checked />Aa Tự viết hoa</label>
@@ -421,11 +435,11 @@
           <div class="reveal rounded-2xl border border-ink-100 bg-white p-4 shadow-card">
             <div class="font-semibold text-ink-800 text-sm flex items-center gap-2">💡 Mẹo đọc hiệu quả</div>
             <ul class="mt-2 space-y-1.5 text-xs text-ink-500 list-disc list-inside">
-              <li>Nói rõ ràng, tốc độ vừa phải, ngắt nghỉ theo câu.</li>
-              <li>Hệ thống phân tích AI thông minh  và viết hoa đầu câu.</li>
+              <li>Chọn đúng <b>micro</b> (trong máy hoặc thiết bị ngoài) trước khi đọc.</li>
+              <li>Chọn <b>bộ phận</b> để AI gợi ý đủ nội dung báo cáo chuẩn.</li>
+              <li>Hệ thống tự bỏ từ thừa (à, ừ, ùm…) và viết hoa đầu câu.</li>
               <li>Số liệu đọc tự nhiên: "hai mươi phần trăm" → <b>20%</b>.</li>
-              <li>Xem tab <b class="text-pine-600">Hướng dẫn</b> để biết nội dung cần báo cáo theo bộ phận.</li>
-              <li>Bấm <b class="text-gold-600">✨ AI</b> để viết lại chuyên nghiệp, đúng chính tả, có cấu trúc.</li>
+              <li>Bấm <b class="text-gold-600">✨ AI</b> để viết lại chuyên nghiệp, đúng chính tả, đủ ý.</li>
             </ul>
           </div>
         </div>
@@ -559,13 +573,13 @@
     <div class="flex items-center justify-between p-5 border-b border-ink-100 bg-gradient-to-r from-gold-50 to-pine-50">
       <h3 class="font-bold text-ink-900 flex items-center gap-3">
         <span class="ai-badge">✨</span>
-        <span>Trợ lý AI — Viết lại chuyên nghiệp</span>
+        <span>Trợ lý AI — Viết lại &amp; gợi ý đủ ý</span>
       </h3>
       <button data-close-ai class="w-8 h-8 rounded-lg hover:bg-white/70 grid place-items-center text-ink-500">✕</button>
     </div>
     <div id="aiResults" class="p-5 overflow-y-auto space-y-5"></div>
     <div class="p-4 border-t border-ink-100 flex items-center justify-end gap-2 bg-ink-50/60">
-      <span class="text-[11px] text-ink-400 mr-auto">AI Gemini · có thể chỉnh sửa trước khi áp dụng</span>
+      <span id="aiModalNote" class="text-[11px] text-ink-400 mr-auto">AI Gemini / Qwen · dòng <b>[Gợi ý]</b> là nội dung AI đề xuất thêm — hãy điền số liệu thật hoặc xóa đi</span>
       <button data-close-ai class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">Hủy</button>
       <button id="aiApply" class="btn-lift px-5 py-2 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white text-sm font-semibold shadow disabled:opacity-40 disabled:cursor-not-allowed" disabled>Áp dụng</button>
     </div>
@@ -584,7 +598,7 @@
       </h3>
       <button data-close-settings class="w-8 h-8 rounded-lg hover:bg-white/70 grid place-items-center text-ink-500">✕</button>
     </div>
-    <div class="p-6 max-h-[70vh] overflow-y-auto">
+    <div class="p-6 max-h-[72vh] overflow-y-auto">
       <div id="setStep1">
         <div class="flex items-center gap-2 mb-1">
           <span class="w-6 h-6 rounded-full bg-pine-600 text-white text-xs font-bold grid place-items-center font-disp">1</span>
@@ -622,35 +636,72 @@
             </div>
           </div>
         </div>
+
         <div class="rounded-xl border border-gold-300 bg-gold-50/60 p-4">
-          <div class="font-bold text-ink-800 text-sm flex items-center gap-2"><span class="ai-badge" style="width:26px;height:26px;font-size:13px;">✨</span> Cấu hình AI Gemini</div>
-          <p class="text-xs text-ink-500 mt-1 mb-3">API Key được lưu trên <b>Firebase Realtime Database</b> — áp dụng cho tất cả các máy.</p>
-          <div class="space-y-3">
-            <div>
-              <label class="text-xs font-semibold text-ink-600">Gemini API Key</label>
-              <div class="relative mt-1">
-                <input id="geminiKey" type="password" placeholder="Nhập API Key…" class="w-full px-3 pr-10 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm font-disp" />
-                <button id="toggleGeminiKey" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-white grid place-items-center text-ink-400">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
+          <div class="font-bold text-ink-800 text-sm flex items-center gap-2"><span class="ai-badge" style="width:26px;height:26px;font-size:13px;">✨</span> Cấu hình AI</div>
+          <p class="text-xs text-ink-500 mt-1 mb-3">Lưu trên <b>Firebase Realtime Database</b> — áp dụng cho tất cả các máy.</p>
+          <div class="mb-3">
+            <label class="text-xs font-semibold text-ink-600">Nhà cung cấp AI</label>
+            <select id="aiProvider" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm bg-white">
+              <option value="auto">Auto — Gemini, dự phòng Qwen (khuyên dùng)</option>
+              <option value="gemini">Chỉ Gemini</option>
+              <option value="qwen">Chỉ Qwen</option>
+            </select>
+            <p class="text-[11px] text-ink-400 mt-1 leading-relaxed">Chế độ <b>Auto</b>: nếu Gemini hết hạn mức token hoặc gặp lỗi, ứng dụng <b>tự động chuyển sang Qwen</b> để không gián đoạn.</p>
+          </div>
+          <div class="rounded-lg border border-pine-200 bg-white/70 p-3 mb-3">
+            <div class="text-xs font-bold text-pine-700 flex items-center gap-1.5 mb-2"><span class="w-2 h-2 rounded-full bg-pine-500"></span>Gemini (chính)</div>
+            <label class="text-xs font-semibold text-ink-600">Gemini API Key</label>
+            <div class="relative mt-1">
+              <input id="geminiKey" type="password" placeholder="Nhập Gemini API Key…" class="w-full px-3 pr-10 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm font-disp" />
+              <button id="toggleGeminiKey" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-ink-50 grid place-items-center text-ink-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <label class="text-xs font-semibold text-ink-600 mt-2 block">Model Gemini</label>
+            <select id="geminiModel" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm bg-white font-disp">
+              <option>gemini-2.0-flash</option>
+              <option>gemini-2.5-flash</option>
+              <option>gemini-2.5-pro</option>
+              <option>gemini-1.5-flash</option>
+              <option>gemini-1.5-pro</option>
+            </select>
+          </div>
+          <div class="rounded-lg border border-violet-200 bg-white/70 p-3 mb-3">
+            <div class="text-xs font-bold text-violet-700 flex items-center gap-1.5 mb-2"><span class="w-2 h-2 rounded-full bg-violet-500"></span>Qwen (dự phòng khi Gemini hết token)</div>
+            <label class="text-xs font-semibold text-ink-600">Qwen API Key</label>
+            <div class="relative mt-1">
+              <input id="qwenKey" type="password" placeholder="Nhập Qwen API Key…" class="w-full px-3 pr-10 py-2.5 rounded-xl border border-ink-100 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none text-sm font-disp" />
+              <button id="toggleQwenKey" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-ink-50 grid place-items-center text-ink-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <div>
+                <label class="text-xs font-semibold text-ink-600">Model Qwen</label>
+                <select id="qwenModel" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none text-sm bg-white font-disp">
+                  <option>qwen-plus</option>
+                  <option>qwen3-max</option>
+                  <option>qwen3-plus</option>
+                  <option>qwen-max</option>
+                  <option>qwen-turbo</option>
+                  <option>qwen-long</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-ink-600">Máy chủ</label>
+                <select id="qwenRegion" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none text-sm bg-white">
+                  <option value="intl">Quốc tế</option>
+                  <option value="cn">Trung Quốc</option>
+                </select>
               </div>
             </div>
-            <div>
-              <label class="text-xs font-semibold text-ink-600">Model</label>
-              <select id="geminiModel" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm bg-white font-disp">
-                <option>gemini-2.0-flash</option>
-                <option>gemini-2.5-flash</option>
-                <option>gemini-2.5-pro</option>
-                <option>gemini-1.5-flash</option>
-                <option>gemini-1.5-pro</option>
-              </select>
-            </div>
-            <button id="saveAI" class="btn-lift w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-sm font-bold shadow">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Lưu cấu hình AI
-            </button>
-            <div id="aiSavedNote" class="hidden text-[11px] text-pine-600 font-semibold text-center">Đã lưu trên hệ thống ✓</div>
           </div>
+          <button id="saveAI" class="btn-lift w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-sm font-bold shadow">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Lưu cấu hình AI
+          </button>
+          <div id="aiSavedNote" class="hidden text-[11px] text-pine-600 font-semibold text-center mt-2">Đã lưu trên hệ thống ✓</div>
         </div>
       </div>
     </div>
@@ -695,7 +746,6 @@ const ADMIN_PASSWORD = 'minhtriet1973';
 const DEFAULT_APP_PASS = 'ideco@2026';
 function getAppPass(){ return localStorage.getItem('vr_app_pass') || DEFAULT_APP_PASS; }
 let sessionAuthed = false;
-let ketoanUnlocked = false; // mở khóa tệp đính kèm Kế toán trong phiên làm việc
 function isAuthed(){ return sessionAuthed || localStorage.getItem('vr_auth')==='1'; }
 function showLogin(){ $('#appRoot').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); setTimeout(()=>$('#loginPass').focus(),60); }
 function showApp(){ $('#loginScreen').classList.add('hidden'); $('#appRoot').classList.remove('hidden'); }
@@ -712,7 +762,7 @@ function attemptLogin(){
     $('#loginPass').select();
   }
 }
-function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; ketoanUnlocked=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
+function doLogout(){ localStorage.removeItem('vr_auth'); sessionAuthed=false; $('#loginPass').value=''; showLogin(); toast('Đã đăng xuất.','info'); }
 
 /* ===================== DATA & STATE ===================== */
 const SECTIONS = [
@@ -738,7 +788,7 @@ const ACCEPTED_EXT = ['xlsx','xls','csv','pdf','pptx','ppt'];
 const MAX_FILE_SIZE = 1.5 * 1024 * 1024;
 const MAX_FILES = 5;
 
-/* ===================== GUIDES (per department) ===================== */
+/* ===================== GUIDES ===================== */
 const GUIDES = {
   kinhdoanh: {
     key:'kinhdoanh', deptName:'Kinh doanh', icon:'📈', short:'Doanh số & khách hàng',
@@ -763,7 +813,7 @@ const GUIDES = {
   },
   ketoan: {
     key:'ketoan', deptName:'Kế toán', icon:'🧾', short:'Chứng từ & thuế',
-    tagline:'Báo cáo chứng từ, hóa đơn, công nợ, thuế và sổ sách kế toán. Tệp đính kèm được bảo vệ bằng mật khẩu.',
+    tagline:'Báo cáo chứng từ, hóa đơn, công nợ, thuế và sổ sách kế toán.',
     badgeBg:'bg-amber-50 border-amber-100', badgeText:'text-amber-600', checkText:'text-amber-500', iconBg:'bg-amber-100', headerBg:'bg-gradient-to-r from-amber-50 to-transparent',
     checklist:{
       completed:['Số hóa đơn đầu ra đã xuất trong tháng','Số chứng từ đầu vào đã hạch toán','Đối chiếu ngân hàng, quỹ tiền mặt','Báo cáo công nợ phải thu / phải trả','Kê khai thuế GTGT, TNCN (đúng hạn / trễ)','Tính lương, BHXH, khấu hao định kỳ'],
@@ -772,7 +822,7 @@ const GUIDES = {
       plan:['Hoàn thiện sổ sách, chứng từ tháng còn thiếu','Kế hoạch thu / chi, lịch thanh toán công nợ','Rà soát chi phí, tối ưu dòng tiền'],
       proposals:['Phần mềm kế toán, hóa đơn điện tử','Quy định thời hạn nộp chứng từ cho các bộ phận','Đào tạo nghiệp vụ thuế, kế toán mới']
     },
-    tips:['Ghi rõ số lượng hóa đơn, chứng từ cụ thể','Nêu rõ hạn chót kê khai thuế đã / chưa hoàn thành','Chỉ rõ bộ phận còn thiếu chứng từ để phối hợp','Đính kèm bảng công nợ, sao kê (tệp sẽ được khóa bảo mật)'],
+    tips:['Ghi rõ số lượng hóa đơn, chứng từ cụ thể','Nêu rõ hạn chót kê khai thuế đã / chưa hoàn thành','Chỉ rõ bộ phận còn thiếu chứng từ để phối hợp','Đính kèm bảng công nợ, sao kê ngân hàng nếu có'],
     example:'Đã xuất 156 hóa đơn đầu ra, hạch toán 210 chứng từ đầu vào. Hoàn thành đối chiếu ngân hàng và quỹ tiền mặt. Lập báo cáo công nợ phải thu 890 triệu, phải trả 420 triệu. Kê khai thuế GTGT, TNCN đúng hạn.',
     template:{
       completed:'• Số hóa đơn đầu ra đã xuất: ... hóa đơn.\n• Số chứng từ đầu vào đã hạch toán: ... chứng từ.\n• Đối chiếu ngân hàng, quỹ tiền mặt: hoàn thành / chưa ...\n• Báo cáo công nợ phải thu / phải trả: đã lập ...\n• Kê khai thuế (GTGT, TNCN): đúng hạn / chưa ...\n• Tính lương & BHXH tháng ...: hoàn thành.',
@@ -808,7 +858,7 @@ const GUIDES = {
     tagline:'Báo cáo đơn hàng đã giao, tỷ lệ đúng hẹn, COD và phương tiện.',
     badgeBg:'bg-sky-50 border-sky-100', badgeText:'text-sky-600', checkText:'text-sky-500', iconBg:'bg-sky-100', headerBg:'bg-gradient-to-r from-sky-50 to-transparent',
     checklist:{
-      completed:['Tổng số đơn đã giao thành công','Tỷ lệ giao đúng hẹn (%)','Tiền COD đã thu và nộp về kế toán','Số đơn hoàn / trả (kèm lý do)','Tình trạng phương tiện, bảo dưỡng','Tuyến đường / khu vực phụ trách'],
+      completed:['Tổng số đơn đã giao thành công','Tỷ lệ giao đúng hẹn (%))','Tiền COD đã thu và nộp về kế toán','Số đơn hoàn / trả (kèm lý do)','Tình trạng phương tiện, bảo dưỡng','Tuyến đường / khu vực phụ trách'],
       unfinished:['Đơn giao trễ (số lượng, lý do)','Đơn hư hỏng, mất mát','COD chưa thu / chưa nộp'],
       causes:['Khách quan: thời tiết, kẹt xe, khách vắng / không nghe máy','Chủ quan: sắp xếp tuyến chưa hợp lý, kiểm tra hàng chưa kỹ'],
       plan:['Tối ưu tuyến đường, cam kết thời gian giao','Bảo dưỡng phương tiện định kỳ','Giảm tỷ lệ hoàn / trễ xuống dưới mức ...%'],
@@ -848,9 +898,14 @@ const GUIDES = {
 };
 let activeGuide = 'kinhdoanh';
 
+/* ===================== AI CONFIG STATE ===================== */
 const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JxeXMAjFtlRIWys4NznQ4LXou26sblM59e4b_qV1Xvsg';
 let geminiApiKey = DEFAULT_GEMINI_KEY;
 let geminiModel = 'gemini-2.0-flash';
+let qwenApiKey = '';
+let qwenModel = 'qwen-plus';
+let qwenRegion = 'intl';
+let aiProvider = 'auto';
 
 const now = new Date();
 let draft = {
@@ -874,13 +929,15 @@ let currentViewId = null;
 let confirmCb = null;
 let aiResultsStore = {};
 
+/* microphone device selection */
+let selectedMicId = localStorage.getItem('vr_mic') || 'default';
+let activeMicStream = null;
+let micStarting = false;
+
 /* ===================== HELPERS ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
-
-function isKetoanDept(r){ return r && (r.dept||'').trim().toLowerCase()==='kế toán'; }
-function isLocked(r){ return r && !r.__draft && isKetoanDept(r) && !ketoanUnlocked; }
 
 function loadDraft(){
   try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d){ draft.info=Object.assign(draft.info,d.info||{}); draft.sections=Object.assign(draft.sections,d.sections||{});} }catch(e){}
@@ -1008,51 +1065,119 @@ function smartProcess(input){
   return t;
 }
 
-/* ===================== GEMINI AI ===================== */
+/* ===================== AI (Gemini + Qwen fallback, department-aware) ===================== */
 function loadAISettings(){
   SETTINGS_REF.on('value',snap=>{
     const v=snap.val()||{};
     if(v.gemini_api_key) geminiApiKey=v.gemini_api_key;
     if(v.gemini_model) geminiModel=v.gemini_model;
+    if(v.qwen_api_key) qwenApiKey=v.qwen_api_key;
+    if(v.qwen_model) qwenModel=v.qwen_model;
+    if(v.qwen_region) qwenRegion=v.qwen_region;
+    if(v.ai_provider) aiProvider=v.ai_provider;
     updateAIStatusUI();
-    const k=$('#geminiKey'); if(k&&document.activeElement!==k) k.value=geminiApiKey;
-    const m=$('#geminiModel'); if(m) m.value=geminiModel;
+    const gk=$('#geminiKey'); if(gk&&document.activeElement!==gk) gk.value=geminiApiKey;
+    const gm=$('#geminiModel'); if(gm) gm.value=geminiModel;
+    const qk=$('#qwenKey'); if(qk&&document.activeElement!==qk) qk.value=qwenApiKey;
+    const qm=$('#qwenModel'); if(qm) qm.value=qwenModel;
+    const qr=$('#qwenRegion'); if(qr) qr.value=qwenRegion;
+    const ap=$('#aiProvider'); if(ap) ap.value=aiProvider;
   });
 }
 function updateAIStatusUI(){
   const txt=$('#aiChipText'),chip=$('#aiChip');
-  if(geminiApiKey){
-    txt.textContent='AI sẵn sàng';
+  const hasAny=!!(geminiApiKey||qwenApiKey);
+  const label=aiProvider==='auto'?'AI Auto':(aiProvider==='qwen'?'AI Qwen':'AI Gemini');
+  if(hasAny){
+    txt.textContent=label+' sẵn sàng';
     chip.className='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500/15 text-gold-300 text-xs font-semibold border border-gold-500/30 hover:bg-gold-500/25 transition';
   } else {
     txt.textContent='AI chưa cấu hình';
     chip.className='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white/50 text-xs font-semibold border border-white/15 hover:bg-white/15 transition';
   }
 }
-function buildRewritePrompt(text){
-  return `Bạn là trợ lý AI chuyên viết báo cáo công việc chuyên nghiệp cho doanh nghiệp Việt Nam.
-Hãy viết lại nội dung dưới đây theo yêu cầu:
-- Văn phong chuyên nghiệp, trang trọng, phù hợp báo cáo công việc
-- Đúng chính tả và ngữ pháp tiếng Việt
-- Rõ ràng, mạch lạc, súc tích
-- Trình bày có cấu trúc: dùng gạch đầu dòng cho các ý chính, mỗi ý ngắn gọn
-- Giữ nguyên ý nghĩa và số liệu gốc, không bịa thêm thông tin
-- Chỉ trả về nội dung đã viết lại, không thêm lời giải thích
+function getDeptGuide(){
+  const dept=(draft.info.dept||'').trim();
+  if(!dept) return null;
+  return Object.values(GUIDES).find(g=>g.deptName===dept)||null;
+}
+function buildRewritePrompt(text,secId){
+  const sec=SECTIONS.find(s=>s.id===secId)||SECTIONS[0];
+  const g=getDeptGuide();
+  let guideBlock='';
+  if(g && g.checklist && g.checklist[secId]){
+    guideBlock=`DANH SÁCH NỘI DUNG BẮT BUỘC của mục "${sec.title}" đối với bộ phận ${g.deptName} (theo sổ tay hướng dẫn của công ty):
+${g.checklist[secId].map(p=>'- '+p).join('\n')}
 
-Nội dung cần viết lại:
+YÊU CẦU VỀ TÍNH ĐẦY ĐỦ:
+- Đối chiếu nội dung người dùng cung cấp với danh sách bắt buộc ở trên.
+- Nếu còn thiếu nội dung nào, hãy bổ sung các dòng GỢI Ý cho phần thiếu vào CUỐI mục, mỗi dòng bắt đầu bằng "• [Gợi ý] " và dùng "..." làm chỗ trống cho số liệu cụ thể (tuyệt đối KHÔNG tự bịa số liệu thật).
+- Nếu nội dung đã đầy đủ, không thêm gợi ý.`;
+  } else {
+    guideBlock=`LƯU Ý: Người dùng chưa chọn bộ phận cụ thể. Nếu thấy phù hợp, thêm một dòng cuối: "• [Gợi ý] Chọn bộ phận (Kinh doanh / Kế toán / Kho / Giao nhận / SOP) để AI gợi ý đủ nội dung chuẩn theo công ty."`;
+  }
+  const userText=(text||'').trim() || '(Chưa có nội dung. Hãy tạo các dòng "• [Gợi ý] ..." cho toàn bộ danh sách nội dung bắt buộc ở trên để người dùng điền số liệu thật.)';
+  return `Bạn là trợ lý AI chuyên viết báo cáo công việc cuối tháng chuyên nghiệp cho doanh nghiệp Việt Nam.
+
+NHIỆM VỤ 1 — CHUẨN HÓA VĂN BẢN:
+- Viết lại nội dung dưới đây với văn phong chuyên nghiệp, trang trọng, đúng chuẩn báo cáo công việc.
+- Sửa mọi lỗi chính tả, ngữ pháp tiếng Việt.
+- Diễn đạt rõ ràng, mạch lạc, súc tích; trình bày có cấu trúc bằng gạch đầu dòng, mỗi ý một dòng ngắn gọn.
+- Giữ nguyên ý nghĩa và số liệu gốc, KHÔNG bịa thêm số liệu.
+
+NHIỆM VỤ 2 — ĐẢM BẢO ĐẦY ĐỦ THEO BỘ PHẬN:
+${guideBlock}
+
+Chỉ trả về nội dung cuối cùng (đã chuẩn hóa + các dòng "[Gợi ý]" nếu có), KHÔNG thêm lời giải thích, KHÔNG thêm tiêu đề.
+
+Nội dung của người dùng (mục ${sec.num}. ${sec.title}):
 """
-${text}
+${userText}
 """`;
 }
+function isQuotaError(err){
+  const m=(err.message||'').toLowerCase();
+  return m.includes('429')||m.includes('quota')||m.includes('token')||m.includes('exhaust')||m.includes('limit')||m.includes('resource')||m.includes('hết');
+}
 async function callGemini(prompt){
-  if(!geminiApiKey){ toast('Chưa cấu hình API Key Gemini. Bấm Cài đặt để cấu hình.','error'); openSettings(); throw new Error('no-key'); }
+  if(!geminiApiKey){ throw new Error('no-key-gemini'); }
   const url=`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${encodeURIComponent(geminiApiKey)}`;
   const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.4,maxOutputTokens:2048}})});
-  if(!res.ok){ let msg='Lỗi gọi AI ('+res.status+')'; try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){} throw new Error(msg); }
+  if(!res.ok){ let msg='Lỗi Gemini ('+res.status+')'; try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){} throw new Error(msg); }
   const data=await res.json();
   const text=(data&&data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts||[]).map(p=>p.text).join('');
-  if(!text) throw new Error('AI không trả về nội dung.');
+  if(!text) throw new Error('Gemini không trả về nội dung.');
   return text.trim();
+}
+async function callQwen(prompt){
+  if(!qwenApiKey){ throw new Error('no-key-qwen'); }
+  const url=qwenRegion==='cn'
+    ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
+    : 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
+  const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+qwenApiKey,'Content-Type':'application/json'},body:JSON.stringify({model:qwenModel,messages:[{role:'user',content:prompt}],temperature:0.4})});
+  if(!res.ok){ let msg='Lỗi Qwen ('+res.status+')'; try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){} throw new Error(msg); }
+  const data=await res.json();
+  const text=(data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
+  if(!text) throw new Error('Qwen không trả về nội dung.');
+  return text.trim();
+}
+async function callAI(prompt){
+  if(aiProvider==='qwen') return await callQwen(prompt);
+  if(aiProvider==='gemini') return await callGemini(prompt);
+  try {
+    return await callGemini(prompt);
+  } catch(err){
+    if(err.message==='no-key-gemini'){
+      if(qwenApiKey){ toast('Gemini chưa có API Key — dùng Qwen AI.','info'); return await callQwen(prompt); }
+      throw new Error('Chưa cấu hình API Key AI.');
+    }
+    if(qwenApiKey){
+      const reason=isQuotaError(err)?'hết hạn mức token':'gặp lỗi';
+      toast('Gemini '+reason+' — tự động chuyển sang Qwen AI.','info');
+      return await callQwen(prompt);
+    }
+    throw err;
+  }
 }
 function typewriter(el,text,speed=10){
   return new Promise(resolve=>{
@@ -1079,8 +1204,10 @@ function buildAIBlock(sec){
 function openAIModal(){ $('#aiModal').classList.remove('hidden'); }
 function closeAIModal(){ $('#aiModal').classList.add('hidden'); $('#aiResults').innerHTML=''; aiResultsStore={}; }
 async function runAIRewrite(secIds){
-  if(!secIds.length){ toast('Không có nội dung để AI viết lại.','info'); return; }
-  if(!geminiApiKey){ toast('Chưa cấu hình API Key Gemini.','error'); openSettings(); return; }
+  if(!secIds.length){ toast('Không có nội dung để AI xử lý.','info'); return; }
+  if(!geminiApiKey && !qwenApiKey){ toast('Chưa cấu hình API Key AI (Gemini hoặc Qwen).','error'); openSettings(); return; }
+  const g=getDeptGuide();
+  if(g) toast('AI sẽ chuẩn hóa & gợi ý đủ ý theo bộ phận '+g.deptName+'.','info');
   openAIModal();
   const container=$('#aiResults'); container.innerHTML='';
   $('#aiApply').disabled=true;
@@ -1091,14 +1218,15 @@ async function runAIRewrite(secIds){
     const block=buildAIBlock(sec); container.appendChild(block);
     const status=block.querySelector('.ai-status'),loading=block.querySelector('.ai-loading'),output=block.querySelector('.ai-output');
     try{
-      const text=await callGemini(buildRewritePrompt(original));
+      const text=await callAI(buildRewritePrompt(original,id));
       aiResultsStore[id]=text;
       loading.classList.add('hidden'); output.classList.remove('hidden');
       status.textContent='Hoàn thành ✓'; status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-pine-50 text-pine-600';
       $('#aiApply').disabled=false;
       await typewriter(output,text);
     }catch(err){
-      if(err.message==='no-key'){ closeAIModal(); return; }
+      const noKey=['no-key','no-key-gemini','no-key-qwen'].includes(err.message)||(err.message||'').includes('Chưa cấu hình');
+      if(noKey){ closeAIModal(); openSettings(); return; }
       loading.classList.add('hidden'); output.classList.remove('hidden'); output.value=original;
       status.textContent='Lỗi'; status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-signal-50 text-signal-600';
       toast('AI lỗi: '+err.message,'error');
@@ -1119,12 +1247,15 @@ function applyAIResults(){
   toast(`Đã áp dụng AI cho ${count} mục.`,'success');
 }
 function aiSection(id){
-  if(!(draft.sections[id]||'').trim()){ toast('Mục này chưa có nội dung để AI viết lại.','info'); return; }
+  const has=(draft.sections[id]||'').trim();
+  const g=getDeptGuide();
+  if(!has && !g){ toast('Mục này chưa có nội dung và chưa chọn bộ phận để AI gợi ý.','info'); return; }
   runAIRewrite([id]);
 }
 function aiAll(){
-  const ids=SECTIONS.filter(s=>(draft.sections[s.id]||'').trim()).map(s=>s.id);
-  if(!ids.length){ toast('Chưa có nội dung nào để AI viết lại.','info'); return; }
+  let ids=SECTIONS.filter(s=>(draft.sections[s.id]||'').trim()).map(s=>s.id);
+  if(!ids.length && getDeptGuide()) ids=SECTIONS.map(s=>s.id);
+  if(!ids.length){ toast('Chưa có nội dung nào để AI viết lại. Hãy chọn bộ phận hoặc nhập nội dung.','info'); return; }
   runAIRewrite(ids);
 }
 
@@ -1144,7 +1275,6 @@ function renderGuideDepts(){
 function renderGuideContent(){
   const g=GUIDES[activeGuide];
   const wrap=$('#guideContent');
-  const lockNote = g.key==='ketoan' ? `<div class="mt-3 flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50/70 px-3 py-2.5 text-[11px] text-amber-800"><span class="text-sm leading-none">🔒</span><span><b>Lưu ý bảo mật:</b> Tệp đính kèm trong báo cáo Kế toán sẽ được khóa. Người xem phải nhập mật khẩu mới có thể xem / tải xuống.</span></div>` : '';
   wrap.innerHTML=`
     <div class="guide-anim bg-white rounded-2xl shadow-card border border-ink-100 overflow-hidden">
       <div class="p-6 border-b border-ink-100 ${g.headerBg}">
@@ -1159,7 +1289,6 @@ function renderGuideContent(){
             <button onclick="applyGuideTemplate('${g.key}')" class="btn-lift inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white text-xs font-semibold shadow">✍️ Áp dụng vào biểu mẫu</button>
           </div>
         </div>
-        ${lockNote}
       </div>
       <div class="grid lg:grid-cols-3 gap-6 p-6">
         <div class="lg:col-span-2">
@@ -1189,7 +1318,7 @@ function renderGuideContent(){
           </div>
           <div class="rounded-xl border border-ink-100 bg-ink-50/60 p-4">
             <div class="font-bold text-ink-800 text-sm flex items-center gap-2">🎙️ Gợi ý cách đọc</div>
-            <p class="mt-2 text-xs text-ink-600 leading-relaxed">Bấm <b>Áp dụng vào biểu mẫu</b>, sau đó đọc thay thế các chỗ <b class="font-disp">...</b> bằng số liệu thực tế của bạn. AI sẽ tự viết lại chuyên nghiệp.</p>
+            <p class="mt-2 text-xs text-ink-600 leading-relaxed">Bấm <b>Áp dụng vào biểu mẫu</b>, sau đó đọc thay thế các chỗ <b class="font-disp">...</b> bằng số liệu thực tế của bạn. AI sẽ tự chuẩn hóa và gợi ý đủ ý.</p>
           </div>
         </div>
       </div>
@@ -1239,7 +1368,7 @@ function buildSectionCards(){
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
               Đọc
             </button>
-            <button class="sec-ai inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-xs font-bold hover:opacity-90 transition" data-ai="${sec.id}" title="AI viết lại chuyên nghiệp">✨ AI</button>
+            <button class="sec-ai inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-xs font-bold hover:opacity-90 transition" data-ai="${sec.id}" title="AI chuẩn hóa & gợi ý đủ ý">✨ AI</button>
             <button class="sec-norm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink-100 text-xs font-semibold text-ink-600 hover:border-pine-400 hover:text-pine-600 transition" data-norm="${sec.id}" title="Chuẩn hóa văn phong">✨ Chuẩn hóa</button>
             <button class="sec-clear text-xs font-semibold text-ink-400 hover:text-signal-500 px-2 py-1.5" data-clear="${sec.id}">Xóa</button>
             <span class="text-[11px] text-ink-200">|</span>
@@ -1350,18 +1479,14 @@ function loadDraftToForm(){
   $('#f_month').value=draft.info.month||now.getMonth()+1;
   $('#f_year').value=draft.info.year||now.getFullYear();
   SECTIONS.forEach(s=>{$(`textarea[data-sec="${s.id}"]`).value=draft.sections[s.id]||'';});
-  updateAllWordCounts();updateProgress();updateHeader();updateAvatar();renderAttachments();updateDeptLockNote();
+  updateAllWordCounts();updateProgress();updateHeader();updateAvatar();renderAttachments();
 }
 function bindInfoInputs(){
   const map={f_name:'name',f_position:'position',f_dept:'dept'};
   Object.keys(map).forEach(id=>$('#'+id).addEventListener('input',e=>{draft.info[map[id]]=e.target.value;scheduleSave();if(id==='f_name')updateAvatar();}));
-  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();updateDeptLockNote();});
+  $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();});
   $('#f_month').addEventListener('change',e=>{draft.info.month=+e.target.value;updateHeader();scheduleSave();});
   $('#f_year').addEventListener('change',e=>{draft.info.year=+e.target.value;updateHeader();scheduleSave();});
-}
-function updateDeptLockNote(){
-  const note=$('#deptLockNote');
-  if(note) note.classList.toggle('hidden', !isKetoanDept(draft.info));
 }
 function updateHeader(){
   const label=`${MONTHS[(draft.info.month||1)-1]}, ${draft.info.year||now.getFullYear()}`;
@@ -1369,6 +1494,41 @@ function updateHeader(){
   $('#stripMonth').textContent=`${MONTHS[(draft.info.month||1)-1]} · ${draft.info.year||now.getFullYear()}`;
 }
 function updateAvatar(){$('#avatar').textContent=initials(draft.info.name)||'NV';}
+
+/* ===================== MICROPHONE DEVICES ===================== */
+async function populateMicDevices(){
+  const sel=$('#micDevice');
+  if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
+    sel.innerHTML='<option value="default">🎙 Micro mặc định</option>';
+    return;
+  }
+  try{
+    let devices=await navigator.mediaDevices.enumerateDevices();
+    let audioInputs=devices.filter(d=>d.kind==='audioinput');
+    if(audioInputs.length && !audioInputs[0].label){
+      try{
+        const tmp=await navigator.mediaDevices.getUserMedia({audio:true});
+        tmp.getTracks().forEach(t=>t.stop());
+      }catch(e){}
+      devices=await navigator.mediaDevices.enumerateDevices();
+      audioInputs=devices.filter(d=>d.kind==='audioinput');
+    }
+    sel.innerHTML='';
+    const defOpt=document.createElement('option');
+    defOpt.value='default';defOpt.textContent='🎙 Micro mặc định của máy';
+    sel.appendChild(defOpt);
+    audioInputs.forEach((d,i)=>{
+      const o=document.createElement('option');
+      o.value=d.deviceId;
+      o.textContent=d.label||('Micro '+(i+1));
+      sel.appendChild(o);
+    });
+    if(selectedMicId) sel.value=selectedMicId;
+    if(sel.value!==selectedMicId){ selectedMicId='default'; sel.value='default'; }
+  }catch(e){
+    sel.innerHTML='<option value="default">🎙 Micro mặc định</option>';
+  }
+}
 
 /* ===================== SPEECH RECOGNITION ===================== */
 function initSpeech(){
@@ -1391,8 +1551,8 @@ function initSpeech(){
       :`<span class="text-white/85 not-italic">${esc(processed)||'Đang lắng nghe… hãy đọc nội dung.'}</span>`;
   };
   recognition.onerror=(ev)=>{
-    if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){isRecording=false;updateMicUI();stopTimer();toast('Vui lòng cấp quyền truy cập micro cho trình duyệt.','error');}
-    else if(ev.error==='audio-capture'){isRecording=false;updateMicUI();stopTimer();toast('Không tìm thấy thiết bị micro.','error');}
+    if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){isRecording=false;updateMicUI();stopTimer();releaseMicStream();toast('Vui lòng cấp quyền truy cập micro cho trình duyệt.','error');}
+    else if(ev.error==='audio-capture'){isRecording=false;updateMicUI();stopTimer();releaseMicStream();toast('Không mở được micro. Kiểm tra thiết bị đã cắm chưa.','error');}
     else if(ev.error==='network'){toast('Lỗi kết nối mạng khi nhận diện giọng nói.','error');}
   };
   recognition.onend=()=>{if(isRecording){setTimeout(()=>{try{recognition.start();}catch(e){}},120);}};
@@ -1400,6 +1560,9 @@ function initSpeech(){
 function disableMics(){
   $('#bigMic').disabled=true;$('#bigMic').classList.add('opacity-50','cursor-not-allowed');
   $$('.sec-mic').forEach(b=>{b.disabled=true;b.classList.add('opacity-50','cursor-not-allowed');});
+}
+function releaseMicStream(){
+  if(activeMicStream){activeMicStream.getTracks().forEach(t=>t.stop());activeMicStream=null;}
 }
 function onSectionMic(id){
   if(!speechSupported){toast('Trình duyệt không hỗ trợ nhận diện giọng nói.','error');return;}
@@ -1410,17 +1573,33 @@ function selectTarget(id){
   targetSection=id;$('#targetSelect').value=id;refreshSectionMicStates();
   if(isRecording){const ta=$(`textarea[data-sec="${id}"]`);rawBase=ta.value;rawFinal='';}
 }
-function startRec(){
-  if(!speechSupported||isRecording)return;
+async function startRec(){
+  if(!speechSupported||isRecording||micStarting)return;
+  micStarting=true;
   const ta=$(`textarea[data-sec="${targetSection}"]`);
-  rawBase=ta.value;rawFinal='';isRecording=true;
+  rawBase=ta.value;rawFinal='';
+  // Acquire the selected microphone (built-in or external) before starting recognition.
+  if(selectedMicId && selectedMicId!=='default' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    try{
+      activeMicStream=await navigator.mediaDevices.getUserMedia({audio:{deviceId:{exact:selectedMicId}},video:false});
+      const lbl=$('#micDevice').selectedOptions[0]?$('#micDevice').selectedOptions[0].textContent:'';
+      if(lbl) toast('Đang dùng micro: '+lbl,'info');
+    }catch(e){
+      activeMicStream=null;
+      toast('Không mở được micro đã chọn — dùng micro mặc định.','error');
+    }
+  }
+  isRecording=true;
+  micStarting=false;
   updateMicUI();startTimer();
   $('#liveBox').innerHTML='<span class="text-white/40">Đang lắng nghe… hãy đọc nội dung.</span>';
   try{recognition.start();}catch(e){}
 }
 function stopRec(){
   if(!isRecording)return;
-  isRecording=false;try{recognition.stop();}catch(e){}
+  isRecording=false;
+  try{recognition.stop();}catch(e){}
+  releaseMicStream();
   stopTimer();updateMicUI();
   const ta=$(`textarea[data-sec="${targetSection}"]`);
   const smart=$('#smartMode').checked;
@@ -1506,12 +1685,8 @@ function addNextPerson(){
 }
 
 /* ===================== EXPORT ===================== */
-function attachmentsHTML(r){
-  const atts=r.attachments||[];
-  if(!atts.length)return'';
-  if(isLocked(r)){
-    return `<h2>Tệp đính kèm</h2><p><i>🔒 ${atts.length} tệp đính kèm được bảo vệ bằng mật khẩu (bộ phận Kế toán).</i></p>`;
-  }
+function attachmentsHTML(atts){
+  if(!atts||!atts.length)return'';
   return `<h2>Tệp đính kèm</h2><ul class="att">${atts.map(a=>`<li>${esc(a.name)} <span style="color:#94a3b8">(${formatBytes(a.size)})</span></li>`).join('')}</ul>`;
 }
 function reportToHTML(r){
@@ -1521,7 +1696,7 @@ function reportToHTML(r){
     <div class="meta"><span><b>Họ và tên:</b> ${esc(r.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.position||'—')}</span></div>
     <div class="meta"><span><b>Bộ phận:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
     ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>`).join('')}
-    ${attachmentsHTML(r)}
+    ${attachmentsHTML(r.attachments)}
     <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
       <div style="text-align:center"><div>Người lập báo cáo</div><div style="height:48px"></div><div>${esc(r.name||'')}</div></div>
       <div style="text-align:center"><div>Xác nhận của quản lý</div><div style="height:48px"></div><div>…………………</div></div>
@@ -1532,11 +1707,7 @@ function reportToText(r){
   let t=`BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.month||1)-1]} / ${r.year||''}\n`;
   t+=`Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nBộ phận: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
   SECTIONS.forEach(s=>{t+=`${s.num}. ${s.title}\n${(r.sections&&r.sections[s.id]||'').trim()||'—'}\n\n`;});
-  const atts=r.attachments||[];
-  if(atts.length){
-    if(isLocked(r)){ t+=`TỆP ĐÍNH KÈM: 🔒 ${atts.length} tệp được bảo vệ bằng mật khẩu.\n\n`; }
-    else { t+=`TỆP ĐÍNH KÈM:\n`; atts.forEach(a=>t+=`- ${a.name} (${formatBytes(a.size)})\n`); t+='\n'; }
-  }
+  if(r.attachments&&r.attachments.length){t+=`TỆP ĐÍNH KÈM:\n`;r.attachments.forEach(a=>t+=`- ${a.name} (${formatBytes(a.size)})\n`);t+='\n';}
   t+=`Người lập báo cáo: ${r.name||''}`;
   return t;
 }
@@ -1563,7 +1734,7 @@ function fallbackCopy(txt){
   ta.remove();
 }
 function currentFormReport(){
-  return {__draft:true,name:draft.info.name,position:draft.info.position,dept:draft.info.dept,month:draft.info.month,year:draft.info.year,sections:draft.sections,attachments:draft.attachments.map(a=>({name:a.name,size:a.size})),createdAt:Date.now()};
+  return {name:draft.info.name,position:draft.info.position,dept:draft.info.dept,month:draft.info.month,year:draft.info.year,sections:draft.sections,attachments:draft.attachments.map(a=>({name:a.name,size:a.size})),createdAt:Date.now()};
 }
 
 /* ===================== REPORTS LIST ===================== */
@@ -1582,7 +1753,6 @@ function renderReports(){
     tr.className='hover:bg-pine-50/40 transition';
     const dateStr=r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—';
     const attCount=(r.attachments||[]).length;
-    const isKt=isKetoanDept(r);
     tr.innerHTML=`
       <td class="px-4 py-3 text-ink-400 font-semibold font-disp">${i+1}</td>
       <td class="px-4 py-3">
@@ -1590,11 +1760,11 @@ function renderReports(){
           <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pine-500 to-pine-700 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
           <div class="min-w-0">
             <div class="font-bold text-ink-900 truncate">${esc(r.name||'—')}</div>
-            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp${isKt?' 🔒':''}`:''}</div>
+            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}</div>
           </div>
         </div>
       </td>
-      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-gold-50 text-gold-600 text-[11px] font-semibold">${esc(r.dept||'—')}${isKt?' <span title="Tệp đính kèm được bảo vệ">🔒</span>':''}</span></td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-gold-50 text-gold-600 text-[11px] font-semibold">${esc(r.dept||'—')}</span></td>
       <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-pine-50 text-pine-700 text-[11px] font-semibold font-disp">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
       <td class="px-4 py-3 text-ink-600 text-xs whitespace-nowrap font-disp">${dateStr}</td>
       <td class="px-4 py-3">
@@ -1619,51 +1789,11 @@ function deleteReport(id){
   });
 }
 
-/* ===================== VIEW MODAL (with Kế toán attachment lock) ===================== */
-function attachmentsViewHTML(r){
-  const atts=r.attachments||[];
-  if(!atts.length) return '';
-  if(isLocked(r)){
-    return `
-    <div class="mb-2 att-pop">
-      <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
-        <span class="w-6 h-6 rounded-md bg-amber-50 text-amber-600 grid place-items-center text-[11px]">🔒</span>Tệp đính kèm (${atts.length}) — Được bảo vệ
-      </div>
-      <div class="rounded-xl border border-amber-300 bg-amber-50/70 p-5 text-center">
-        <div id="lockIcon" class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-600 grid place-items-center text-2xl">🔒</div>
-        <div class="font-bold text-ink-900 mt-2 text-sm">Tệp đính kèm được bảo vệ</div>
-        <p class="text-xs text-ink-500 mt-1 max-w-sm mx-auto leading-relaxed">Báo cáo của bộ phận <b class="text-amber-700">Kế toán</b> chứa dữ liệu nhạy cảm. Nhập mật khẩu để xem và tải xuống <b>${atts.length}</b> tệp đính kèm.</p>
-        <div class="mt-3 max-w-xs mx-auto flex gap-2">
-          <input id="attPass" type="password" placeholder="Mật khẩu…" class="flex-1 px-3 py-2 rounded-xl border border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 outline-none text-sm" />
-          <button id="attUnlock" class="btn-lift px-4 py-2 rounded-xl bg-amber-500 text-white text-sm font-bold hover:bg-amber-600 shrink-0">Mở khóa</button>
-        </div>
-        <p id="attPassErr" class="hidden text-signal-600 text-xs mt-2 font-medium">Mật khẩu không đúng, vui lòng thử lại.</p>
-      </div>
-    </div>`;
-  }
-  return `
-  <div class="mb-2 att-pop">
-    <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
-      <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})${isKetoanDept(r)?' <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 border border-emerald-100">🔓 Đã mở khóa</span>':''}
-    </div>
-    <ul class="space-y-2">
-      ${atts.map((a,i)=>{
-        const k=fileKind(fileExt(a.name));
-        return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-ink-100 bg-ink-50/50">
-          <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
-          <div class="flex-1 min-w-0">
-            <div class="text-sm font-semibold text-ink-800 truncate">${esc(a.name)}</div>
-            <div class="text-[11px] text-ink-500">${k.label} · ${formatBytes(a.size)}</div>
-          </div>
-          <button class="att-dl px-3 py-1.5 rounded-lg bg-pine-600 text-white text-xs font-semibold hover:bg-pine-700 shrink-0" data-idx="${i}">Tải xuống</button>
-        </li>`;
-      }).join('')}
-    </ul>
-  </div>`;
-}
-function renderViewBody(r){
-  const body=$('#viewBody');
-  const atts=r.attachments||[];
+/* ===================== VIEW MODAL ===================== */
+function openView(id){
+  const r=reports.find(x=>x.id===id);if(!r)return;
+  currentViewId=id;
+  const body=$('#viewBody');const atts=r.attachments||[];
   body.innerHTML=`
     <div class="text-center mb-4">
       <div class="text-xs font-semibold text-pine-600 uppercase tracking-wide font-disp">Báo cáo công việc tháng</div>
@@ -1672,7 +1802,7 @@ function renderViewBody(r){
     <div class="grid grid-cols-2 gap-3 text-xs bg-ink-50 rounded-xl p-3 mb-4">
       <div><span class="text-ink-500">Họ tên:</span> <b>${esc(r.name||'—')}</b></div>
       <div><span class="text-ink-500">Chức vụ:</span> <b>${esc(r.position||'—')}</b></div>
-      <div><span class="text-ink-500">Bộ phận:</span> <b>${esc(r.dept||'—')}${isKetoanDept(r)?' 🔒':''}</b></div>
+      <div><span class="text-ink-500">Bộ phận:</span> <b>${esc(r.dept||'—')}</b></div>
       <div><span class="text-ink-500">Ngày lập:</span> <b>${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—'}</b></div>
     </div>
     ${SECTIONS.map(s=>`
@@ -1682,35 +1812,30 @@ function renderViewBody(r){
         </div>
         <p class="text-ink-600 whitespace-pre-wrap leading-relaxed">${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>
       </div>`).join('')}
-    ${attachmentsViewHTML(r)}`;
-  // bind unlock (Kế toán)
-  const unlockBtn=$('#attUnlock');
-  if(unlockBtn){
-    const doUnlock=()=>{
-      if($('#attPass').value===ADMIN_PASSWORD){
-        ketoanUnlocked=true;
-        renderViewBody(r);
-        toast('Đã mở khóa tệp đính kèm Kế toán.','success');
-      } else {
-        $('#attPassErr').classList.remove('hidden');
-        const p=$('#attPass'); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake'); p.select();
-        const li=$('#lockIcon'); if(li){ li.classList.remove('lock-wiggle'); void li.offsetWidth; li.classList.add('lock-wiggle'); }
-      }
-    };
-    unlockBtn.addEventListener('click',doUnlock);
-    $('#attPass').addEventListener('keydown',e=>{if(e.key==='Enter')doUnlock();});
-  }
-  // bind downloads
+    ${atts.length?`
+      <div class="mb-2">
+        <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
+          <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})
+        </div>
+        <ul class="space-y-2">
+          ${atts.map((a,i)=>{
+            const k=fileKind(fileExt(a.name));
+            return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-ink-100 bg-ink-50/50">
+              <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-ink-800 truncate">${esc(a.name)}</div>
+                <div class="text-[11px] text-ink-500">${k.label} · ${formatBytes(a.size)}</div>
+              </div>
+              <button class="att-dl px-3 py-1.5 rounded-lg bg-pine-600 text-white text-xs font-semibold hover:bg-pine-700 shrink-0" data-idx="${i}">Tải xuống</button>
+            </li>`;
+          }).join('')}
+        </ul>
+      </div>`:''}`;
   $$('.att-dl',body).forEach(b=>b.addEventListener('click',()=>{
     const a=atts[+b.dataset.idx];if(!a||!a.dataUrl)return;
     const link=document.createElement('a');link.href=a.dataUrl;link.download=a.name;
     document.body.appendChild(link);link.click();link.remove();
   }));
-}
-function openView(id){
-  const r=reports.find(x=>x.id===id);if(!r)return;
-  currentViewId=id;
-  renderViewBody(r);
   $('#viewModal').classList.remove('hidden');
 }
 function closeView(){$('#viewModal').classList.add('hidden');currentViewId=null;}
@@ -1730,6 +1855,9 @@ function resetSettings(){
   $('#adminPass').value='';$('#newPass').value='';$('#newPass2').value='';
   $('#adminErr').classList.add('hidden');
   $('#geminiKey').value=geminiApiKey;$('#geminiModel').value=geminiModel;
+  $('#qwenKey').value=qwenApiKey;$('#qwenModel').value=qwenModel;$('#qwenRegion').value=qwenRegion;
+  $('#aiProvider').value=aiProvider;
+  $('#aiSavedNote').classList.add('hidden');
 }
 function verifyAdmin(){
   if($('#adminPass').value===ADMIN_PASSWORD){
@@ -1755,9 +1883,15 @@ function resetAppPass(){
   });
 }
 function saveAISettings(){
-  const key=$('#geminiKey').value.trim();
-  const model=$('#geminiModel').value;
-  SETTINGS_REF.update({gemini_api_key:key,gemini_model:model}).then(()=>{
+  const payload={
+    gemini_api_key:$('#geminiKey').value.trim(),
+    gemini_model:$('#geminiModel').value,
+    qwen_api_key:$('#qwenKey').value.trim(),
+    qwen_model:$('#qwenModel').value,
+    qwen_region:$('#qwenRegion').value,
+    ai_provider:$('#aiProvider').value
+  };
+  SETTINGS_REF.update(payload).then(()=>{
     $('#aiSavedNote').classList.remove('hidden');
     toast('Đã lưu cấu hình AI lên Firebase (áp dụng mọi máy).','success');
   }).catch(e=>{console.error(e);toast('Không lưu được cấu hình AI.','error');});
@@ -1867,10 +2001,24 @@ function init(){
   bindSyncStatus();
   bindReportsListener();
   loadAISettings();
+  populateMicDevices();
 
   $('#targetSelect').innerHTML=SECTIONS.map(s=>`<option value="${s.id}">${s.num}. ${s.title}</option>`).join('');
   $('#targetSelect').value=targetSection;
   $('#targetSelect').addEventListener('change',e=>selectTarget(e.target.value));
+
+  // microphone device selection
+  $('#micDevice').value=selectedMicId;
+  $('#micDevice').addEventListener('change',e=>{
+    selectedMicId=e.target.value;
+    localStorage.setItem('vr_mic',selectedMicId);
+    const lbl=e.target.selectedOptions[0]?e.target.selectedOptions[0].textContent:'';
+    toast('Đã chọn micro: '+lbl,'info');
+  });
+  $('#refreshMics').addEventListener('click',()=>{populateMicDevices();toast('Đã làm mới danh sách micro.','info');});
+  if(navigator.mediaDevices && navigator.mediaDevices.addEventListener){
+    navigator.mediaDevices.addEventListener('devicechange',populateMicDevices);
+  }
 
   $('#bigMic').addEventListener('click',toggleMic);
   $('#heroStart').addEventListener('click',()=>{
@@ -1921,6 +2069,7 @@ function init(){
   $('#adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')verifyAdmin();});
   $('#newPass2').addEventListener('keydown',e=>{if(e.key==='Enter')saveNewPass();});
   $('#toggleGeminiKey').addEventListener('click',()=>{const i=$('#geminiKey');i.type=i.type==='password'?'text':'password';});
+  $('#toggleQwenKey').addEventListener('click',()=>{const i=$('#qwenKey');i.type=i.type==='password'?'text':'password';});
 
   $('#logoutBtn').addEventListener('click',doLogout);
   $('#loginBtn').addEventListener('click',attemptLogin);
