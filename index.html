@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VoiceReport — Báo cáo công việc tháng bằng giọng nói</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-400-normal.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-500-normal.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-600-normal.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-700-normal.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-800-normal.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' }
+        },
+        boxShadow: { soft: '0 10px 30px -12px rgba(49,46,129,.18)', card: '0 1px 2px rgba(15,23,42,.04), 0 8px 24px -16px rgba(15,23,42,.18)' }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{font-family:'Be Vietnam Pro',system-ui,sans-serif;}
+  body{background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(99,102,241,.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, rgba(168,85,247,.08), transparent 55%),
+    #f1f5f9;}
+  .tab-panel{animation:fadeUp .35s ease both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes waveBar{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}
+  .wave span{display:block;width:4px;border-radius:9999px;background:linear-gradient(180deg,#818cf8,#6366f1);height:28px;transform-origin:center;animation:waveBar 1s ease-in-out infinite;}
+  .wave.idle span{animation-play-state:paused;transform:scaleY(.22);background:#cbd5e1;}
+  .wave span:nth-child(1){animation-delay:.0s}
+  .wave span:nth-child(2){animation-delay:.12s}
+  .wave span:nth-child(3){animation-delay:.24s}
+  .wave span:nth-child(4){animation-delay:.36s}
+  .wave span:nth-child(5){animation-delay:.48s}
+  .wave span:nth-child(6){animation-delay:.6s}
+  .wave span:nth-child(7){animation-delay:.72s}
+  @keyframes ringPulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.9);opacity:0}}
+  .mic-rec .ring{animation:ringPulse 1.6s ease-out infinite;}
+  @keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+  .toast{animation:toastIn .25s ease both;}
+  @keyframes pop{0%{transform:scale(.96);opacity:0}100%{transform:scale(1);opacity:1}}
+  .modal-pop{animation:pop .2s ease both;}
+  textarea{resize:vertical;}
+  textarea::-webkit-scrollbar{width:8px}
+  textarea::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:9999px}
+  .chip{transition:all .15s ease}
+  .chip:hover{transform:translateY(-1px)}
+  .nav-btn.active{color:#4338ca;background:#eef2ff;}
+  .sec-mic.active{background:#ef4444;color:#fff;border-color:#ef4444;box-shadow:0 8px 20px -8px rgba(239,68,68,.6)}
+  .gradient-text{background:linear-gradient(90deg,#4f46e5,#9333ea);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  @media print{
+    body *{visibility:hidden !important;}
+    #printArea, #printArea *{visibility:visible !important;}
+    #printArea{position:absolute;left:0;top:0;width:100%;padding:24mm;background:#fff;}
+  }
+  #printArea{display:none;}
+  #printArea.show{display:block;}
+  .print-doc h1{font-size:22px;font-weight:800;text-align:center;margin-bottom:4px}
+  .print-doc h2{font-size:14px;font-weight:700;margin:18px 0 6px;color:#4338ca;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
+  .print-doc p{white-space:pre-wrap;font-size:13px;line-height:1.7;margin:0}
+  .print-doc .meta{display:flex;justify-content:space-between;font-size:12px;color:#475569;margin-bottom:8px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body class="text-slate-800 min-h-screen">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-30 backdrop-blur bg-white/80 border-b border-slate-200/70">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-purple-600 grid place-items-center shadow-soft shrink-0">
+      <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+    </div>
+    <div class="leading-tight">
+      <div class="font-extrabold text-slate-900 text-lg tracking-tight">Voice<span class="gradient-text">Report</span></div>
+      <div class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Báo cáo công việc tháng bằng giọng nói</div>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+      <div id="monthBadge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold border border-brand-100">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span></span>
+      </div>
+      <div id="avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-xs font-bold shadow">NV</div>
+    </div>
+  </div>
+  <!-- TABS -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 -mb-px overflow-x-auto">
+    <button data-tab="create" class="nav-btn active px-4 py-2.5 text-sm font-semibold rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      Tạo báo cáo
+    </button>
+    <button data-tab="reports" class="nav-btn px-4 py-2.5 text-sm font-semibold rounded-t-lg flex items-center gap-2 whitespace-nowrap text-slate-600 hover:text-slate-900">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+      Báo cáo của tôi
+      <span id="reportCount" class="ml-1 px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">0</span>
+    </button>
+    <button data-tab="stats" class="nav-btn px-4 py-2.5 text-sm font-semibold rounded-t-lg flex items-center gap-2 whitespace-nowrap text-slate-600 hover:text-slate-900">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Thống kê
+    </button>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+  <!-- ============ CREATE TAB ============ -->
+  <section id="tab-create" class="tab-panel">
+
+    <!-- HERO -->
+    <div class="rounded-3xl bg-white shadow-card border border-slate-100 overflow-hidden mb-6">
+      <div class="grid md:grid-cols-5 items-center">
+        <div class="md:col-span-3 p-6 sm:p-8">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Công nghệ nhận diện giọng nói tiếng Việt
+          </span>
+          <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Đọc báo cáo — hệ thống tự ghi thành văn bản chuyên nghiệp</h1>
+          <p class="mt-2 text-slate-600 text-sm sm:text-base max-w-xl">Tiết kiệm hàng giờ soạn thảo mỗi tháng. Chỉ cần bấm micro và đọc, VoiceReport chuyển giọng nói thành báo cáo công việc chuẩn mẫu, sẵn sàng nộp cho quản lý.</p>
+          <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center shrink-0">🎙️</span><div><div class="font-semibold text-slate-800">Ghi âm từng mục</div><div class="text-xs text-slate-500">Chọn mục cần đọc</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-purple-50 text-purple-600 grid place-items-center shrink-0">⚡</span><div><div class="font-semibold text-slate-800">Mẫu câu sẵn</div><div class="text-xs text-slate-500">Chèn nhanh 1 chạm</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0">📤</span><div><div class="font-semibold text-slate-800">Xuất đa định dạng</div><div class="text-xs text-slate-500">In / Word / Sao chép</div></div></div>
+          </div>
+          <button id="heroStart" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            Bắt đầu đọc báo cáo
+          </button>
+        </div>
+        <div class="md:col-span-2 bg-gradient-to-br from-brand-50 to-purple-50 h-full grid place-items-center p-6">
+          <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1bd85e3b1-221b-4dba-8143-e1a9acac3501.png" alt="Minh họa đọc báo cáo bằng giọng nói" class="w-full max-w-[320px] drop-shadow-sm" />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- FORM -->
+      <div class="lg:col-span-2 space-y-5">
+
+        <!-- progress -->
+        <div class="flex items-center gap-3">
+          <div class="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-brand-500 to-purple-500 transition-all duration-500" style="width:0%"></div>
+          </div>
+          <span id="progressText" class="text-xs font-semibold text-slate-500 whitespace-nowrap">0/5 mục</span>
+        </div>
+
+        <!-- INFO CARD -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 grid place-items-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <h2 class="font-bold text-slate-900">Thông tin người báo cáo</h2>
+            <button id="newReportBtn" class="ml-auto text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Báo cáo mới
+            </button>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-xs font-semibold text-slate-600">Họ và tên <span class="text-rose-500">*</span></span>
+              <input id="f_name" type="text" placeholder="Nguyễn Văn A" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-semibold text-slate-600">Chức vụ</span>
+              <input id="f_position" type="text" placeholder="Nhân viên / Chuyên viên / Trưởng nhóm" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-semibold text-slate-600">Phòng ban / Bộ phận</span>
+              <input id="f_dept" type="text" placeholder="Phòng Kinh doanh" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block">
+                <span class="text-xs font-semibold text-slate-600">Tháng</span>
+                <select id="f_month" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm bg-white"></select>
+              </label>
+              <label class="block">
+                <span class="text-xs font-semibold text-slate-600">Năm</span>
+                <select id="f_year" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm bg-white"></select>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION CARDS -->
+        <div id="sectionCards" class="space-y-5"></div>
+        <!-- ATTACHMENTS -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 grid place-items-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </span>
+            <h2 class="font-bold text-slate-900">Tài liệu đính kèm <span class="text-xs font-semibold text-slate-400">(Excel, PDF, PowerPoint, Word)</span></h2>
+            <span id="attCount" class="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">0 file</span>
+          </div>
+          <label for="attInput" class="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition p-5 text-center">
+            <div class="text-2xl">📎</div>
+            <div class="mt-1 text-sm font-semibold text-slate-700">Bấm để chọn file đính kèm</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Hỗ trợ .xlsx .xls .csv .pdf .pptx .ppt .docx .doc — tối đa 8MB / file</div>
+          </label>
+          <input id="attInput" type="file" multiple accept=".xlsx,.xls,.csv,.pdf,.pptx,.ppt,.docx,.doc" class="hidden" />
+          <div id="attList" class="mt-3 space-y-2"></div>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-4 sm:p-5 flex flex-wrap items-center gap-3">
+          <button id="submitBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+            Nộp báo cáo
+          </button>
+          <div class="relative">
+            <button id="exportBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Xuất báo cáo
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="exportMenu" class="hidden absolute left-0 bottom-full mb-2 w-52 bg-white rounded-xl shadow-soft border border-slate-100 p-1.5 z-20">
+              <button data-export="print" class="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-slate-50 flex items-center gap-2">🖨️ In / Lưu PDF</button>
+              <button data-export="doc" class="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-slate-50 flex items-center gap-2">📄 Tải file Word (.doc)</button>
+              <button data-export="copy" class="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-slate-50 flex items-center gap-2">📋 Sao chép văn bản</button>
+            </div>
+          </div>
+          <button id="clearBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-500 font-semibold text-sm hover:text-rose-600 hover:bg-rose-50 transition ml-auto">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Xóa trắng
+          </button>
+          <span id="saveStatus" class="text-xs text-slate-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Đã lưu nháp</span>
+        </div>
+
+        <!-- NEXT PERSON -->
+        <div class="rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/40 p-4 flex flex-wrap items-center gap-3">
+          <div class="flex-1 min-w-[200px]">
+            <div class="font-bold text-slate-800 text-sm">Đã khai báo xong nhân viên này?</div>
+            <div class="text-xs text-slate-500">Nộp báo cáo rồi bấm nút bên cạnh để làm trắng biểu mẫu và khai báo cho nhân viên kế tiếp.</div>
+          </div>
+          <button id="nextPersonBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-brand-300 text-brand-700 font-semibold text-sm hover:bg-brand-50 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Khai báo cáo cho người tiếp theo
+          </button>
+        </div>
+      </div>
+
+      <!-- VOICE PANEL -->
+      <aside class="lg:col-span-1">
+        <div class="lg:sticky lg:top-24 space-y-4">
+          <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-600 to-purple-600 text-white grid place-items-center">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                </span>
+                Bảng điều khiển giọng nói
+              </h3>
+              <span id="recStatus" class="text-[11px] font-semibold px-2 py-1 rounded-full bg-slate-100 text-slate-500">Đang chờ</span>
+            </div>
+
+            <!-- MIC -->
+            <div class="mt-5 flex flex-col items-center">
+              <div id="micWrap" class="relative">
+                <span class="ring absolute inset-0 rounded-full bg-rose-400"></span>
+                <button id="bigMic" class="relative w-24 h-24 rounded-full bg-gradient-to-br from-brand-600 to-purple-600 text-white grid place-items-center shadow-soft hover:opacity-95 transition">
+                  <svg id="micIcon" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                  <svg id="stopIcon" class="w-8 h-8 hidden" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                </button>
+              </div>
+              <div id="micLabel" class="mt-3 text-sm font-semibold text-slate-700">Bấm để bắt đầu đọc</div>
+              <div id="recTimer" class="text-xs text-slate-400 font-mono mt-0.5">00:00</div>
+            </div>
+
+            <!-- WAVE -->
+            <div class="mt-4 flex items-end justify-center gap-1.5 h-8 wave idle" id="wave">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <!-- TARGET -->
+            <div class="mt-5">
+              <label class="text-xs font-semibold text-slate-600">Đang đọc vào mục</label>
+              <select id="targetSelect" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm bg-white font-medium"></select>
+            </div>
+
+            <!-- LIVE -->
+            <div class="mt-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600">Nhận diện trực tiếp</span>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-500 cursor-pointer select-none">
+                  <input id="autoCap" type="checkbox" checked class="accent-brand-600 w-3.5 h-3.5" />
+                  Tự viết hoa
+                </label>
+              </div>
+              <div id="liveBox" class="mt-1 min-h-[56px] rounded-xl bg-slate-50 border border-slate-100 p-3 text-sm text-slate-500 italic">Nội dung giọng nói sẽ hiện tại đây…</div>
+            </div>
+          </div>
+
+          <!-- TIPS / SUPPORT -->
+          <div id="supportWarn" class="hidden rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <div class="font-semibold flex items-center gap-2">⚠️ Trình duyệt chưa hỗ trợ</div>
+            <p class="mt-1 text-xs">Tính năng nhận diện giọng nói hoạt động tốt nhất trên <b>Chrome / Edge</b> (máy tính). Bạn vẫn có thể gõ tay báo cáo bình thường.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-card">
+            <div class="font-semibold text-slate-800 text-sm flex items-center gap-2">💡 Mẹo đọc hiệu quả</div>
+            <ul class="mt-2 space-y-1.5 text-xs text-slate-600 list-disc list-inside">
+              <li>Nói rõ ràng, tốc độ vừa phải, ngắt nghỉ theo câu.</li>
+              <li>Chọn đúng mục cần đọc trước khi bấm micro.</li>
+              <li>Dùng phím tắt <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">M</kbd> để bật/tắt micro.</li>
+              <li>Chèn mẫu câu có sẵn rồi đọc bổ sung chi tiết.</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ REPORTS TAB ============ -->
+  <section id="tab-reports" class="tab-panel hidden">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
+      <div class="relative flex-1">
+        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchReports" type="text" placeholder="Tìm theo tên, phòng ban, tháng…" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+      </div>
+      <div class="flex gap-1 bg-white rounded-xl border border-slate-200 p-1">
+        <button data-filter="all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">Tất cả</button>
+        <button data-filter="submitted" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600">Đã nộp</button>
+        <button data-filter="draft" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600">Bản nháp</button>
+      </div>
+    </div>
+    <!-- EMPLOYEE REPORT TABLE -->
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden mb-6">
+      <div class="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-slate-100">
+        <h3 class="font-bold text-slate-900">Danh sách nhân viên đã báo cáo</h3>
+        <span id="tableCount" class="px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[11px] font-bold">0</span>
+        <span id="syncBadge" class="text-[11px] font-semibold px-2 py-1 rounded-full bg-slate-100 text-slate-500 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Đang kết nối Firebase…
+        </span>
+        <button id="addNextBtn" class="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-xs shadow-soft hover:opacity-95 transition">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Thêm + Khai báo cáo cho người tiếp theo
+        </button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[720px]">
+          <thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wide">
+            <tr>
+              <th class="px-4 py-3 text-left font-bold w-12">#</th>
+              <th class="px-4 py-3 text-left font-bold">Tên nhân viên</th>
+              <th class="px-4 py-3 text-left font-bold">Bộ phận</th>
+              <th class="px-4 py-3 text-left font-bold">Kỳ báo cáo</th>
+              <th class="px-4 py-3 text-left font-bold">Ngày báo cáo</th>
+              <th class="px-4 py-3 text-center font-bold">File</th>
+              <th class="px-4 py-3 text-right font-bold">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div id="tableEmpty" class="hidden px-5 py-10 text-center text-sm text-slate-400">Chưa có nhân viên nào nộp báo cáo.</div>
+    </div>
+
+    <div id="reportsGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    <div id="reportsEmpty" class="hidden text-center py-16">
+      <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1f0d14e45-c5b5-4870-814b-7613aa3b5152.png" alt="Chưa có báo cáo" class="w-56 mx-auto opacity-90" />
+      <h3 class="mt-4 font-bold text-slate-800 text-lg">Chưa có báo cáo nào</h3>
+      <p class="text-sm text-slate-500 mt-1">Hãy đọc báo cáo công việc tháng đầu tiên của bạn bằng giọng nói.</p>
+      <button id="emptyCreate" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tạo báo cáo đầu tiên
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ STATS TAB ============ -->
+  <section id="tab-stats" class="tab-panel hidden">
+    <div id="statCards" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6">
+        <h3 class="font-bold text-slate-900">Số báo cáo theo tháng <span id="statYear" class="text-slate-400 font-semibold"></span></h3>
+        <div id="barChart" class="mt-6 flex items-end gap-2 sm:gap-3 h-48"></div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6">
+        <h3 class="font-bold text-slate-900">Tỷ lệ điền theo mục</h3>
+        <div id="sectionBars" class="mt-5 space-y-4"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- VIEW MODAL -->
+<div id="viewModal" class="hidden fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm grid place-items-center p-4">
+  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-2xl max-h-[88vh] overflow-hidden flex flex-col">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <h3 class="font-bold text-slate-900 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 grid place-items-center"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+        Xem báo cáo
+      </h3>
+      <button data-close-view class="w-8 h-8 rounded-lg hover:bg-slate-100 grid place-items-center text-slate-500">✕</button>
+    </div>
+    <div id="viewBody" class="p-6 overflow-y-auto text-sm leading-relaxed"></div>
+    <div class="p-4 border-t border-slate-100 flex flex-wrap gap-2 justify-end bg-slate-50">
+      <button data-view-action="copy" class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">📋 Sao chép</button>
+      <button data-view-action="doc" class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">📄 Tải Word</button>
+      <button data-view-action="print" class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">🖨️ In</button>
+      <button data-close-view class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm grid place-items-center p-4">
+  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 text-center">
+    <div class="w-12 h-12 mx-auto rounded-full bg-rose-50 text-rose-500 grid place-items-center text-xl">🗑️</div>
+    <h3 id="confirmTitle" class="mt-3 font-bold text-slate-900">Xác nhận xóa?</h3>
+    <p id="confirmMsg" class="mt-1 text-sm text-slate-500">Thao tác này không thể hoàn tác.</p>
+    <div class="mt-5 flex gap-2 justify-center">
+      <button id="confirmCancel" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold hover:bg-slate-50">Hủy</button>
+      <button id="confirmOk" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700">Xóa</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toasts" class="fixed bottom-5 right-5 z-[60] space-y-2 w-[min(92vw,340px)]"></div>
+
+<!-- PRINT AREA -->
+<div id="printArea"></div>
+
+<script>
+/* ===================== FIREBASE ===================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAfivFmubxNrGWfLoF-uqcB6AjNLlXzSWQ",
+  authDomain: "dungchung-c6546.firebaseapp.com",
+  databaseURL: "https://dungchung-c6546-default-rtdb.firebaseio.com",
+  projectId: "dungchung-c6546",
+  storageBucket: "dungchung-c6546.firebasestorage.app",
+  messagingSenderId: "709415307278",
+  appId: "1:709415307278:web:8dededb0bdef628580d45f",
+  measurementId: "G-Z6GJFMPS9Z"
+};
+const DB_ROOT = 'voicereport/reports';
+let fbDB = null, fbReady = false;
+function initFirebase(){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    fbDB = firebase.database();
+    fbDB.ref(DB_ROOT).on('value', snap=>{
+      const val = snap.val() || {};
+      reports = Object.keys(val).map(k=> Object.assign({}, val[k], { id:k }))
+                      .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
+      fbReady = true;
+      setSync(true);
+      renderReports(); renderReportTable(); renderStats(); updateReportCount();
+    }, err=>{ setSync(false, err.message); });
+    fbDB.ref('.info/connected').on('value', s=> setSync(!!s.val()));
+  }catch(e){ setSync(false, e.message); toast('Không kết nối được Firebase: '+e.message,'error'); }
+}
+function setSync(ok, msg){
+  const b = $('#syncBadge'); if(!b) return;
+  b.className = 'text-[11px] font-semibold px-2 py-1 rounded-full flex items-center gap-1 ' + (ok?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700');
+  b.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${ok?'bg-emerald-500':'bg-amber-500'}"></span>${ok?'Đã đồng bộ Firebase':'Mất kết nối'+(msg?' — '+msg:'')}`;
+}
+
+/* ===================== DATA & STATE ===================== */
+const SECTIONS = [
+  { id:'completed', num:'I', title:'Công việc đã hoàn thành', icon:'check',
+    phrases:['Hoàn thành 100% các chỉ tiêu được giao trong tháng.','Triển khai đúng tiến độ các hạng mục được phân công.','Phối hợp hiệu quả với các phòng ban liên quan.','Đạt và vượt kế hoạch doanh số / sản lượng đề ra.'] },
+  { id:'unfinished', num:'II', title:'Công việc chưa hoàn thành / Tồn đọng', icon:'alert',
+    phrases:['Một số hạng mục chưa đạt kế hoạch do phát sinh ngoài dự kiến.','Cần thêm thời gian để hoàn thiện hồ sơ chi tiết.','Tiến độ bị ảnh hưởng bởi yếu tố khách quan.'] },
+  { id:'causes', num:'III', title:'Nguyên nhân (chủ quan / khách quan)', icon:'search',
+    phrases:['Khách quan: thay đổi yêu cầu từ đối tác, khách hàng.','Chủ quan: khối lượng công việc tăng, nhân sự còn hạn chế.','Thiếu công cụ / dữ liệu hỗ trợ trong quá trình thực hiện.'] },
+  { id:'plan', num:'IV', title:'Kế hoạch công việc tháng tới', icon:'flag',
+    phrases:['Tiếp tục đẩy mạnh các hạng mục còn tồn đọng.','Đề ra mục tiêu cụ thể với mốc thời gian rõ ràng.','Chủ động phối hợp liên phòng ban để đảm bảo tiến độ.'] },
+  { id:'proposals', num:'V', title:'Đề xuất & Kiến nghị', icon:'bulb',
+    phrases:['Đề xuất bổ sung nhân sự / công cụ hỗ trợ công việc.','Kiến nghị tổ chức đào tạo nâng cao kỹ năng cho đội ngũ.','Đề xuất điều chỉnh quy trình để tăng hiệu quả.'] },
+];
+
+const ICONS = {
+  check:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  alert:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+  search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+  bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/>'
+};
+
+const now = new Date();
+let draft = {
+  editingId: null,
+  info: { name:'', position:'', dept:'', month: now.getMonth()+1, year: now.getFullYear() },
+  sections: { completed:'', unfinished:'', causes:'', plan:'', proposals:'' },
+  attachments: [],
+  updatedAt: null
+};
+let reports = [];
+let targetSection = 'completed';
+let isRecording = false;
+let speechSupported = true;
+let recognition = null;
+let baseText = '';
+let finalSinceStart = '';
+let autoCap = true;
+let timerId = null;
+let recStartTs = 0;
+let saveTimer = null;
+let currentFilter = 'all';
+let currentViewId = null;
+let confirmCb = null;
+
+/* ===================== HELPERS ===================== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+function load(){
+  try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d) draft = Object.assign(draft, d); }catch(e){}
+  if(!Array.isArray(draft.attachments)) draft.attachments = [];
+  reports = [];
+}
+function saveReports(){ /* dữ liệu nằm trên Firebase Realtime Database */ }
+function saveDraft(){
+  draft.updatedAt = Date.now();
+  localStorage.setItem('vr_draft', JSON.stringify(draft));
+  const s = $('#saveStatus'); if(s){ s.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Đã lưu nháp'; }
+}
+function scheduleSave(){
+  const s = $('#saveStatus'); if(s){ s.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>Đang lưu…'; }
+  clearTimeout(saveTimer); saveTimer = setTimeout(saveDraft, 400);
+}
+function wordCount(t){ return (t||'').trim() ? (t||'').trim().split(/\s+/).length : 0; }
+function capSentences(s){ return (s||'').replace(/(^|[.!?]\s+)(\S)/g, (m,pre,ch)=> pre + ch.toUpperCase()); }
+function applyFormat(s){ return autoCap ? capSentences(s) : s; }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function initials(name){ const p=(name||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return 'NV'; return ((p[p.length-1][0]||'')+(p.length>1?p[0][0]:'')).toUpperCase(); }
+
+function toast(msg, type='success'){
+  const colors = { success:'bg-emerald-600', error:'bg-rose-600', info:'bg-slate-800' };
+  const icons = { success:'✓', error:'✕', info:'ℹ' };
+  const el = document.createElement('div');
+  el.className = 'toast flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-soft ' + (colors[type]||colors.info);
+  el.innerHTML = `<span class="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-xs font-bold">${icons[type]||'ℹ'}</span><span>${esc(msg)}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.transition='all .3s'; el.style.opacity='0'; el.style.transform='translateY(10px)'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+/* ===================== BUILD SECTION CARDS ===================== */
+function buildSectionCards(){
+  const wrap = $('#sectionCards'); wrap.innerHTML = '';
+  SECTIONS.forEach(sec=>{
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6';
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 grid place-items-center shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[sec.icon]}</svg>
+        </span>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="font-bold text-slate-900"><span class="text-brand-500">${sec.num}.</span> ${sec.title}</h3>
+            <span class="wc text-[11px] font-semibold text-slate-400">0 từ</span>
+          </div>
+          <textarea data-sec="${sec.id}" rows="4" class="mt-2 w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm leading-relaxed" placeholder="Bấm micro bên phải hoặc gõ nội dung ${sec.title.toLowerCase()}…"></textarea>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <button class="sec-mic inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-600 transition" data-target="${sec.id}" title="Đọc vào mục này">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+              Đọc mục này
+            </button>
+            <button class="sec-clear text-xs font-semibold text-slate-400 hover:text-rose-500 px-2 py-1.5" data-clear="${sec.id}">Xóa</button>
+            <span class="text-[11px] text-slate-300">|</span>
+            ${sec.phrases.map(p=>`<button class="chip text-[11px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-brand-50 hover:text-brand-700" data-phrase="${sec.id}" data-text="${esc(p)}">+ ${esc(p.length>34?p.slice(0,34)+'…':p)}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+
+  // bind
+  $$('textarea[data-sec]').forEach(ta=>{
+    ta.addEventListener('input', (e)=>{
+      draft.sections[ta.dataset.sec] = ta.value;
+      updateWordCount(ta.dataset.sec);
+      updateProgress();
+      scheduleSave();
+      if(isRecording && e.isTrusted && ta.dataset.sec === targetSection){
+        baseText = ta.value.trim(); finalSinceStart = '';
+      }
+    });
+  });
+  $$('.sec-mic').forEach(b=> b.addEventListener('click', ()=> onSectionMic(b.dataset.target)));
+  $$('.sec-clear').forEach(b=> b.addEventListener('click', ()=>{
+    const id=b.dataset.clear; draft.sections[id]=''; const ta=$(`textarea[data-sec="${id}"]`); ta.value=''; updateWordCount(id); updateProgress(); scheduleSave();
+  }));
+  $$('[data-phrase]').forEach(b=> b.addEventListener('click', ()=> insertPhrase(b.dataset.phrase, b.dataset.text)));
+}
+
+function insertPhrase(secId, text){
+  const ta = $(`textarea[data-sec="${secId}"]`);
+  const cur = ta.value.trim();
+  ta.value = cur ? (cur.replace(/[.!?]$/,'') + '. ' + text) : text;
+  draft.sections[secId] = ta.value;
+  updateWordCount(secId); updateProgress(); scheduleSave();
+  ta.focus();
+}
+
+function updateWordCount(secId){
+  const ta = $(`textarea[data-sec="${secId}"]`);
+  const wc = ta.closest('.bg-white').querySelector('.wc');
+  const n = wordCount(ta.value);
+  wc.textContent = n + ' từ';
+  wc.className = 'wc text-[11px] font-semibold ' + (n>0 ? 'text-brand-500' : 'text-slate-400');
+}
+function updateAllWordCounts(){ SECTIONS.forEach(s=> updateWordCount(s.id)); }
+
+function updateProgress(){
+  const filled = SECTIONS.filter(s => (draft.sections[s.id]||'').trim().length > 8).length;
+  $('#progressBar').style.width = (filled/SECTIONS.length*100) + '%';
+  $('#progressText').textContent = `${filled}/${SECTIONS.length} mục`;
+}
+
+/* ===================== FORM <-> DRAFT ===================== */
+function populateInfoSelects(){
+  const mSel = $('#f_month'), ySel = $('#f_year');
+  mSel.innerHTML = MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  let yOpts=''; for(let y=2024;y<=2030;y++) yOpts+=`<option value="${y}">${y}</option>`;
+  ySel.innerHTML = yOpts;
+}
+function loadDraftToForm(){
+  $('#f_name').value = draft.info.name||'';
+  $('#f_position').value = draft.info.position||'';
+  $('#f_dept').value = draft.info.dept||'';
+  $('#f_month').value = draft.info.month||now.getMonth()+1;
+  $('#f_year').value = draft.info.year||now.getFullYear();
+  SECTIONS.forEach(s=>{ const ta=$(`textarea[data-sec="${s.id}"]`); ta.value = draft.sections[s.id]||''; });
+  updateAllWordCounts(); updateProgress(); updateHeader(); updateAvatar(); renderAttachments();
+}
+function bindInfoInputs(){
+  const map = { f_name:'name', f_position:'position', f_dept:'dept' };
+  Object.keys(map).forEach(id=> $('#'+id).addEventListener('input', e=>{
+    draft.info[map[id]] = e.target.value; scheduleSave();
+    if(id==='f_name') updateAvatar();
+  }));
+  $('#f_month').addEventListener('change', e=>{ draft.info.month = +e.target.value; updateHeader(); scheduleSave(); });
+  $('#f_year').addEventListener('change', e=>{ draft.info.year = +e.target.value; updateHeader(); scheduleSave(); });
+}
+function updateHeader(){
+  $('#monthBadge span').textContent = `${MONTHS[(draft.info.month||1)-1]}, ${draft.info.year||now.getFullYear()}`;
+}
+function updateAvatar(){ $('#avatar').textContent = initials(draft.info.name) || 'NV'; }
+
+/* ===================== SPEECH RECOGNITION ===================== */
+function initSpeech(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ speechSupported = false; $('#supportWarn').classList.remove('hidden'); disableMics(); return; }
+  recognition = new SR();
+  recognition.lang = 'vi-VN';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (ev)=>{
+    let interim = '';
+    for(let i=ev.resultIndex;i<ev.results.length;i++){
+      const res = ev.results[i];
+      if(res.isFinal) finalSinceStart += res[0].transcript + ' ';
+      else interim += res[0].transcript;
+    }
+    const ta = $(`textarea[data-sec="${targetSection}"]`);
+    const combined = (baseText + ' ' + finalSinceStart).trim();
+    ta.value = applyFormat(combined) + (interim ? ' ' : '');
+    draft.sections[targetSection] = ta.value;
+    updateWordCount(targetSection); updateProgress();
+    $('#liveBox').innerHTML = interim
+      ? `<span class="text-slate-700 not-italic">${esc(applyFormat(combined))}</span> <span class="text-brand-500 not-italic">${esc(interim)}</span>`
+      : `<span class="text-slate-700 not-italic">${esc(applyFormat(combined)) || 'Đang lắng nghe… hãy đọc nội dung.'}</span>`;
+  };
+  recognition.onerror = (ev)=>{
+    if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
+      isRecording=false; updateMicUI(); stopTimer();
+      toast('Vui lòng cấp quyền truy cập micro cho trình duyệt.','error');
+    } else if(ev.error==='audio-capture'){
+      isRecording=false; updateMicUI(); stopTimer();
+      toast('Không tìm thấy thiết bị micro.','error');
+    } else if(ev.error==='network'){
+      toast('Lỗi kết nối mạng khi nhận diện giọng nói.','error');
+    } else if(ev.error==='no-speech'){
+      /* keep recording, onend will restart */
+    } else if(ev.error==='aborted'){
+      /* ignore */
+    }
+  };
+  recognition.onend = ()=>{
+    if(isRecording){ setTimeout(()=>{ try{ recognition.start(); }catch(e){} }, 120); }
+  };
+}
+function disableMics(){
+  $('#bigMic').disabled = true; $('#bigMic').classList.add('opacity-50','cursor-not-allowed');
+  $$('.sec-mic').forEach(b=>{ b.disabled=true; b.classList.add('opacity-50','cursor-not-allowed'); });
+}
+
+function onSectionMic(id){
+  if(!speechSupported){ toast('Trình duyệt không hỗ trợ nhận diện giọng nói.','error'); return; }
+  if(isRecording && targetSection===id){ stopRec(); return; }
+  selectTarget(id, true);
+  if(!isRecording) startRec();
+}
+function selectTarget(id, fromMicClick){
+  targetSection = id;
+  $('#targetSelect').value = id;
+  refreshSectionMicStates();
+  if(isRecording){
+    // commit current target value as new base
+    const ta = $(`textarea[data-sec="${id}"]`);
+    baseText = ta.value.trim(); finalSinceStart = '';
+  }
+}
+function startRec(){
+  if(!speechSupported || isRecording) return;
+  const ta = $(`textarea[data-sec="${targetSection}"]`);
+  baseText = ta.value.trim(); finalSinceStart = '';
+  isRecording = true;
+  updateMicUI(); startTimer();
+  $('#liveBox').innerHTML = '<span class="text-slate-400">Đang lắng nghe… hãy đọc nội dung.</span>';
+  try{ recognition.start(); }catch(e){}
+}
+function stopRec(){
+  if(!isRecording) return;
+  isRecording = false;
+  try{ recognition.stop(); }catch(e){}
+  stopTimer(); updateMicUI();
+  const ta = $(`textarea[data-sec="${targetSection}"]`);
+  ta.value = applyFormat(ta.value);
+  draft.sections[targetSection] = ta.value;
+  updateWordCount(targetSection); updateProgress(); scheduleSave();
+  $('#liveBox').innerHTML = '<span class="text-slate-400">Đã dừng. Bấm micro để đọc tiếp.</span>';
+}
+function toggleMic(){ isRecording ? stopRec() : startRec(); }
+
+function updateMicUI(){
+  const wrap = $('#micWrap');
+  const btn = $('#bigMic');
+  if(isRecording){
+    wrap.classList.add('mic-rec');
+    btn.classList.remove('from-brand-600','to-purple-600'); btn.classList.add('from-rose-500','to-rose-600');
+    $('#micIcon').classList.add('hidden'); $('#stopIcon').classList.remove('hidden');
+    $('#micLabel').textContent = 'Đang ghi âm — bấm để dừng';
+    $('#recStatus').textContent = 'Đang ghi âm'; $('#recStatus').className = 'text-[11px] font-semibold px-2 py-1 rounded-full bg-rose-100 text-rose-600 flex items-center gap-1';
+    $('#recStatus').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>Đang ghi âm';
+    $('#wave').classList.remove('idle');
+  } else {
+    wrap.classList.remove('mic-rec');
+    btn.classList.add('from-brand-600','to-purple-600'); btn.classList.remove('from-rose-500','to-rose-600');
+    $('#micIcon').classList.remove('hidden'); $('#stopIcon').classList.add('hidden');
+    $('#micLabel').textContent = 'Bấm để bắt đầu đọc';
+    $('#recStatus').textContent = 'Đang chờ'; $('#recStatus').className = 'text-[11px] font-semibold px-2 py-1 rounded-full bg-slate-100 text-slate-500';
+    $('#wave').classList.add('idle');
+  }
+  refreshSectionMicStates();
+}
+function refreshSectionMicStates(){
+  $$('.sec-mic').forEach(b=>{
+    const active = isRecording && b.dataset.target===targetSection;
+    b.classList.toggle('active', active);
+    b.querySelector('svg').nextSibling; // noop
+  });
+}
+function startTimer(){ recStartTs = Date.now(); timerId = setInterval(()=>{
+  const s = Math.floor((Date.now()-recStartTs)/1000);
+  const mm = String(Math.floor(s/60)).padStart(2,'0'), ss = String(s%60).padStart(2,'0');
+  $('#recTimer').textContent = `${mm}:${ss}`;
+}, 500); }
+function stopTimer(){ clearInterval(timerId); timerId=null; }
+
+/* ===================== COLLECT / VALIDATE / SUBMIT ===================== */
+function collectReport(status){
+  return {
+    id: draft.editingId || uid(),
+    status: status,
+    info: { ...draft.info },
+    sections: { ...draft.sections },
+    attachments: (draft.attachments||[]).map(a=>({ name:a.name, size:a.size, type:a.type, data:a.data })),
+    createdAt: draft.editingId ? (reports.find(r=>r.id===draft.editingId)?.createdAt || Date.now()) : Date.now(),
+    updatedAt: Date.now()
+  };
+}
+function validate(){
+  if(!(draft.info.name||'').trim()){ toast('Vui lòng nhập họ và tên người báo cáo.','error'); $('#f_name').focus(); return false; }
+  const any = SECTIONS.some(s => (draft.sections[s.id]||'').trim().length > 0);
+  if(!any){ toast('Báo cáo cần có ít nhất một mục nội dung.','error'); return false; }
+  return true;
+}
+function submitReport(){
+  if(!validate()) return;
+  if(!fbDB){ toast('Chưa kết nối được Firebase, vui lòng thử lại.','error'); return; }
+  const r = collectReport('submitted');
+  const id = r.id; const payload = { ...r }; delete payload.id;
+  $('#submitBtn').disabled = true;
+  fbDB.ref(DB_ROOT + '/' + id).set(payload)
+    .then(()=>{
+      draft = { editingId:null, info:{ name:draft.info.name, position:draft.info.position, dept:draft.info.dept, month:draft.info.month, year:draft.info.year }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
+      saveDraft(); loadDraftToForm();
+      if(isRecording) stopRec();
+      toast('Đã nộp báo cáo & lưu lên Firebase! 🎉','success');
+      switchTab('reports');
+    })
+    .catch(e=> toast('Lỗi lưu Firebase: '+e.message,'error'))
+    .finally(()=>{ $('#submitBtn').disabled = false; });
+}
+
+/* ===================== NEXT PERSON ===================== */
+function startNextPerson(){
+  if(isRecording) stopRec();
+  draft = { editingId:null, info:{ name:'', position:'', dept:draft.info.dept, month:draft.info.month, year:draft.info.year }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
+  saveDraft(); loadDraftToForm();
+  switchTab('create');
+  setTimeout(()=>{ $('#f_name').focus(); window.scrollTo({top:0,behavior:'smooth'}); }, 60);
+  toast('Biểu mẫu trống — mời khai báo cho nhân viên tiếp theo.','info');
+}
+
+/* ===================== ATTACHMENTS ===================== */
+const MAX_FILE = 8 * 1024 * 1024;
+const ATT_ICON = { pdf:'📕', xlsx:'📗', xls:'📗', csv:'📗', pptx:'📙', ppt:'📙', docx:'📘', doc:'📘' };
+function fileExt(nm){ return (nm||'').split('.').pop().toLowerCase(); }
+function fmtSize(b){ return b<1024 ? b+' B' : b<1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(2)+' MB'; }
+function handleAttSelect(files){
+  const arr = [...files];
+  if(!arr.length) return;
+  let pending = arr.length;
+  arr.forEach(f=>{
+    if(f.size > MAX_FILE){ toast(`"${f.name}" vượt quá 8MB.`,'error'); if(--pending===0) renderAttachments(); return; }
+    const rd = new FileReader();
+    rd.onload = ()=>{
+      draft.attachments.push({ name:f.name, size:f.size, type:f.type||fileExt(f.name), data:rd.result });
+      if(--pending===0){ renderAttachments(); scheduleSave(); toast('Đã đính kèm tài liệu.','success'); }
+    };
+    rd.onerror = ()=>{ toast(`Không đọc được "${f.name}".`,'error'); if(--pending===0) renderAttachments(); };
+    rd.readAsDataURL(f);
+  });
+}
+function removeAttachment(i){ draft.attachments.splice(i,1); renderAttachments(); scheduleSave(); }
+function renderAttachments(){
+  const box = $('#attList'); if(!box) return;
+  const list = draft.attachments || [];
+  $('#attCount').textContent = list.length + ' file';
+  box.innerHTML = list.map((a,i)=>`
+    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50">
+      <span class="text-lg">${ATT_ICON[fileExt(a.name)]||'📎'}</span>
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-semibold text-slate-800 truncate">${esc(a.name)}</div>
+        <div class="text-[11px] text-slate-500">${fmtSize(a.size)}</div>
+      </div>
+      <a href="${a.data}" download="${esc(a.name)}" class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-600">Tải</a>
+      <button data-att-del="${i}" class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
+    </div>`).join('');
+  box.querySelectorAll('[data-att-del]').forEach(b=> b.addEventListener('click', ()=> removeAttachment(+b.dataset.attDel)));
+}
+
+/* ===================== EMPLOYEE REPORT TABLE ===================== */
+function renderReportTable(){
+  const tb = $('#reportTableBody'); if(!tb) return;
+  const q = ($('#searchReports')?.value||'').trim().toLowerCase();
+  let list = reports.slice();
+  if(q) list = list.filter(r=> [r.info?.name, r.info?.dept, r.info?.position, MONTHS[((r.info?.month)||1)-1], String(r.info?.year||'')].join(' ').toLowerCase().includes(q));
+  $('#tableCount').textContent = list.length;
+  $('#tableEmpty').classList.toggle('hidden', list.length>0);
+  tb.innerHTML = list.map((r,i)=>{
+    const atts = r.attachments || [];
+    return `<tr class="hover:bg-slate-50/70 transition">
+      <td class="px-4 py-3 text-slate-400 font-semibold">${i+1}</td>
+      <td class="px-4 py-3">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-[11px] font-bold shrink-0">${esc(initials(r.info?.name))}</span>
+          <div class="min-w-0">
+            <div class="font-semibold text-slate-900 truncate">${esc(r.info?.name||'—')}</div>
+            <div class="text-[11px] text-slate-500 truncate">${esc(r.info?.position||'')}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-4 py-3 text-slate-600">${esc(r.info?.dept||'—')}</td>
+      <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[((r.info?.month)||1)-1]}/${r.info?.year||''}</span></td>
+      <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${new Date(r.createdAt||Date.now()).toLocaleDateString('vi-VN')}</td>
+      <td class="px-4 py-3 text-center">${atts.length ? `<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold">📎 ${atts.length}</span>` : '<span class="text-slate-300">—</span>'}</td>
+      <td class="px-4 py-3">
+        <div class="flex justify-end gap-1.5">
+          <button data-tv="${r.id}" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Xem lại</button>
+          <button data-te="${r.id}" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Sửa</button>
+          <button data-td="${r.id}" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+  tb.querySelectorAll('[data-tv]').forEach(b=> b.addEventListener('click', ()=> openView(b.dataset.tv)));
+  tb.querySelectorAll('[data-te]').forEach(b=> b.addEventListener('click', ()=> editReport(b.dataset.te)));
+  tb.querySelectorAll('[data-td]').forEach(b=> b.addEventListener('click', ()=> deleteReport(b.dataset.td)));
+}
+function clearForm(){
+  showConfirm('Xóa toàn bộ nội dung?','Nội dung báo cáo hiện tại sẽ bị xóa trắng.','Xóa', ()=>{
+    if(isRecording) stopRec();
+    draft.sections = {completed:'',unfinished:'',causes:'',plan:'',proposals:''};
+    draft.attachments = [];
+    draft.editingId = null;
+    saveDraft(); loadDraftToForm();
+    toast('Đã xóa trắng biểu mẫu.','info');
+  });
+}
+
+/* ===================== EXPORT ===================== */
+function reportToHTML(r){
+  const filled = SECTIONS.filter(s=>(r.sections[s.id]||'').trim());
+  return `<div class="print-doc">
+    <h1>BÁO CÁO CÔNG VIỆC THÁNG</h1>
+    <div style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
+    <div class="meta"><span><b>Họ và tên:</b> ${esc(r.info.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.info.position||'—')}</span></div>
+    <div class="meta"><span><b>Phòng ban:</b> ${esc(r.info.dept||'—')}</span><span><b>Ngày lập:</b> ${new Date(r.createdAt).toLocaleDateString('vi-VN')}</span></div>
+    ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections[s.id]||'').trim() || '—')}</p>`).join('')}
+    <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
+      <div style="text-align:center"><div>Người lập báo cáo</div><div style="height:48px"></div><div>${esc(r.info.name||'')}</div></div>
+      <div style="text-align:center"><div>Xác nhận của quản lý</div><div style="height:48px"></div><div>…………………</div></div>
+    </div>
+  </div>`;
+}
+function reportToText(r){
+  let t = `BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}\n`;
+  t += `Họ và tên: ${r.info.name||''}\nChức vụ: ${r.info.position||'—'}\nPhòng ban: ${r.info.dept||'—'}\nNgày lập: ${new Date(r.createdAt).toLocaleDateString('vi-VN')}\n\n`;
+  SECTIONS.forEach(s=>{ t += `${s.num}. ${s.title}\n${(r.sections[s.id]||'').trim()||'—'}\n\n`; });
+  t += `Người lập báo cáo: ${r.info.name||''}`;
+  return t;
+}
+function doExport(mode, r){
+  if(mode==='print'){
+    $('#printArea').innerHTML = reportToHTML(r);
+    $('#printArea').classList.add('show');
+    setTimeout(()=>{ window.print(); setTimeout(()=>$('#printArea').classList.remove('show'), 500); }, 100);
+  } else if(mode==='doc'){
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body{font-family:'Be Vietnam Pro',Arial,sans-serif}h1{font-size:20px;text-align:center}h2{font-size:14px;color:#4338ca;border-bottom:1px solid #ddd;margin-top:16px}p{font-size:13px;line-height:1.7;white-space:pre-wrap}</style></head><body>${reportToHTML(r)}</body></html>`;
+    const blob = new Blob(['\ufeff', html], { type:'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `BaoCaoCongViec_${MONTHS[(r.info.month||1)-1].replace(' ','')}_${r.info.year}_${(r.info.name||'nhanvien').replace(/\s+/g,'_')}.doc`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    toast('Đã tải file Word.','success');
+  } else if(mode==='copy'){
+    const txt = reportToText(r);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(()=>toast('Đã sao chép báo cáo.','success')).catch(()=>fallbackCopy(txt));
+    } else fallbackCopy(txt);
+  }
+}
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('Đã sao chép báo cáo.','success'); }catch(e){ toast('Không thể sao chép.','error'); }
+  ta.remove();
+}
+function currentFormReport(){ return collectReport('draft'); }
+
+/* ===================== REPORTS LIST ===================== */
+function updateReportCount(){ $('#reportCount').textContent = reports.length; }
+function renderReports(){
+  const grid = $('#reportsGrid'); const empty = $('#reportsEmpty');
+  const q = ($('#searchReports').value||'').trim().toLowerCase();
+  let list = reports.slice();
+  // include draft card
+  const draftExists = SECTIONS.some(s=>(draft.sections[s.id]||'').trim()) || (draft.info.name||'').trim();
+  let items = [];
+  if(currentFilter==='draft' || currentFilter==='all'){
+    if(draftExists) items.push({ __draft:true });
+  }
+  if(currentFilter!=='draft'){
+    list.forEach(r=> items.push(r));
+  }
+  if(q){
+    items = items.filter(it=>{
+      if(it.__draft){
+        const d = draft;
+        return [d.info.name,d.info.dept,MONTHS[(d.info.month||1)-1],String(d.info.year||'')].join(' ').toLowerCase().includes(q);
+      }
+      return [it.info.name,it.info.dept,MONTHS[(it.info.month||1)-1],String(it.info.year||'')].join(' ').toLowerCase().includes(q);
+    });
+  }
+  grid.innerHTML = '';
+  if(items.length===0){ empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
+  empty.classList.add('hidden'); grid.classList.remove('hidden');
+
+  items.forEach(it=>{
+    if(it.__draft){ grid.appendChild(draftCard()); return; }
+    grid.appendChild(reportCard(it));
+  });
+}
+function excerpt(r){
+  for(const s of SECTIONS){ const v=(r.sections[s.id]||'').trim(); if(v) return v; }
+  return 'Chưa có nội dung.';
+}
+function draftCard(){
+  const c = document.createElement('div');
+  c.className = 'rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/40 p-5 flex flex-col';
+  c.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold">BẢN NHÁP</span>
+      <span class="text-[11px] text-slate-500">${MONTHS[(draft.info.month||1)-1]} ${draft.info.year||''}</span>
+    </div>
+    <div class="mt-2 font-bold text-slate-900">${esc(draft.info.name||'Chưa đặt tên')}</div>
+    <div class="text-xs text-slate-500">${esc(draft.info.dept||'Chưa có phòng ban')}</div>
+    <p class="mt-2 text-xs text-slate-600 line-clamp-2 flex-1">${esc(excerpt({sections:draft.sections}))}</p>
+    <div class="mt-3 flex gap-2">
+      <button class="act-edit flex-1 px-3 py-2 rounded-lg bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700">Tiếp tục chỉnh sửa</button>
+    </div>`;
+  c.querySelector('.act-edit').addEventListener('click', ()=> switchTab('create'));
+  return c;
+}
+function reportCard(r){
+  const c = document.createElement('div');
+  c.className = 'bg-white rounded-2xl shadow-card border border-slate-100 p-5 flex flex-col hover:shadow-soft transition';
+  c.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">ĐÃ NỘP</span>
+      <span class="text-[11px] text-slate-500 ml-auto">${new Date(r.createdAt).toLocaleDateString('vi-VN')}</span>
+    </div>
+    <div class="mt-2 flex items-center gap-2">
+      <span class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.info.name))}</span>
+      <div class="min-w-0">
+        <div class="font-bold text-slate-900 truncate">${esc(r.info.name||'—')}</div>
+        <div class="text-xs text-slate-500 truncate">${esc(r.info.dept||'—')} · ${esc(r.info.position||'')}</div>
+      </div>
+    </div>
+    <div class="mt-2 inline-flex w-fit px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
+    <p class="mt-2 text-xs text-slate-600 line-clamp-3 flex-1">${esc(excerpt(r))}</p>
+    <div class="mt-3 grid grid-cols-4 gap-1.5">
+      <button class="act-view px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Xem</button>
+      <button class="act-edit px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Sửa</button>
+      <button class="act-print px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">In</button>
+      <button class="act-del px-2 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
+    </div>`;
+  c.querySelector('.act-view').addEventListener('click', ()=> openView(r.id));
+  c.querySelector('.act-edit').addEventListener('click', ()=> editReport(r.id));
+  c.querySelector('.act-print').addEventListener('click', ()=> doExport('print', r));
+  c.querySelector('.act-del').addEventListener('click', ()=> deleteReport(r.id));
+  return c;
+}
+function editReport(id){
+  const r = reports.find(x=>x.id===id); if(!r) return;
+  if(isRecording) stopRec();
+  draft = { editingId:id, info:{...r.info}, sections:{...r.sections}, attachments:[...(r.attachments||[])], updatedAt:Date.now() };
+  saveDraft(); loadDraftToForm();
+  switchTab('create');
+  toast('Đã tải báo cáo vào biểu mẫu để chỉnh sửa.','info');
+}
+function deleteReport(id){
+  const r = reports.find(x=>x.id===id); if(!r) return;
+  showConfirm('Xóa báo cáo này?', `Báo cáo ${MONTHS[(r.info.month||1)-1]}/${r.info.year} của ${r.info.name||''} sẽ bị xóa vĩnh viễn trên Firebase.`,'Xóa', ()=>{
+    if(!fbDB){ toast('Chưa kết nối Firebase.','error'); return; }
+    fbDB.ref(DB_ROOT + '/' + id).remove()
+      .then(()=> toast('Đã xóa báo cáo.','info'))
+      .catch(e=> toast('Lỗi xóa: '+e.message,'error'));
+  });
+}
+
+/* ===================== VIEW MODAL ===================== */
+function openView(id){
+  const r = reports.find(x=>x.id===id); if(!r) return;
+  currentViewId = id;
+  const body = $('#viewBody');
+  body.innerHTML = `
+    <div class="text-center mb-4">
+      <div class="text-xs font-semibold text-brand-600 uppercase tracking-wide">Báo cáo công việc tháng</div>
+      <div class="text-xl font-extrabold text-slate-900">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 rounded-xl p-3 mb-4">
+      <div><span class="text-slate-500">Họ tên:</span> <b>${esc(r.info.name||'—')}</b></div>
+      <div><span class="text-slate-500">Chức vụ:</span> <b>${esc(r.info.position||'—')}</b></div>
+      <div><span class="text-slate-500">Phòng ban:</span> <b>${esc(r.info.dept||'—')}</b></div>
+      <div><span class="text-slate-500">Ngày lập:</span> <b>${new Date(r.createdAt).toLocaleDateString('vi-VN')}</b></div>
+    </div>
+    ${SECTIONS.map(s=>`
+      <div class="mb-4">
+        <div class="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-1 mb-1.5">
+          <span class="w-6 h-6 rounded-md bg-brand-50 text-brand-600 grid place-items-center text-[11px]">${s.num}</span>${s.title}
+        </div>
+        <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">${esc((r.sections[s.id]||'').trim()||'—')}</p>
+      </div>`).join('')}
+    ${(r.attachments&&r.attachments.length) ? `
+      <div class="mt-5 pt-4 border-t border-slate-100">
+        <div class="font-bold text-slate-800 mb-2">📎 Tài liệu đính kèm (${r.attachments.length})</div>
+        <div class="space-y-2">${r.attachments.map(a=>`
+          <a href="${a.data}" download="${esc(a.name)}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-brand-300 hover:bg-brand-50/50 transition">
+            <span class="text-lg">${ATT_ICON[fileExt(a.name)]||'📎'}</span>
+            <div class="min-w-0 flex-1"><div class="text-sm font-semibold text-slate-800 truncate">${esc(a.name)}</div><div class="text-[11px] text-slate-500">${fmtSize(a.size)}</div></div>
+            <span class="text-[11px] font-semibold text-brand-600">Tải xuống</span>
+          </a>`).join('')}</div>
+      </div>` : ''}`;
+  $('#viewModal').classList.remove('hidden');
+}
+function closeView(){ $('#viewModal').classList.add('hidden'); currentViewId=null; }
+
+/* ===================== CONFIRM MODAL ===================== */
+function showConfirm(title, msg, okText, cb){
+  $('#confirmTitle').textContent = title; $('#confirmMsg').textContent = msg; $('#confirmOk').textContent = okText;
+  confirmCb = cb; $('#confirmModal').classList.remove('hidden');
+}
+function closeConfirm(){ $('#confirmModal').classList.add('hidden'); confirmCb=null; }
+
+/* ===================== STATS ===================== */
+function renderStats(){
+  const total = reports.length;
+  const thisMonth = reports.filter(r=> r.info.month===now.getMonth()+1 && r.info.year===now.getFullYear()).length;
+  const avgComp = total ? Math.round(reports.reduce((a,r)=>{
+    const f = SECTIONS.filter(s=>(r.sections[s.id]||'').trim().length>8).length; return a + f/SECTIONS.length*100;
+  },0)/total) : 0;
+  const totalWords = reports.reduce((a,r)=> a + SECTIONS.reduce((b,s)=> b + wordCount(r.sections[s.id]),0), 0);
+
+  const cards = [
+    { label:'Tổng báo cáo', value: total, color:'from-brand-500 to-purple-500', icon:'📑' },
+    { label:'Báo cáo tháng này', value: thisMonth, color:'from-emerald-500 to-teal-500', icon:'📅' },
+    { label:'Tỷ lệ hoàn thành TB', value: avgComp + '%', color:'from-amber-500 to-orange-500', icon:'🎯' },
+    { label:'Tổng số từ đã ghi', value: totalWords.toLocaleString('vi-VN'), color:'from-sky-500 to-indigo-500', icon:'✍️' },
+  ];
+  $('#statCards').innerHTML = cards.map(c=>`
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold text-slate-500">${c.label}</span>
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br ${c.color} text-white grid place-items-center text-base">${c.icon}</span>
+      </div>
+      <div class="mt-2 text-3xl font-extrabold text-slate-900">${c.value}</div>
+    </div>`).join('');
+
+  // bar chart by month (current year)
+  $('#statYear').textContent = now.getFullYear();
+  const counts = new Array(12).fill(0);
+  reports.forEach(r=>{ if(r.info.year===now.getFullYear()) counts[(r.info.month||1)-1]++; });
+  const max = Math.max(1, ...counts);
+  $('#barChart').innerHTML = counts.map((v,i)=>{
+    const h = Math.max(4, v/max*100);
+    const isCur = (i===now.getMonth());
+    return `<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+      <span class="text-[11px] font-bold ${v>0?'text-slate-700':'text-slate-300'}">${v||''}</span>
+      <div class="w-full rounded-t-lg ${isCur?'bg-gradient-to-t from-brand-600 to-purple-500':'bg-brand-100'}" style="height:${h}%"></div>
+      <span class="text-[10px] text-slate-400 font-semibold">${i+1}</span>
+    </div>`;
+  }).join('');
+
+  // section completion bars
+  $('#sectionBars').innerHTML = SECTIONS.map(s=>{
+    const pct = total ? Math.round(reports.filter(r=>(r.sections[s.id]||'').trim().length>8).length/total*100) : 0;
+    return `<div>
+      <div class="flex justify-between text-xs mb-1"><span class="font-semibold text-slate-700">${s.num}. ${s.title}</span><span class="font-bold text-brand-600">${pct}%</span></div>
+      <div class="h-2 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-gradient-to-r from-brand-500 to-purple-500" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ===================== TABS ===================== */
+function switchTab(name){
+  $$('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===name));
+  ['create','reports','stats'].forEach(t=> $('#tab-'+t).classList.toggle('hidden', t!==name));
+  const panel = $('#tab-'+name); panel.classList.remove('tab-panel'); void panel.offsetWidth; panel.classList.add('tab-panel');
+  if(name==='reports'){ renderReports(); renderReportTable(); }
+  if(name==='stats') renderStats();
+}
+
+/* ===================== INIT ===================== */
+function init(){
+  load();
+  populateInfoSelects();
+  buildSectionCards();
+  bindInfoInputs();
+  loadDraftToForm();
+  initSpeech();
+
+  // target select
+  $('#targetSelect').innerHTML = SECTIONS.map(s=>`<option value="${s.id}">${s.num}. ${s.title}</option>`).join('');
+  $('#targetSelect').value = targetSection;
+  $('#targetSelect').addEventListener('change', e=> selectTarget(e.target.value, false));
+
+  // big mic
+  $('#bigMic').addEventListener('click', toggleMic);
+  $('#heroStart').addEventListener('click', ()=>{ if(!speechSupported){ toast('Trình duyệt không hỗ trợ giọng nói, hãy gõ tay.','info'); $('#f_name').focus(); return;} if(!isRecording) startRec(); window.scrollTo({top: document.querySelector('aside').offsetTop-100, behavior:'smooth'}); });
+  $('#autoCap').addEventListener('change', e=>{ autoCap = e.target.checked; });
+
+  // actions
+  $('#submitBtn').addEventListener('click', submitReport);
+  $('#clearBtn').addEventListener('click', clearForm);
+  $('#newReportBtn').addEventListener('click', ()=>{
+    if(isRecording) stopRec();
+    draft = { editingId:null, info:{ name:draft.info.name, position:draft.info.position, dept:draft.info.dept, month:now.getMonth()+1, year:now.getFullYear() }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
+    saveDraft(); loadDraftToForm(); toast('Đã tạo biểu mẫu báo cáo mới.','info');
+  });
+
+  // export menu
+  const exBtn = $('#exportBtn'), exMenu = $('#exportMenu');
+  exBtn.addEventListener('click', e=>{ e.stopPropagation(); exMenu.classList.toggle('hidden'); });
+  document.addEventListener('click', ()=> exMenu.classList.add('hidden'));
+  $$('[data-export]').forEach(b=> b.addEventListener('click', ()=>{ doExport(b.dataset.export, currentFormReport()); exMenu.classList.add('hidden'); }));
+
+  // tabs
+  $$('.nav-btn').forEach(b=> b.addEventListener('click', ()=> switchTab(b.dataset.tab)));
+
+  // reports search/filter
+  $('#searchReports').addEventListener('input', ()=>{ renderReports(); renderReportTable(); });
+  $$('.filter-btn').forEach(b=> b.addEventListener('click', ()=>{
+    currentFilter = b.dataset.filter;
+    $$('.filter-btn').forEach(x=>{ x.classList.remove('bg-brand-600','text-white'); x.classList.add('text-slate-600'); });
+    b.classList.add('bg-brand-600','text-white'); b.classList.remove('text-slate-600');
+    renderReports();
+  }));
+  $('#emptyCreate').addEventListener('click', ()=> switchTab('create'));
+
+  // view modal
+  $$('[data-close-view]').forEach(b=> b.addEventListener('click', closeView));
+  $('#viewModal').addEventListener('click', e=>{ if(e.target.id==='viewModal') closeView(); });
+  $$('[data-view-action]').forEach(b=> b.addEventListener('click', ()=>{
+    const r = reports.find(x=>x.id===currentViewId); if(r) doExport(b.dataset.viewAction, r);
+  }));
+
+  // confirm modal
+  $('#confirmCancel').addEventListener('click', closeConfirm);
+  $('#confirmOk').addEventListener('click', ()=>{ const cb=confirmCb; closeConfirm(); if(cb) cb(); });
+  $('#confirmModal').addEventListener('click', e=>{ if(e.target.id==='confirmModal') closeConfirm(); });
+
+  // keyboard shortcut
+  document.addEventListener('keydown', e=>{
+    if((e.ctrlKey||e.metaKey) && (e.key==='m'||e.key==='M')){ e.preventDefault(); if(speechSupported) toggleMic(); }
+    if(e.key==='Escape'){ if(!$('#viewModal').classList.contains('hidden')) closeView(); if(!$('#confirmModal').classList.contains('hidden')) closeConfirm(); }
+  });
+
+  // attachments
+  $('#attInput').addEventListener('change', e=>{ handleAttSelect(e.target.files); e.target.value=''; });
+  renderAttachments();
+
+  // next person
+  $('#nextPersonBtn').addEventListener('click', startNextPerson);
+  $('#addNextBtn').addEventListener('click', startNextPerson);
+
+  updateReportCount();
+  renderReports();
+  renderReportTable();
+  renderStats();
+  updateMicUI();
+  initFirebase();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
