@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-700-normal.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/be-vietnam-pro@latest/vietnamese-800-normal.css" />
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -55,6 +57,9 @@
   .nav-btn.active{color:#4338ca;background:#eef2ff;}
   .sec-mic.active{background:#ef4444;color:#fff;border-color:#ef4444;box-shadow:0 8px 20px -8px rgba(239,68,68,.6)}
   .gradient-text{background:linear-gradient(90deg,#4f46e5,#9333ea);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .dropzone.drag{border-color:#6366f1;background:#eef2ff;}
+  .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   @media print{
     body *{visibility:hidden !important;}
     #printArea, #printArea *{visibility:visible !important;}
@@ -66,9 +71,10 @@
   .print-doc h2{font-size:14px;font-weight:700;margin:18px 0 6px;color:#4338ca;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
   .print-doc p{white-space:pre-wrap;font-size:13px;line-height:1.7;margin:0}
   .print-doc .meta{display:flex;justify-content:space-between;font-size:12px;color:#475569;margin-bottom:8px}
+  .print-doc ul.att{margin:4px 0 0 18px;font-size:12px;color:#334155}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spin{animation:spin 1s linear infinite}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body class="text-slate-800 min-h-screen">
 
@@ -79,11 +85,14 @@
       <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </div>
     <div class="leading-tight">
-      <div class="font-extrabold text-slate-900 text-lg tracking-tight">Voice<span class="gradient-text">Report</span></div>
-      <div class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Báo cáo công việc tháng bằng giọng nói</div>
+      <div class="font-extrabold text-slate-900 text-lg tracking-tight">BÁO CÁO <span class="gradient-text"> VOICE </span></div>
+      <div class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Được phát triển bởi: MTRIET </div>
     </div>
     <div class="ml-auto flex items-center gap-3">
-      <div id="monthBadge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold border border-brand-100">
+      <span id="syncStatus" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold">
+        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Đang kết nối…
+      </span>
+      <div id="monthBadge" class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold border border-brand-100">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span></span>
       </div>
@@ -97,8 +106,8 @@
       Tạo báo cáo
     </button>
     <button data-tab="reports" class="nav-btn px-4 py-2.5 text-sm font-semibold rounded-t-lg flex items-center gap-2 whitespace-nowrap text-slate-600 hover:text-slate-900">
-      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
-      Báo cáo của tôi
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Danh sách báo cáo
       <span id="reportCount" class="ml-1 px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">0</span>
     </button>
     <button data-tab="stats" class="nav-btn px-4 py-2.5 text-sm font-semibold rounded-t-lg flex items-center gap-2 whitespace-nowrap text-slate-600 hover:text-slate-900">
@@ -118,14 +127,14 @@
       <div class="grid md:grid-cols-5 items-center">
         <div class="md:col-span-3 p-6 sm:p-8">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Công nghệ nhận diện giọng nói tiếng Việt
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Nhận diện giọng nói tiếng Việt · Đồng bộ Firebase thời gian thực
           </span>
           <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Đọc báo cáo — hệ thống tự ghi thành văn bản chuyên nghiệp</h1>
-          <p class="mt-2 text-slate-600 text-sm sm:text-base max-w-xl">Tiết kiệm hàng giờ soạn thảo mỗi tháng. Chỉ cần bấm micro và đọc, VoiceReport chuyển giọng nói thành báo cáo công việc chuẩn mẫu, sẵn sàng nộp cho quản lý.</p>
+          <p class="mt-2 text-slate-600 text-sm sm:text-base max-w-xl">Tiết kiệm hàng giờ soạn thảo mỗi tháng. Chỉ cần bấm micro và đọc, VoiceReport chuyển giọng nói thành báo cáo công việc chuẩn mẫu, đính kèm file Excel/PDF/PowerPoint, và lưu ngay lên hệ thống cho quản lý theo dõi.</p>
           <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
             <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center shrink-0">🎙️</span><div><div class="font-semibold text-slate-800">Ghi âm từng mục</div><div class="text-xs text-slate-500">Chọn mục cần đọc</div></div></div>
-            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-purple-50 text-purple-600 grid place-items-center shrink-0">⚡</span><div><div class="font-semibold text-slate-800">Mẫu câu sẵn</div><div class="text-xs text-slate-500">Chèn nhanh 1 chạm</div></div></div>
-            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0">📤</span><div><div class="font-semibold text-slate-800">Xuất đa định dạng</div><div class="text-xs text-slate-500">In / Word / Sao chép</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-purple-50 text-purple-600 grid place-items-center shrink-0">📎</span><div><div class="font-semibold text-slate-800">Đính kèm file</div><div class="text-xs text-slate-500">Excel · PDF · PPTX</div></div></div>
+            <div class="flex items-start gap-2"><span class="mt-0.5 w-6 h-6 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0">👥</span><div><div class="font-semibold text-slate-800">Danh sách NV</div><div class="text-xs text-slate-500">Xem · Xóa · Thêm người mới</div></div></div>
           </div>
           <button id="heroStart" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
@@ -133,7 +142,7 @@
           </button>
         </div>
         <div class="md:col-span-2 bg-gradient-to-br from-brand-50 to-purple-50 h-full grid place-items-center p-6">
-          <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1bd85e3b1-221b-4dba-8143-e1a9acac3501.png" alt="Minh họa đọc báo cáo bằng giọng nói" class="w-full max-w-[320px] drop-shadow-sm" />
+          <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/10d2ec37b-b923-4f0a-bd1d-d9b8f6f96d8a.png" alt="Minh họa đọc báo cáo bằng giọng nói" class="w-full max-w-[340px] drop-shadow-sm rounded-2xl" />
         </div>
       </div>
     </div>
@@ -157,9 +166,9 @@
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </span>
             <h2 class="font-bold text-slate-900">Thông tin người báo cáo</h2>
-            <button id="newReportBtn" class="ml-auto text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Báo cáo mới
+            <button id="nextPersonBtn" class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-semibold hover:opacity-95 shadow-sm">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Thêm người tiếp theo
             </button>
           </div>
           <div class="grid sm:grid-cols-2 gap-4">
@@ -189,23 +198,27 @@
         </div>
 
         <!-- SECTION CARDS -->
-        <div id="sectionCards" class="space-y-5"></div>
+        <div id="sectionCards" class="space-y-5"></div>
+
         <!-- ATTACHMENTS -->
         <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-6">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 grid place-items-center">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 grid place-items-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
             </span>
-            <h2 class="font-bold text-slate-900">Tài liệu đính kèm <span class="text-xs font-semibold text-slate-400">(Excel, PDF, PowerPoint, Word)</span></h2>
-            <span id="attCount" class="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">0 file</span>
+            <h2 class="font-bold text-slate-900">Tệp đính kèm</h2>
+            <span class="text-[11px] text-slate-400 ml-auto">Tối đa 5 tệp · 1.5MB/tệp</span>
           </div>
-          <label for="attInput" class="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition p-5 text-center">
-            <div class="text-2xl">📎</div>
-            <div class="mt-1 text-sm font-semibold text-slate-700">Bấm để chọn file đính kèm</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">Hỗ trợ .xlsx .xls .csv .pdf .pptx .ppt .docx .doc — tối đa 8MB / file</div>
-          </label>
-          <input id="attInput" type="file" multiple accept=".xlsx,.xls,.csv,.pdf,.pptx,.ppt,.docx,.doc" class="hidden" />
-          <div id="attList" class="mt-3 space-y-2"></div>
+          <p class="text-xs text-slate-500 mb-3">Hỗ trợ Excel (.xlsx, .xls, .csv), PDF (.pdf), PowerPoint (.pptx, .ppt). Kéo thả hoặc bấm để chọn.</p>
+          <div id="dropzone" class="dropzone border-2 border-dashed border-slate-200 rounded-xl p-5 text-center cursor-pointer hover:border-brand-300 hover:bg-brand-50/40 transition">
+            <div class="w-10 h-10 mx-auto rounded-full bg-brand-50 text-brand-600 grid place-items-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="mt-2 text-sm font-semibold text-slate-700">Kéo thả tệp vào đây</div>
+            <div class="text-xs text-slate-400 mt-0.5">hoặc <span class="text-brand-600 underline">bấm để chọn tệp</span></div>
+            <input id="fileInput" type="file" multiple accept=".xlsx,.xls,.csv,.pdf,.pptx,.ppt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint" class="hidden" />
+          </div>
+          <ul id="fileList" class="mt-3 space-y-2"></ul>
         </div>
 
         <!-- ACTION BAR -->
@@ -213,6 +226,10 @@
           <button id="submitBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft hover:opacity-95 transition">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
             Nộp báo cáo
+          </button>
+          <button id="nextPersonBtn2" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold text-sm hover:opacity-95 shadow-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Thêm người tiếp theo
           </button>
           <div class="relative">
             <button id="exportBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition">
@@ -231,18 +248,6 @@
             Xóa trắng
           </button>
           <span id="saveStatus" class="text-xs text-slate-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Đã lưu nháp</span>
-        </div>
-
-        <!-- NEXT PERSON -->
-        <div class="rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/40 p-4 flex flex-wrap items-center gap-3">
-          <div class="flex-1 min-w-[200px]">
-            <div class="font-bold text-slate-800 text-sm">Đã khai báo xong nhân viên này?</div>
-            <div class="text-xs text-slate-500">Nộp báo cáo rồi bấm nút bên cạnh để làm trắng biểu mẫu và khai báo cho nhân viên kế tiếp.</div>
-          </div>
-          <button id="nextPersonBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-brand-300 text-brand-700 font-semibold text-sm hover:bg-brand-50 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Khai báo cáo cho người tiếp theo
-          </button>
         </div>
       </div>
 
@@ -309,6 +314,7 @@
               <li>Chọn đúng mục cần đọc trước khi bấm micro.</li>
               <li>Dùng phím tắt <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">M</kbd> để bật/tắt micro.</li>
               <li>Chèn mẫu câu có sẵn rồi đọc bổ sung chi tiết.</li>
+              <li>Đính kèm file minh chứng (bảng số liệu, slide…) nếu có.</li>
             </ul>
           </div>
         </div>
@@ -323,53 +329,46 @@
         <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="searchReports" type="text" placeholder="Tìm theo tên, phòng ban, tháng…" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
       </div>
-      <div class="flex gap-1 bg-white rounded-xl border border-slate-200 p-1">
-        <button data-filter="all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">Tất cả</button>
-        <button data-filter="submitted" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600">Đã nộp</button>
-        <button data-filter="draft" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600">Bản nháp</button>
-      </div>
-    </div>
-    <!-- EMPLOYEE REPORT TABLE -->
-    <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden mb-6">
-      <div class="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-slate-100">
-        <h3 class="font-bold text-slate-900">Danh sách nhân viên đã báo cáo</h3>
-        <span id="tableCount" class="px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[11px] font-bold">0</span>
-        <span id="syncBadge" class="text-[11px] font-semibold px-2 py-1 rounded-full bg-slate-100 text-slate-500 flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Đang kết nối Firebase…
-        </span>
-        <button id="addNextBtn" class="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-xs shadow-soft hover:opacity-95 transition">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Thêm + Khai báo cáo cho người tiếp theo
-        </button>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[720px]">
-          <thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wide">
-            <tr>
-              <th class="px-4 py-3 text-left font-bold w-12">#</th>
-              <th class="px-4 py-3 text-left font-bold">Tên nhân viên</th>
-              <th class="px-4 py-3 text-left font-bold">Bộ phận</th>
-              <th class="px-4 py-3 text-left font-bold">Kỳ báo cáo</th>
-              <th class="px-4 py-3 text-left font-bold">Ngày báo cáo</th>
-              <th class="px-4 py-3 text-center font-bold">File</th>
-              <th class="px-4 py-3 text-right font-bold">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody id="reportTableBody" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-      <div id="tableEmpty" class="hidden px-5 py-10 text-center text-sm text-slate-400">Chưa có nhân viên nào nộp báo cáo.</div>
+      <button id="addNextFromList" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold text-sm hover:opacity-95 shadow-sm whitespace-nowrap">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm báo cáo người tiếp theo
+      </button>
     </div>
 
-    <div id="reportsGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-    <div id="reportsEmpty" class="hidden text-center py-16">
-      <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1f0d14e45-c5b5-4870-814b-7613aa3b5152.png" alt="Chưa có báo cáo" class="w-56 mx-auto opacity-90" />
-      <h3 class="mt-4 font-bold text-slate-800 text-lg">Chưa có báo cáo nào</h3>
-      <p class="text-sm text-slate-500 mt-1">Hãy đọc báo cáo công việc tháng đầu tiên của bạn bằng giọng nói.</p>
-      <button id="emptyCreate" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tạo báo cáo đầu tiên
-      </button>
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+      <div class="px-5 py-4 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-brand-50 text-brand-600 grid place-items-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </span>
+          Danh sách nhân viên đã báo cáo
+        </h3>
+        <span id="listCountLabel" class="text-xs font-semibold text-slate-500">0 bản ghi</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="text-left px-4 py-3 w-12">STT</th>
+              <th class="text-left px-4 py-3">Nhân viên</th>
+              <th class="text-left px-4 py-3">Bộ phận</th>
+              <th class="text-left px-4 py-3">Kỳ báo cáo</th>
+              <th class="text-left px-4 py-3">Ngày báo cáo</th>
+              <th class="text-right px-4 py-3 w-32">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div id="reportsEmpty" class="hidden text-center py-14 px-6">
+        <img src="https://image.qwenlm.ai/public_source/154df4f6-6129-4bd7-867d-2bc133567240/1bcea6f76-64ac-4158-94ce-cc80cc498d40.png" alt="Chưa có báo cáo" class="w-56 mx-auto opacity-90" />
+        <h3 class="mt-4 font-bold text-slate-800 text-lg">Chưa có báo cáo nào</h3>
+        <p class="text-sm text-slate-500 mt-1">Hãy đọc báo cáo công việc tháng đầu tiên bằng giọng nói.</p>
+        <button id="emptyCreate" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-semibold text-sm shadow-soft">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Tạo báo cáo đầu tiên
+        </button>
+      </div>
     </div>
   </section>
 
@@ -440,28 +439,9 @@ const firebaseConfig = {
   appId: "1:709415307278:web:8dededb0bdef628580d45f",
   measurementId: "G-Z6GJFMPS9Z"
 };
-const DB_ROOT = 'voicereport/reports';
-let fbDB = null, fbReady = false;
-function initFirebase(){
-  try{
-    firebase.initializeApp(firebaseConfig);
-    fbDB = firebase.database();
-    fbDB.ref(DB_ROOT).on('value', snap=>{
-      const val = snap.val() || {};
-      reports = Object.keys(val).map(k=> Object.assign({}, val[k], { id:k }))
-                      .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
-      fbReady = true;
-      setSync(true);
-      renderReports(); renderReportTable(); renderStats(); updateReportCount();
-    }, err=>{ setSync(false, err.message); });
-    fbDB.ref('.info/connected').on('value', s=> setSync(!!s.val()));
-  }catch(e){ setSync(false, e.message); toast('Không kết nối được Firebase: '+e.message,'error'); }
-}
-function setSync(ok, msg){
-  const b = $('#syncBadge'); if(!b) return;
-  b.className = 'text-[11px] font-semibold px-2 py-1 rounded-full flex items-center gap-1 ' + (ok?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700');
-  b.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${ok?'bg-emerald-500':'bg-amber-500'}"></span>${ok?'Đã đồng bộ Firebase':'Mất kết nối'+(msg?' — '+msg:'')}`;
-}
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const REPORTS_REF = db.ref('monthly_reports');
 
 /* ===================== DATA & STATE ===================== */
 const SECTIONS = [
@@ -485,15 +465,18 @@ const ICONS = {
   bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/>'
 };
 
+const ACCEPTED_EXT = ['xlsx','xls','csv','pdf','pptx','ppt'];
+const MAX_FILE_SIZE = 1.5 * 1024 * 1024; // 1.5MB
+const MAX_FILES = 5;
+
 const now = new Date();
 let draft = {
-  editingId: null,
   info: { name:'', position:'', dept:'', month: now.getMonth()+1, year: now.getFullYear() },
   sections: { completed:'', unfinished:'', causes:'', plan:'', proposals:'' },
-  attachments: [],
+  attachments: [], // {id,name,size,type,dataUrl}
   updatedAt: null
 };
-let reports = [];
+let reports = []; // from Firebase
 let targetSection = 'completed';
 let isRecording = false;
 let speechSupported = true;
@@ -504,7 +487,6 @@ let autoCap = true;
 let timerId = null;
 let recStartTs = 0;
 let saveTimer = null;
-let currentFilter = 'all';
 let currentViewId = null;
 let confirmCb = null;
 
@@ -513,15 +495,20 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
 
-function load(){
-  try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d) draft = Object.assign(draft, d); }catch(e){}
-  if(!Array.isArray(draft.attachments)) draft.attachments = [];
-  reports = [];
+function loadDraft(){
+  try{
+    const d = JSON.parse(localStorage.getItem('vr_draft'));
+    if(d){
+      draft.info = Object.assign(draft.info, d.info||{});
+      draft.sections = Object.assign(draft.sections, d.sections||{});
+    }
+  }catch(e){}
 }
-function saveReports(){ /* dữ liệu nằm trên Firebase Realtime Database */ }
 function saveDraft(){
   draft.updatedAt = Date.now();
-  localStorage.setItem('vr_draft', JSON.stringify(draft));
+  // exclude attachments (too big for localStorage)
+  const toSave = { info: draft.info, sections: draft.sections, updatedAt: draft.updatedAt };
+  try{ localStorage.setItem('vr_draft', JSON.stringify(toSave)); }catch(e){}
   const s = $('#saveStatus'); if(s){ s.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Đã lưu nháp'; }
 }
 function scheduleSave(){
@@ -532,8 +519,16 @@ function wordCount(t){ return (t||'').trim() ? (t||'').trim().split(/\s+/).lengt
 function capSentences(s){ return (s||'').replace(/(^|[.!?]\s+)(\S)/g, (m,pre,ch)=> pre + ch.toUpperCase()); }
 function applyFormat(s){ return autoCap ? capSentences(s) : s; }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function initials(name){ const p=(name||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return 'NV'; return ((p[p.length-1][0]||'')+(p.length>1?p[0][0]:'')).toUpperCase(); }
+function formatBytes(b){ if(!b) return '0 B'; const u=['B','KB','MB','GB']; let i=0; while(b>=1024 && i<u.length-1){b/=1024;i++;} return b.toFixed(b<10&&i>0?1:0)+' '+u[i]; }
+function fileExt(name){ const m=/\.([a-z0-9]+)$/i.exec(name||''); return (m?m[1]:'').toLowerCase(); }
+function fileKind(ext){
+  if(['xlsx','xls','csv'].includes(ext)) return {label:'Excel', color:'bg-emerald-100 text-emerald-700', icon:'📊'};
+  if(ext==='pdf') return {label:'PDF', color:'bg-rose-100 text-rose-700', icon:'📕'};
+  if(['pptx','ppt'].includes(ext)) return {label:'PowerPoint', color:'bg-orange-100 text-orange-700', icon:'📽️'};
+  return {label:ext.toUpperCase()||'FILE', color:'bg-slate-100 text-slate-700', icon:'📄'};
+}
 
 function toast(msg, type='success'){
   const colors = { success:'bg-emerald-600', error:'bg-rose-600', info:'bg-slate-800' };
@@ -542,7 +537,7 @@ function toast(msg, type='success'){
   el.className = 'toast flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-soft ' + (colors[type]||colors.info);
   el.innerHTML = `<span class="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-xs font-bold">${icons[type]||'ℹ'}</span><span>${esc(msg)}</span>`;
   $('#toasts').appendChild(el);
-  setTimeout(()=>{ el.style.transition='all .3s'; el.style.opacity='0'; el.style.transform='translateY(10px)'; setTimeout(()=>el.remove(),300); }, 3200);
+  setTimeout(()=>{ el.style.transition='all .3s'; el.style.opacity='0'; el.style.transform='translateY(10px)'; setTimeout(()=>el.remove(),300); }, 3400);
 }
 
 /* ===================== BUILD SECTION CARDS ===================== */
@@ -576,7 +571,6 @@ function buildSectionCards(){
     wrap.appendChild(card);
   });
 
-  // bind
   $$('textarea[data-sec]').forEach(ta=>{
     ta.addEventListener('input', (e)=>{
       draft.sections[ta.dataset.sec] = ta.value;
@@ -619,6 +613,83 @@ function updateProgress(){
   $('#progressText').textContent = `${filled}/${SECTIONS.length} mục`;
 }
 
+/* ===================== ATTACHMENTS ===================== */
+function renderAttachments(){
+  const ul = $('#fileList'); ul.innerHTML = '';
+  if(!draft.attachments.length){ ul.innerHTML = '<li class="text-xs text-slate-400 italic">Chưa có tệp đính kèm.</li>'; return; }
+  draft.attachments.forEach((f, idx)=>{
+    const k = fileKind(fileExt(f.name));
+    const li = document.createElement('li');
+    li.className = 'flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/60';
+    li.innerHTML = `
+      <span class="w-10 h-10 rounded-lg ${k.color} grid place-items-center text-lg shrink-0">${k.icon}</span>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-semibold text-slate-800 truncate">${esc(f.name)}</div>
+        <div class="text-[11px] text-slate-500 flex items-center gap-2">
+          <span class="px-1.5 py-0.5 rounded bg-white border border-slate-200 font-semibold">${k.label}</span>
+          <span>${formatBytes(f.size)}</span>
+        </div>
+      </div>
+      <button class="att-del w-8 h-8 rounded-lg text-rose-500 hover:bg-rose-50 grid place-items-center shrink-0" data-idx="${idx}" title="Xóa tệp">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </button>`;
+    ul.appendChild(li);
+  });
+  $$('.att-del', ul).forEach(b=> b.addEventListener('click', ()=>{
+    draft.attachments.splice(+b.dataset.idx, 1);
+    renderAttachments();
+  }));
+}
+
+function handleFiles(fileList){
+  const files = [...fileList];
+  if(!files.length) return;
+  if(draft.attachments.length + files.length > MAX_FILES){
+    toast(`Tối đa ${MAX_FILES} tệp đính kèm.`, 'error');
+    return;
+  }
+  let pending = files.length;
+  files.forEach(file=>{
+    const ext = fileExt(file.name);
+    if(!ACCEPTED_EXT.includes(ext)){
+      toast(`Tệp "${file.name}" không được hỗ trợ. Chỉ chấp nhận Excel, PDF, PowerPoint.`, 'error');
+      if(--pending===0) renderAttachments();
+      return;
+    }
+    if(file.size > MAX_FILE_SIZE){
+      toast(`Tệp "${file.name}" vượt quá 1.5MB.`, 'error');
+      if(--pending===0) renderAttachments();
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      draft.attachments.push({
+        id: uid(),
+        name: file.name,
+        size: file.size,
+        type: file.type || '',
+        dataUrl: reader.result
+      });
+      if(--pending===0){ renderAttachments(); toast(`Đã đính kèm ${files.length} tệp.`, 'success'); }
+    };
+    reader.onerror = ()=>{
+      toast(`Không đọc được tệp "${file.name}".`, 'error');
+      if(--pending===0) renderAttachments();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function bindAttachments(){
+  const dz = $('#dropzone'), input = $('#fileInput');
+  dz.addEventListener('click', ()=> input.click());
+  input.addEventListener('change', e=>{ handleFiles(e.target.files); input.value=''; });
+  ['dragenter','dragover'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove('drag'); }));
+  dz.addEventListener('drop', e=>{ if(e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+  renderAttachments();
+}
+
 /* ===================== FORM <-> DRAFT ===================== */
 function populateInfoSelects(){
   const mSel = $('#f_month'), ySel = $('#f_year');
@@ -633,7 +704,8 @@ function loadDraftToForm(){
   $('#f_month').value = draft.info.month||now.getMonth()+1;
   $('#f_year').value = draft.info.year||now.getFullYear();
   SECTIONS.forEach(s=>{ const ta=$(`textarea[data-sec="${s.id}"]`); ta.value = draft.sections[s.id]||''; });
-  updateAllWordCounts(); updateProgress(); updateHeader(); updateAvatar(); renderAttachments();
+  updateAllWordCounts(); updateProgress(); updateHeader(); updateAvatar();
+  renderAttachments();
 }
 function bindInfoInputs(){
   const map = { f_name:'name', f_position:'position', f_dept:'dept' };
@@ -684,10 +756,6 @@ function initSpeech(){
       toast('Không tìm thấy thiết bị micro.','error');
     } else if(ev.error==='network'){
       toast('Lỗi kết nối mạng khi nhận diện giọng nói.','error');
-    } else if(ev.error==='no-speech'){
-      /* keep recording, onend will restart */
-    } else if(ev.error==='aborted'){
-      /* ignore */
     }
   };
   recognition.onend = ()=>{
@@ -705,12 +773,11 @@ function onSectionMic(id){
   selectTarget(id, true);
   if(!isRecording) startRec();
 }
-function selectTarget(id, fromMicClick){
+function selectTarget(id){
   targetSection = id;
   $('#targetSelect').value = id;
   refreshSectionMicStates();
   if(isRecording){
-    // commit current target value as new base
     const ta = $(`textarea[data-sec="${id}"]`);
     baseText = ta.value.trim(); finalSinceStart = '';
   }
@@ -745,8 +812,8 @@ function updateMicUI(){
     btn.classList.remove('from-brand-600','to-purple-600'); btn.classList.add('from-rose-500','to-rose-600');
     $('#micIcon').classList.add('hidden'); $('#stopIcon').classList.remove('hidden');
     $('#micLabel').textContent = 'Đang ghi âm — bấm để dừng';
-    $('#recStatus').textContent = 'Đang ghi âm'; $('#recStatus').className = 'text-[11px] font-semibold px-2 py-1 rounded-full bg-rose-100 text-rose-600 flex items-center gap-1';
     $('#recStatus').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>Đang ghi âm';
+    $('#recStatus').className = 'text-[11px] font-semibold px-2 py-1 rounded-full bg-rose-100 text-rose-600 flex items-center gap-1';
     $('#wave').classList.remove('idle');
   } else {
     wrap.classList.remove('mic-rec');
@@ -762,7 +829,6 @@ function refreshSectionMicStates(){
   $$('.sec-mic').forEach(b=>{
     const active = isRecording && b.dataset.target===targetSection;
     b.classList.toggle('active', active);
-    b.querySelector('svg').nextSibling; // noop
   });
 }
 function startTimer(){ recStartTs = Date.now(); timerId = setInterval(()=>{
@@ -773,15 +839,17 @@ function startTimer(){ recStartTs = Date.now(); timerId = setInterval(()=>{
 function stopTimer(){ clearInterval(timerId); timerId=null; }
 
 /* ===================== COLLECT / VALIDATE / SUBMIT ===================== */
-function collectReport(status){
+function collectReport(){
   return {
-    id: draft.editingId || uid(),
-    status: status,
-    info: { ...draft.info },
+    name: (draft.info.name||'').trim(),
+    position: (draft.info.position||'').trim(),
+    dept: (draft.info.dept||'').trim(),
+    month: draft.info.month||now.getMonth()+1,
+    year: draft.info.year||now.getFullYear(),
     sections: { ...draft.sections },
-    attachments: (draft.attachments||[]).map(a=>({ name:a.name, size:a.size, type:a.type, data:a.data })),
-    createdAt: draft.editingId ? (reports.find(r=>r.id===draft.editingId)?.createdAt || Date.now()) : Date.now(),
-    updatedAt: Date.now()
+    attachments: (draft.attachments||[]).map(a=>({ name:a.name, size:a.size, type:a.type, dataUrl:a.dataUrl })),
+    createdAt: firebase.database.ServerValue.TIMESTAMP,
+    clientTs: Date.now()
   };
 }
 function validate(){
@@ -792,139 +860,89 @@ function validate(){
 }
 function submitReport(){
   if(!validate()) return;
-  if(!fbDB){ toast('Chưa kết nối được Firebase, vui lòng thử lại.','error'); return; }
-  const r = collectReport('submitted');
-  const id = r.id; const payload = { ...r }; delete payload.id;
-  $('#submitBtn').disabled = true;
-  fbDB.ref(DB_ROOT + '/' + id).set(payload)
-    .then(()=>{
-      draft = { editingId:null, info:{ name:draft.info.name, position:draft.info.position, dept:draft.info.dept, month:draft.info.month, year:draft.info.year }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
-      saveDraft(); loadDraftToForm();
-      if(isRecording) stopRec();
-      toast('Đã nộp báo cáo & lưu lên Firebase! 🎉','success');
-      switchTab('reports');
-    })
-    .catch(e=> toast('Lỗi lưu Firebase: '+e.message,'error'))
-    .finally(()=>{ $('#submitBtn').disabled = false; });
-}
+  const btn = $('#submitBtn');
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="w-4 h-4 spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Đang gửi lên hệ thống…';
 
-/* ===================== NEXT PERSON ===================== */
-function startNextPerson(){
-  if(isRecording) stopRec();
-  draft = { editingId:null, info:{ name:'', position:'', dept:draft.info.dept, month:draft.info.month, year:draft.info.year }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
-  saveDraft(); loadDraftToForm();
-  switchTab('create');
-  setTimeout(()=>{ $('#f_name').focus(); window.scrollTo({top:0,behavior:'smooth'}); }, 60);
-  toast('Biểu mẫu trống — mời khai báo cho nhân viên tiếp theo.','info');
-}
-
-/* ===================== ATTACHMENTS ===================== */
-const MAX_FILE = 8 * 1024 * 1024;
-const ATT_ICON = { pdf:'📕', xlsx:'📗', xls:'📗', csv:'📗', pptx:'📙', ppt:'📙', docx:'📘', doc:'📘' };
-function fileExt(nm){ return (nm||'').split('.').pop().toLowerCase(); }
-function fmtSize(b){ return b<1024 ? b+' B' : b<1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(2)+' MB'; }
-function handleAttSelect(files){
-  const arr = [...files];
-  if(!arr.length) return;
-  let pending = arr.length;
-  arr.forEach(f=>{
-    if(f.size > MAX_FILE){ toast(`"${f.name}" vượt quá 8MB.`,'error'); if(--pending===0) renderAttachments(); return; }
-    const rd = new FileReader();
-    rd.onload = ()=>{
-      draft.attachments.push({ name:f.name, size:f.size, type:f.type||fileExt(f.name), data:rd.result });
-      if(--pending===0){ renderAttachments(); scheduleSave(); toast('Đã đính kèm tài liệu.','success'); }
-    };
-    rd.onerror = ()=>{ toast(`Không đọc được "${f.name}".`,'error'); if(--pending===0) renderAttachments(); };
-    rd.readAsDataURL(f);
+  const payload = collectReport();
+  REPORTS_REF.push(payload).then(()=>{
+    btn.disabled = false; btn.innerHTML = original;
+    if(isRecording) stopRec();
+    toast(`Đã nộp báo cáo của ${payload.name} thành công! 🎉`, 'success');
+    resetDraftForNextPerson(true);
+    switchTab('reports');
+    setTimeout(()=> toast('Sẵn sàng thêm báo cáo cho người tiếp theo.', 'info'), 600);
+  }).catch(err=>{
+    btn.disabled = false; btn.innerHTML = original;
+    console.error(err);
+    toast('Không gửi được báo cáo. Vui lòng kiểm tra kết nối.', 'error');
   });
 }
-function removeAttachment(i){ draft.attachments.splice(i,1); renderAttachments(); scheduleSave(); }
-function renderAttachments(){
-  const box = $('#attList'); if(!box) return;
-  const list = draft.attachments || [];
-  $('#attCount').textContent = list.length + ' file';
-  box.innerHTML = list.map((a,i)=>`
-    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50">
-      <span class="text-lg">${ATT_ICON[fileExt(a.name)]||'📎'}</span>
-      <div class="min-w-0 flex-1">
-        <div class="text-sm font-semibold text-slate-800 truncate">${esc(a.name)}</div>
-        <div class="text-[11px] text-slate-500">${fmtSize(a.size)}</div>
-      </div>
-      <a href="${a.data}" download="${esc(a.name)}" class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-600">Tải</a>
-      <button data-att-del="${i}" class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
-    </div>`).join('');
-  box.querySelectorAll('[data-att-del]').forEach(b=> b.addEventListener('click', ()=> removeAttachment(+b.dataset.attDel)));
-}
-
-/* ===================== EMPLOYEE REPORT TABLE ===================== */
-function renderReportTable(){
-  const tb = $('#reportTableBody'); if(!tb) return;
-  const q = ($('#searchReports')?.value||'').trim().toLowerCase();
-  let list = reports.slice();
-  if(q) list = list.filter(r=> [r.info?.name, r.info?.dept, r.info?.position, MONTHS[((r.info?.month)||1)-1], String(r.info?.year||'')].join(' ').toLowerCase().includes(q));
-  $('#tableCount').textContent = list.length;
-  $('#tableEmpty').classList.toggle('hidden', list.length>0);
-  tb.innerHTML = list.map((r,i)=>{
-    const atts = r.attachments || [];
-    return `<tr class="hover:bg-slate-50/70 transition">
-      <td class="px-4 py-3 text-slate-400 font-semibold">${i+1}</td>
-      <td class="px-4 py-3">
-        <div class="flex items-center gap-2.5">
-          <span class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-[11px] font-bold shrink-0">${esc(initials(r.info?.name))}</span>
-          <div class="min-w-0">
-            <div class="font-semibold text-slate-900 truncate">${esc(r.info?.name||'—')}</div>
-            <div class="text-[11px] text-slate-500 truncate">${esc(r.info?.position||'')}</div>
-          </div>
-        </div>
-      </td>
-      <td class="px-4 py-3 text-slate-600">${esc(r.info?.dept||'—')}</td>
-      <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[((r.info?.month)||1)-1]}/${r.info?.year||''}</span></td>
-      <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${new Date(r.createdAt||Date.now()).toLocaleDateString('vi-VN')}</td>
-      <td class="px-4 py-3 text-center">${atts.length ? `<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold">📎 ${atts.length}</span>` : '<span class="text-slate-300">—</span>'}</td>
-      <td class="px-4 py-3">
-        <div class="flex justify-end gap-1.5">
-          <button data-tv="${r.id}" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Xem lại</button>
-          <button data-te="${r.id}" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Sửa</button>
-          <button data-td="${r.id}" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-  tb.querySelectorAll('[data-tv]').forEach(b=> b.addEventListener('click', ()=> openView(b.dataset.tv)));
-  tb.querySelectorAll('[data-te]').forEach(b=> b.addEventListener('click', ()=> editReport(b.dataset.te)));
-  tb.querySelectorAll('[data-td]').forEach(b=> b.addEventListener('click', ()=> deleteReport(b.dataset.td)));
+function resetDraftForNextPerson(keepMonth){
+  draft.info = {
+    name:'', position:'', dept:'',
+    month: keepMonth ? (draft.info.month||now.getMonth()+1) : (now.getMonth()+1),
+    year: keepMonth ? (draft.info.year||now.getFullYear()) : now.getFullYear()
+  };
+  draft.sections = {completed:'',unfinished:'',causes:'',plan:'',proposals:''};
+  draft.attachments = [];
+  saveDraft();
+  loadDraftToForm();
 }
 function clearForm(){
-  showConfirm('Xóa toàn bộ nội dung?','Nội dung báo cáo hiện tại sẽ bị xóa trắng.','Xóa', ()=>{
+  showConfirm('Xóa toàn bộ nội dung?','Nội dung báo cáo hiện tại (cả tệp đính kèm) sẽ bị xóa trắng.','Xóa', ()=>{
     if(isRecording) stopRec();
     draft.sections = {completed:'',unfinished:'',causes:'',plan:'',proposals:''};
     draft.attachments = [];
-    draft.editingId = null;
     saveDraft(); loadDraftToForm();
     toast('Đã xóa trắng biểu mẫu.','info');
   });
 }
+function addNextPerson(){
+  if(isRecording) stopRec();
+  // warn if current form has unsaved content
+  const hasContent = (draft.info.name||'').trim() || SECTIONS.some(s=>(draft.sections[s.id]||'').trim()) || draft.attachments.length;
+  const doReset = ()=>{
+    resetDraftForNextPerson(true);
+    switchTab('create');
+    setTimeout(()=> $('#f_name').focus(), 100);
+    toast('Biểu mẫu đã sẵn sàng cho người tiếp theo.', 'info');
+  };
+  if(hasContent){
+    showConfirm('Tạo báo cáo cho người tiếp theo?','Nội dung đang soạn (chưa nộp) sẽ bị xóa. Vui lòng nộp trước nếu muốn lưu.','Tiếp tục', doReset);
+  } else {
+    doReset();
+  }
+}
 
 /* ===================== EXPORT ===================== */
+function attachmentsHTML(atts){
+  if(!atts || !atts.length) return '';
+  return `<h2>Tệp đính kèm</h2><ul class="att">${atts.map(a=>`<li>${esc(a.name)} <span style="color:#94a3b8">(${formatBytes(a.size)})</span></li>`).join('')}</ul>`;
+}
 function reportToHTML(r){
-  const filled = SECTIONS.filter(s=>(r.sections[s.id]||'').trim());
   return `<div class="print-doc">
     <h1>BÁO CÁO CÔNG VIỆC THÁNG</h1>
-    <div style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
-    <div class="meta"><span><b>Họ và tên:</b> ${esc(r.info.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.info.position||'—')}</span></div>
-    <div class="meta"><span><b>Phòng ban:</b> ${esc(r.info.dept||'—')}</span><span><b>Ngày lập:</b> ${new Date(r.createdAt).toLocaleDateString('vi-VN')}</span></div>
-    ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections[s.id]||'').trim() || '—')}</p>`).join('')}
+    <div style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">${MONTHS[(r.month||1)-1]} / ${r.year||''}</div>
+    <div class="meta"><span><b>Họ và tên:</b> ${esc(r.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.position||'—')}</span></div>
+    <div class="meta"><span><b>Phòng ban:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
+    ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections&&r.sections[s.id]||'').trim() || '—')}</p>`).join('')}
+    ${attachmentsHTML(r.attachments)}
     <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
-      <div style="text-align:center"><div>Người lập báo cáo</div><div style="height:48px"></div><div>${esc(r.info.name||'')}</div></div>
+      <div style="text-align:center"><div>Người lập báo cáo</div><div style="height:48px"></div><div>${esc(r.name||'')}</div></div>
       <div style="text-align:center"><div>Xác nhận của quản lý</div><div style="height:48px"></div><div>…………………</div></div>
     </div>
   </div>`;
 }
 function reportToText(r){
-  let t = `BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}\n`;
-  t += `Họ và tên: ${r.info.name||''}\nChức vụ: ${r.info.position||'—'}\nPhòng ban: ${r.info.dept||'—'}\nNgày lập: ${new Date(r.createdAt).toLocaleDateString('vi-VN')}\n\n`;
-  SECTIONS.forEach(s=>{ t += `${s.num}. ${s.title}\n${(r.sections[s.id]||'').trim()||'—'}\n\n`; });
-  t += `Người lập báo cáo: ${r.info.name||''}`;
+  let t = `BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.month||1)-1]} / ${r.year||''}\n`;
+  t += `Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nPhòng ban: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
+  SECTIONS.forEach(s=>{ t += `${s.num}. ${s.title}\n${(r.sections&&r.sections[s.id]||'').trim()||'—'}\n\n`; });
+  if(r.attachments && r.attachments.length){
+    t += `TỆP ĐÍNH KÈM:\n`; r.attachments.forEach(a=> t += `- ${a.name} (${formatBytes(a.size)})\n`); t += '\n';
+  }
+  t += `Người lập báo cáo: ${r.name||''}`;
   return t;
 }
 function doExport(mode, r){
@@ -933,11 +951,11 @@ function doExport(mode, r){
     $('#printArea').classList.add('show');
     setTimeout(()=>{ window.print(); setTimeout(()=>$('#printArea').classList.remove('show'), 500); }, 100);
   } else if(mode==='doc'){
-    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body{font-family:'Be Vietnam Pro',Arial,sans-serif}h1{font-size:20px;text-align:center}h2{font-size:14px;color:#4338ca;border-bottom:1px solid #ddd;margin-top:16px}p{font-size:13px;line-height:1.7;white-space:pre-wrap}</style></head><body>${reportToHTML(r)}</body></html>`;
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body{font-family:'Be Vietnam Pro',Arial,sans-serif}h1{font-size:20px;text-align:center}h2{font-size:14px;color:#4338ca;border-bottom:1px solid #ddd;margin-top:16px}p{font-size:13px;line-height:1.7;white-space:pre-wrap}ul.att{margin:4px 0 0 18px;font-size:12px}</style></head><body>${reportToHTML(r)}</body></html>`;
     const blob = new Blob(['\ufeff', html], { type:'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `BaoCaoCongViec_${MONTHS[(r.info.month||1)-1].replace(' ','')}_${r.info.year}_${(r.info.name||'nhanvien').replace(/\s+/g,'_')}.doc`;
+    a.href = url; a.download = `BaoCaoCongViec_${MONTHS[(r.month||1)-1].replace(' ','')}_${r.year}_${(r.name||'nhanvien').replace(/\s+/g,'_')}.doc`;
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     toast('Đã tải file Word.','success');
   } else if(mode==='copy'){
@@ -952,106 +970,75 @@ function fallbackCopy(txt){
   try{ document.execCommand('copy'); toast('Đã sao chép báo cáo.','success'); }catch(e){ toast('Không thể sao chép.','error'); }
   ta.remove();
 }
-function currentFormReport(){ return collectReport('draft'); }
+function currentFormReport(){
+  return {
+    name: draft.info.name, position: draft.info.position, dept: draft.info.dept,
+    month: draft.info.month, year: draft.info.year,
+    sections: draft.sections,
+    attachments: draft.attachments.map(a=>({name:a.name,size:a.size})),
+    createdAt: Date.now()
+  };
+}
 
-/* ===================== REPORTS LIST ===================== */
+/* ===================== REPORTS LIST (FIREBASE) ===================== */
 function updateReportCount(){ $('#reportCount').textContent = reports.length; }
 function renderReports(){
-  const grid = $('#reportsGrid'); const empty = $('#reportsEmpty');
+  const tbody = $('#reportsTbody'); const empty = $('#reportsEmpty');
   const q = ($('#searchReports').value||'').trim().toLowerCase();
   let list = reports.slice();
-  // include draft card
-  const draftExists = SECTIONS.some(s=>(draft.sections[s.id]||'').trim()) || (draft.info.name||'').trim();
-  let items = [];
-  if(currentFilter==='draft' || currentFilter==='all'){
-    if(draftExists) items.push({ __draft:true });
-  }
-  if(currentFilter!=='draft'){
-    list.forEach(r=> items.push(r));
-  }
   if(q){
-    items = items.filter(it=>{
-      if(it.__draft){
-        const d = draft;
-        return [d.info.name,d.info.dept,MONTHS[(d.info.month||1)-1],String(d.info.year||'')].join(' ').toLowerCase().includes(q);
-      }
-      return [it.info.name,it.info.dept,MONTHS[(it.info.month||1)-1],String(it.info.year||'')].join(' ').toLowerCase().includes(q);
-    });
+    list = list.filter(r=> [r.name,r.dept,MONTHS[(r.month||1)-1],String(r.year||'')].join(' ').toLowerCase().includes(q));
   }
-  grid.innerHTML = '';
-  if(items.length===0){ empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
-  empty.classList.add('hidden'); grid.classList.remove('hidden');
+  $('#listCountLabel').textContent = `${list.length} bản ghi`;
+  tbody.innerHTML = '';
+  if(list.length===0){ empty.classList.remove('hidden'); tbody.parentElement.classList.add('hidden'); return; }
+  empty.classList.add('hidden'); tbody.parentElement.classList.remove('hidden');
 
-  items.forEach(it=>{
-    if(it.__draft){ grid.appendChild(draftCard()); return; }
-    grid.appendChild(reportCard(it));
+  list.forEach((r, i)=>{
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-slate-50/70 transition';
+    const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('vi-VN') : '—';
+    const attCount = (r.attachments||[]).length;
+    tr.innerHTML = `
+      <td class="px-4 py-3 text-slate-400 font-semibold">${i+1}</td>
+      <td class="px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
+          <div class="min-w-0">
+            <div class="font-bold text-slate-900 truncate">${esc(r.name||'—')}</div>
+            <div class="text-[11px] text-slate-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-4 py-3 text-slate-700">${esc(r.dept||'—')}</td>
+      <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
+      <td class="px-4 py-3 text-slate-600 text-xs whitespace-nowrap">${dateStr}</td>
+      <td class="px-4 py-3">
+        <div class="flex items-center justify-end gap-1.5">
+          <button class="act-view inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-700 text-xs font-semibold hover:bg-brand-100" title="Xem lại">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Xem
+          </button>
+          <button class="act-del inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-xs font-semibold hover:bg-rose-100" title="Xóa">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Xóa
+          </button>
+        </div>
+      </td>`;
+    tr.querySelector('.act-view').addEventListener('click', ()=> openView(r.id));
+    tr.querySelector('.act-del').addEventListener('click', ()=> deleteReport(r.id));
+    tbody.appendChild(tr);
   });
-}
-function excerpt(r){
-  for(const s of SECTIONS){ const v=(r.sections[s.id]||'').trim(); if(v) return v; }
-  return 'Chưa có nội dung.';
-}
-function draftCard(){
-  const c = document.createElement('div');
-  c.className = 'rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/40 p-5 flex flex-col';
-  c.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold">BẢN NHÁP</span>
-      <span class="text-[11px] text-slate-500">${MONTHS[(draft.info.month||1)-1]} ${draft.info.year||''}</span>
-    </div>
-    <div class="mt-2 font-bold text-slate-900">${esc(draft.info.name||'Chưa đặt tên')}</div>
-    <div class="text-xs text-slate-500">${esc(draft.info.dept||'Chưa có phòng ban')}</div>
-    <p class="mt-2 text-xs text-slate-600 line-clamp-2 flex-1">${esc(excerpt({sections:draft.sections}))}</p>
-    <div class="mt-3 flex gap-2">
-      <button class="act-edit flex-1 px-3 py-2 rounded-lg bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700">Tiếp tục chỉnh sửa</button>
-    </div>`;
-  c.querySelector('.act-edit').addEventListener('click', ()=> switchTab('create'));
-  return c;
-}
-function reportCard(r){
-  const c = document.createElement('div');
-  c.className = 'bg-white rounded-2xl shadow-card border border-slate-100 p-5 flex flex-col hover:shadow-soft transition';
-  c.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">ĐÃ NỘP</span>
-      <span class="text-[11px] text-slate-500 ml-auto">${new Date(r.createdAt).toLocaleDateString('vi-VN')}</span>
-    </div>
-    <div class="mt-2 flex items-center gap-2">
-      <span class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.info.name))}</span>
-      <div class="min-w-0">
-        <div class="font-bold text-slate-900 truncate">${esc(r.info.name||'—')}</div>
-        <div class="text-xs text-slate-500 truncate">${esc(r.info.dept||'—')} · ${esc(r.info.position||'')}</div>
-      </div>
-    </div>
-    <div class="mt-2 inline-flex w-fit px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
-    <p class="mt-2 text-xs text-slate-600 line-clamp-3 flex-1">${esc(excerpt(r))}</p>
-    <div class="mt-3 grid grid-cols-4 gap-1.5">
-      <button class="act-view px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Xem</button>
-      <button class="act-edit px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">Sửa</button>
-      <button class="act-print px-2 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold hover:bg-slate-200">In</button>
-      <button class="act-del px-2 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[11px] font-semibold hover:bg-rose-100">Xóa</button>
-    </div>`;
-  c.querySelector('.act-view').addEventListener('click', ()=> openView(r.id));
-  c.querySelector('.act-edit').addEventListener('click', ()=> editReport(r.id));
-  c.querySelector('.act-print').addEventListener('click', ()=> doExport('print', r));
-  c.querySelector('.act-del').addEventListener('click', ()=> deleteReport(r.id));
-  return c;
-}
-function editReport(id){
-  const r = reports.find(x=>x.id===id); if(!r) return;
-  if(isRecording) stopRec();
-  draft = { editingId:id, info:{...r.info}, sections:{...r.sections}, attachments:[...(r.attachments||[])], updatedAt:Date.now() };
-  saveDraft(); loadDraftToForm();
-  switchTab('create');
-  toast('Đã tải báo cáo vào biểu mẫu để chỉnh sửa.','info');
 }
 function deleteReport(id){
   const r = reports.find(x=>x.id===id); if(!r) return;
-  showConfirm('Xóa báo cáo này?', `Báo cáo ${MONTHS[(r.info.month||1)-1]}/${r.info.year} của ${r.info.name||''} sẽ bị xóa vĩnh viễn trên Firebase.`,'Xóa', ()=>{
-    if(!fbDB){ toast('Chưa kết nối Firebase.','error'); return; }
-    fbDB.ref(DB_ROOT + '/' + id).remove()
-      .then(()=> toast('Đã xóa báo cáo.','info'))
-      .catch(e=> toast('Lỗi xóa: '+e.message,'error'));
+  showConfirm('Xóa báo cáo này?', `Báo cáo ${MONTHS[(r.month||1)-1]}/${r.year} của ${r.name||''} sẽ bị xóa vĩnh viễn trên hệ thống.`,'Xóa', ()=>{
+    REPORTS_REF.child(id).remove().then(()=>{
+      toast('Đã xóa báo cáo.','info');
+    }).catch(err=>{
+      console.error(err);
+      toast('Không xóa được báo cáo.','error');
+    });
   });
 }
 
@@ -1060,34 +1047,51 @@ function openView(id){
   const r = reports.find(x=>x.id===id); if(!r) return;
   currentViewId = id;
   const body = $('#viewBody');
+  const atts = r.attachments||[];
   body.innerHTML = `
     <div class="text-center mb-4">
       <div class="text-xs font-semibold text-brand-600 uppercase tracking-wide">Báo cáo công việc tháng</div>
-      <div class="text-xl font-extrabold text-slate-900">${MONTHS[(r.info.month||1)-1]} / ${r.info.year||''}</div>
+      <div class="text-xl font-extrabold text-slate-900">${MONTHS[(r.month||1)-1]} / ${r.year||''}</div>
     </div>
     <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 rounded-xl p-3 mb-4">
-      <div><span class="text-slate-500">Họ tên:</span> <b>${esc(r.info.name||'—')}</b></div>
-      <div><span class="text-slate-500">Chức vụ:</span> <b>${esc(r.info.position||'—')}</b></div>
-      <div><span class="text-slate-500">Phòng ban:</span> <b>${esc(r.info.dept||'—')}</b></div>
-      <div><span class="text-slate-500">Ngày lập:</span> <b>${new Date(r.createdAt).toLocaleDateString('vi-VN')}</b></div>
+      <div><span class="text-slate-500">Họ tên:</span> <b>${esc(r.name||'—')}</b></div>
+      <div><span class="text-slate-500">Chức vụ:</span> <b>${esc(r.position||'—')}</b></div>
+      <div><span class="text-slate-500">Phòng ban:</span> <b>${esc(r.dept||'—')}</b></div>
+      <div><span class="text-slate-500">Ngày lập:</span> <b>${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—'}</b></div>
     </div>
     ${SECTIONS.map(s=>`
       <div class="mb-4">
         <div class="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-1 mb-1.5">
           <span class="w-6 h-6 rounded-md bg-brand-50 text-brand-600 grid place-items-center text-[11px]">${s.num}</span>${s.title}
         </div>
-        <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">${esc((r.sections[s.id]||'').trim()||'—')}</p>
+        <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>
       </div>`).join('')}
-    ${(r.attachments&&r.attachments.length) ? `
-      <div class="mt-5 pt-4 border-t border-slate-100">
-        <div class="font-bold text-slate-800 mb-2">📎 Tài liệu đính kèm (${r.attachments.length})</div>
-        <div class="space-y-2">${r.attachments.map(a=>`
-          <a href="${a.data}" download="${esc(a.name)}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-brand-300 hover:bg-brand-50/50 transition">
-            <span class="text-lg">${ATT_ICON[fileExt(a.name)]||'📎'}</span>
-            <div class="min-w-0 flex-1"><div class="text-sm font-semibold text-slate-800 truncate">${esc(a.name)}</div><div class="text-[11px] text-slate-500">${fmtSize(a.size)}</div></div>
-            <span class="text-[11px] font-semibold text-brand-600">Tải xuống</span>
-          </a>`).join('')}</div>
+    ${atts.length ? `
+      <div class="mb-2">
+        <div class="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-1 mb-2">
+          <span class="w-6 h-6 rounded-md bg-purple-50 text-purple-600 grid place-items-center text-[11px]">📎</span>Tệp đính kèm (${atts.length})
+        </div>
+        <ul class="space-y-2">
+          ${atts.map((a,i)=>{
+            const k = fileKind(fileExt(a.name));
+            return `<li class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50/60">
+              <span class="w-9 h-9 rounded-lg ${k.color} grid place-items-center text-base shrink-0">${k.icon}</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-slate-800 truncate">${esc(a.name)}</div>
+                <div class="text-[11px] text-slate-500">${k.label} · ${formatBytes(a.size)}</div>
+              </div>
+              <button class="att-dl px-3 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 shrink-0" data-idx="${i}">Tải xuống</button>
+            </li>`;
+          }).join('')}
+        </ul>
       </div>` : ''}`;
+  // bind download buttons
+  $$('.att-dl', body).forEach(b=> b.addEventListener('click', ()=>{
+    const a = atts[+b.dataset.idx]; if(!a || !a.dataUrl) return;
+    const link = document.createElement('a');
+    link.href = a.dataUrl; link.download = a.name;
+    document.body.appendChild(link); link.click(); link.remove();
+  }));
   $('#viewModal').classList.remove('hidden');
 }
 function closeView(){ $('#viewModal').classList.add('hidden'); currentViewId=null; }
@@ -1102,17 +1106,18 @@ function closeConfirm(){ $('#confirmModal').classList.add('hidden'); confirmCb=n
 /* ===================== STATS ===================== */
 function renderStats(){
   const total = reports.length;
-  const thisMonth = reports.filter(r=> r.info.month===now.getMonth()+1 && r.info.year===now.getFullYear()).length;
+  const thisMonth = reports.filter(r=> r.month===now.getMonth()+1 && r.year===now.getFullYear()).length;
   const avgComp = total ? Math.round(reports.reduce((a,r)=>{
-    const f = SECTIONS.filter(s=>(r.sections[s.id]||'').trim().length>8).length; return a + f/SECTIONS.length*100;
+    const f = SECTIONS.filter(s=>(r.sections&&r.sections[s.id]||'').trim().length>8).length; return a + f/SECTIONS.length*100;
   },0)/total) : 0;
-  const totalWords = reports.reduce((a,r)=> a + SECTIONS.reduce((b,s)=> b + wordCount(r.sections[s.id]),0), 0);
+  const totalWords = reports.reduce((a,r)=> a + SECTIONS.reduce((b,s)=> b + wordCount(r.sections&&r.sections[s.id]),0), 0);
+  const totalAtts = reports.reduce((a,r)=> a + (r.attachments||[]).length, 0);
 
   const cards = [
     { label:'Tổng báo cáo', value: total, color:'from-brand-500 to-purple-500', icon:'📑' },
     { label:'Báo cáo tháng này', value: thisMonth, color:'from-emerald-500 to-teal-500', icon:'📅' },
     { label:'Tỷ lệ hoàn thành TB', value: avgComp + '%', color:'from-amber-500 to-orange-500', icon:'🎯' },
-    { label:'Tổng số từ đã ghi', value: totalWords.toLocaleString('vi-VN'), color:'from-sky-500 to-indigo-500', icon:'✍️' },
+    { label:'Tệp đính kèm', value: totalAtts, color:'from-sky-500 to-indigo-500', icon:'📎' },
   ];
   $('#statCards').innerHTML = cards.map(c=>`
     <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5">
@@ -1123,10 +1128,9 @@ function renderStats(){
       <div class="mt-2 text-3xl font-extrabold text-slate-900">${c.value}</div>
     </div>`).join('');
 
-  // bar chart by month (current year)
   $('#statYear').textContent = now.getFullYear();
   const counts = new Array(12).fill(0);
-  reports.forEach(r=>{ if(r.info.year===now.getFullYear()) counts[(r.info.month||1)-1]++; });
+  reports.forEach(r=>{ if(r.year===now.getFullYear()) counts[(r.month||1)-1]++; });
   const max = Math.max(1, ...counts);
   $('#barChart').innerHTML = counts.map((v,i)=>{
     const h = Math.max(4, v/max*100);
@@ -1138,9 +1142,8 @@ function renderStats(){
     </div>`;
   }).join('');
 
-  // section completion bars
   $('#sectionBars').innerHTML = SECTIONS.map(s=>{
-    const pct = total ? Math.round(reports.filter(r=>(r.sections[s.id]||'').trim().length>8).length/total*100) : 0;
+    const pct = total ? Math.round(reports.filter(r=>(r.sections&&r.sections[s.id]||'').trim().length>8).length/total*100) : 0;
     return `<div>
       <div class="flex justify-between text-xs mb-1"><span class="font-semibold text-slate-700">${s.num}. ${s.title}</span><span class="font-bold text-brand-600">${pct}%</span></div>
       <div class="h-2 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-gradient-to-r from-brand-500 to-purple-500" style="width:${pct}%"></div></div>
@@ -1153,89 +1156,100 @@ function switchTab(name){
   $$('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===name));
   ['create','reports','stats'].forEach(t=> $('#tab-'+t).classList.toggle('hidden', t!==name));
   const panel = $('#tab-'+name); panel.classList.remove('tab-panel'); void panel.offsetWidth; panel.classList.add('tab-panel');
-  if(name==='reports'){ renderReports(); renderReportTable(); }
+  if(name==='reports') renderReports();
   if(name==='stats') renderStats();
+}
+
+/* ===================== SYNC STATUS ===================== */
+function bindSyncStatus(){
+  const el = $('#syncStatus');
+  db.ref('.info/connected').on('value', snap=>{
+    if(snap.val()===true){
+      el.className = 'hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100';
+      el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Đã đồng bộ Firebase';
+    } else {
+      el.className = 'hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100';
+      el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Mất kết nối';
+    }
+  });
+}
+
+/* ===================== FIREBASE LISTENER ===================== */
+function bindReportsListener(){
+  REPORTS_REF.on('value', snap=>{
+    const arr = [];
+    snap.forEach(c=> arr.push({ id: c.key, ...c.val() }));
+    arr.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+    reports = arr;
+    updateReportCount();
+    renderReports();
+    renderStats();
+  }, err=>{
+    console.error(err);
+    toast('Không tải được danh sách báo cáo từ Firebase.','error');
+  });
 }
 
 /* ===================== INIT ===================== */
 function init(){
-  load();
+  loadDraft();
   populateInfoSelects();
   buildSectionCards();
   bindInfoInputs();
+  bindAttachments();
   loadDraftToForm();
   initSpeech();
+  bindSyncStatus();
+  bindReportsListener();
 
-  // target select
   $('#targetSelect').innerHTML = SECTIONS.map(s=>`<option value="${s.id}">${s.num}. ${s.title}</option>`).join('');
   $('#targetSelect').value = targetSection;
-  $('#targetSelect').addEventListener('change', e=> selectTarget(e.target.value, false));
+  $('#targetSelect').addEventListener('change', e=> selectTarget(e.target.value));
 
-  // big mic
   $('#bigMic').addEventListener('click', toggleMic);
-  $('#heroStart').addEventListener('click', ()=>{ if(!speechSupported){ toast('Trình duyệt không hỗ trợ giọng nói, hãy gõ tay.','info'); $('#f_name').focus(); return;} if(!isRecording) startRec(); window.scrollTo({top: document.querySelector('aside').offsetTop-100, behavior:'smooth'}); });
+  $('#heroStart').addEventListener('click', ()=>{
+    if(!speechSupported){ toast('Trình duyệt không hỗ trợ giọng nói, hãy gõ tay.','info'); $('#f_name').focus(); return;}
+    if(!isRecording) startRec();
+    const aside = document.querySelector('aside');
+    if(aside) window.scrollTo({top: aside.offsetTop-100, behavior:'smooth'});
+  });
   $('#autoCap').addEventListener('change', e=>{ autoCap = e.target.checked; });
 
-  // actions
   $('#submitBtn').addEventListener('click', submitReport);
   $('#clearBtn').addEventListener('click', clearForm);
-  $('#newReportBtn').addEventListener('click', ()=>{
-    if(isRecording) stopRec();
-    draft = { editingId:null, info:{ name:draft.info.name, position:draft.info.position, dept:draft.info.dept, month:now.getMonth()+1, year:now.getFullYear() }, sections:{completed:'',unfinished:'',causes:'',plan:'',proposals:''}, attachments:[], updatedAt:null };
-    saveDraft(); loadDraftToForm(); toast('Đã tạo biểu mẫu báo cáo mới.','info');
-  });
+  $('#nextPersonBtn').addEventListener('click', addNextPerson);
+  $('#nextPersonBtn2').addEventListener('click', addNextPerson);
+  $('#addNextFromList').addEventListener('click', addNextPerson);
 
-  // export menu
   const exBtn = $('#exportBtn'), exMenu = $('#exportMenu');
   exBtn.addEventListener('click', e=>{ e.stopPropagation(); exMenu.classList.toggle('hidden'); });
   document.addEventListener('click', ()=> exMenu.classList.add('hidden'));
   $$('[data-export]').forEach(b=> b.addEventListener('click', ()=>{ doExport(b.dataset.export, currentFormReport()); exMenu.classList.add('hidden'); }));
 
-  // tabs
   $$('.nav-btn').forEach(b=> b.addEventListener('click', ()=> switchTab(b.dataset.tab)));
 
-  // reports search/filter
-  $('#searchReports').addEventListener('input', ()=>{ renderReports(); renderReportTable(); });
-  $$('.filter-btn').forEach(b=> b.addEventListener('click', ()=>{
-    currentFilter = b.dataset.filter;
-    $$('.filter-btn').forEach(x=>{ x.classList.remove('bg-brand-600','text-white'); x.classList.add('text-slate-600'); });
-    b.classList.add('bg-brand-600','text-white'); b.classList.remove('text-slate-600');
-    renderReports();
-  }));
+  $('#searchReports').addEventListener('input', renderReports);
   $('#emptyCreate').addEventListener('click', ()=> switchTab('create'));
 
-  // view modal
   $$('[data-close-view]').forEach(b=> b.addEventListener('click', closeView));
   $('#viewModal').addEventListener('click', e=>{ if(e.target.id==='viewModal') closeView(); });
   $$('[data-view-action]').forEach(b=> b.addEventListener('click', ()=>{
     const r = reports.find(x=>x.id===currentViewId); if(r) doExport(b.dataset.viewAction, r);
   }));
 
-  // confirm modal
   $('#confirmCancel').addEventListener('click', closeConfirm);
   $('#confirmOk').addEventListener('click', ()=>{ const cb=confirmCb; closeConfirm(); if(cb) cb(); });
   $('#confirmModal').addEventListener('click', e=>{ if(e.target.id==='confirmModal') closeConfirm(); });
 
-  // keyboard shortcut
   document.addEventListener('keydown', e=>{
     if((e.ctrlKey||e.metaKey) && (e.key==='m'||e.key==='M')){ e.preventDefault(); if(speechSupported) toggleMic(); }
     if(e.key==='Escape'){ if(!$('#viewModal').classList.contains('hidden')) closeView(); if(!$('#confirmModal').classList.contains('hidden')) closeConfirm(); }
   });
 
-  // attachments
-  $('#attInput').addEventListener('change', e=>{ handleAttSelect(e.target.files); e.target.value=''; });
-  renderAttachments();
-
-  // next person
-  $('#nextPersonBtn').addEventListener('click', startNextPerson);
-  $('#addNextBtn').addEventListener('click', startNextPerson);
-
   updateReportCount();
   renderReports();
-  renderReportTable();
   renderStats();
   updateMicUI();
-  initFirebase();
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>
