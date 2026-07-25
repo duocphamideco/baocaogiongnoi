@@ -313,9 +313,13 @@
                 <select id="f_year" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm bg-white"></select>
               </label>
             </div>
+            <label class="block">
+              <span class="text-xs font-semibold text-ink-600">Ngày lập báo cáo <span class="text-signal-500">*</span></span>
+              <input id="f_date" type="date" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm bg-white" />
+            </label>
           </div>
           <p class="mt-3 text-[11px] text-ink-400 flex items-center gap-1.5">
-            <span class="text-gold-600">✨</span> Chọn bộ phận để AI tự gợi ý đủ nội dung báo cáo chuẩn theo sổ tay hướng dẫn.
+            <span class="text-gold-600">✨</span> Khai báo <b>bộ phận</b> để AI tự tham chiếu chỉ dẫn riêng của bộ phận đó: chuẩn hóa văn bản, chấm mức độ đầy đủ và gợi ý cách trình bày đúng một bảng báo cáo.
           </p>
         </div>
 
@@ -395,6 +399,7 @@
                 </div>
                 <div id="recTimer" class="font-disp text-3xl font-bold mt-4 text-white/90 tracking-wider">00:00</div>
                 <div id="micLabel" class="text-xs text-white/50 mt-1">Bấm để bắt đầu đọc</div>
+                <div id="recGuard" class="hidden mt-3 w-full rounded-xl border border-gold-400/40 bg-gold-500/10 px-3 py-2 text-[11px] text-gold-300 leading-relaxed text-center"></div>
               </div>
               <div id="wave" class="wave mt-5"></div>
 
@@ -419,6 +424,7 @@
               <div class="mt-4 grid grid-cols-2 gap-2">
                 <label class="dark-toggle"><input id="smartMode" type="checkbox" checked />✨ Văn phong báo cáo</label>
                 <label class="dark-toggle"><input id="autoCap" type="checkbox" checked />Aa Tự viết hoa</label>
+                <label class="dark-toggle col-span-2"><input id="aiAutoCheck" type="checkbox" checked />🧠 AI đối chiếu chỉ dẫn bộ phận sau khi đọc</label>
               </div>
               <button id="normalizeBtn" class="dark-outline-btn mt-2">✨ Chuẩn hóa mục đang đọc</button>
               <div class="mt-4">
@@ -579,7 +585,7 @@
     </div>
     <div id="aiResults" class="p-5 overflow-y-auto space-y-5"></div>
     <div class="p-4 border-t border-ink-100 flex items-center justify-end gap-2 bg-ink-50/60">
-      <span id="aiModalNote" class="text-[11px] text-ink-400 mr-auto">AI Gemini / Qwen · dòng <b>[Gợi ý]</b> là nội dung AI đề xuất thêm — hãy điền số liệu thật hoặc xóa đi</span>
+      <span id="aiModalNote" class="text-[11px] text-ink-400 mr-auto">AI đối chiếu <b>chỉ dẫn bộ phận</b> · dòng <b>[Gợi ý]</b> là nội dung AI đề xuất thêm — hãy điền số liệu thật hoặc xóa đi</span>
       <button data-close-ai class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">Hủy</button>
       <button id="aiApply" class="btn-lift px-5 py-2 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white text-sm font-semibold shadow disabled:opacity-40 disabled:cursor-not-allowed" disabled>Áp dụng</button>
     </div>
@@ -588,7 +594,7 @@
 
 <!-- SETTINGS MODAL -->
 <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4">
-  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-md overflow-hidden">
+  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-2xl overflow-hidden">
     <div class="flex items-center justify-between p-5 border-b border-ink-100 bg-gradient-to-r from-pine-50 to-gold-50">
       <h3 class="font-bold text-ink-900 flex items-center gap-2">
         <span class="w-8 h-8 rounded-lg bg-white text-pine-600 grid place-items-center shadow-sm">
@@ -702,6 +708,50 @@
             Lưu cấu hình AI
           </button>
           <div id="aiSavedNote" class="hidden text-[11px] text-pine-600 font-semibold text-center mt-2">Đã lưu trên hệ thống ✓</div>
+        </div>
+
+        <!-- ===== THIẾT LẬP CHỈ DẪN CHO AI PHẢN HỒI ===== -->
+        <div class="rounded-xl border border-violet-200 bg-violet-50/40 p-4">
+          <div class="font-bold text-ink-800 text-sm flex items-center gap-2">🧠 Thiết lập chỉ dẫn cho AI phản hồi</div>
+          <p class="text-xs text-ink-500 mt-1 mb-3 leading-relaxed">
+            Toàn bộ <b>Sổ tay hướng dẫn</b> của 5 bộ phận (Kinh doanh · Kế toán · Kho · Giao nhận · SOP) đã được nạp sẵn vào đây.
+            Khi nhân viên <b>khai báo bộ phận</b>, AI sẽ <b>tự động tham chiếu đúng chỉ dẫn</b> của bộ phận đó để chuẩn hóa văn bản giọng nói,
+            phát hiện nội dung <b>còn thiếu / chưa đúng chuẩn</b> và gợi ý cách trình bày đúng một bảng báo cáo.
+            Lưu trên <b>Firebase</b> — áp dụng cho mọi máy.
+          </p>
+
+          <label class="text-xs font-semibold text-ink-600 flex items-center gap-1.5">⚙️ Chỉ dẫn chung (áp dụng cho mọi bộ phận)</label>
+          <textarea id="instrSystem" rows="7" spellcheck="false" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none text-[12px] leading-relaxed bg-white"></textarea>
+
+          <div class="mt-4 rounded-xl border border-pine-200 bg-white/70 p-3">
+            <label class="text-xs font-semibold text-ink-600 flex items-center gap-1.5">🔤 Từ khóa nhận diện giọng nói (thuật ngữ · nhóm hàng · tên sản phẩm)</label>
+            <p class="text-[11px] text-ink-400 mt-1 mb-2 leading-relaxed">
+              Mỗi dòng một từ khóa theo cú pháp <b class="font-disp">Từ đúng = biến thể nghe nhầm 1, biến thể 2</b>.
+              Ứng dụng sẽ <b>tự sửa ngay tại chỗ</b> khi chuyển giọng nói thành văn bản, đồng thời nạp danh sách này vào chỉ dẫn để AI đoán đúng thuật ngữ.
+            </p>
+            <textarea id="instrKeywords" rows="8" spellcheck="false" class="w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-[12px] leading-relaxed font-disp bg-white" placeholder="UVS = u vê ét, u vi ét&#10;Nhóm Thuốc = nhóm thuốt"></textarea>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span id="kwCount" class="text-[10px] text-ink-400 font-disp"></span>
+              <button id="kwReset" type="button" class="ml-auto text-[10px] font-semibold text-ink-400 hover:text-pine-600">↺ Nạp lại danh sách mẫu</button>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-between gap-2 flex-wrap">
+            <div class="text-xs font-semibold text-ink-600 flex items-center gap-1.5">🏷️ Chỉ dẫn riêng theo bộ phận</div>
+            <span id="instrCount" class="text-[10px] text-ink-400 font-disp"></span>
+          </div>
+          <div id="instrTabs" class="mt-1.5 flex gap-1.5 flex-wrap"></div>
+          <textarea id="instrDept" rows="14" spellcheck="false" class="mt-2 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none text-[12px] leading-relaxed bg-white"></textarea>
+
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <button id="instrReloadOne" type="button" class="px-3 py-2 rounded-xl border border-ink-100 bg-white text-ink-600 text-xs font-semibold hover:bg-ink-50" title="Nạp lại nội dung gốc từ tab Hướng dẫn cho bộ phận đang chọn">↺ Nạp lại bộ phận này</button>
+            <button id="instrReloadAll" type="button" class="px-3 py-2 rounded-xl border border-ink-100 bg-white text-ink-600 text-xs font-semibold hover:bg-ink-50" title="Nạp lại toàn bộ 5 bộ phận + chỉ dẫn chung từ mặc định">⟳ Nạp lại toàn bộ</button>
+            <button id="saveInstr" type="button" class="btn-lift ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-violet-700 text-white text-xs font-bold shadow">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Lưu chỉ dẫn AI
+            </button>
+          </div>
+          <div id="instrSavedNote" class="hidden text-[11px] text-violet-600 font-semibold text-center mt-2">Đã lưu chỉ dẫn AI lên hệ thống ✓</div>
         </div>
       </div>
     </div>
@@ -898,6 +948,563 @@ const GUIDES = {
 };
 let activeGuide = 'kinhdoanh';
 
+/* ===================== THIẾT LẬP CHỈ DẪN CHO AI PHẢN HỒI ===================== */
+const DEFAULT_AI_SYSTEM_INSTRUCTION = [
+'VAI TRÒ: Bạn là Trợ lý AI chuyên phân tích và chuẩn hóa BÁO CÁO CÔNG VIỆC CUỐI THÁNG cho doanh nghiệp phân phối dược phẩm - mỹ phẩm tại Việt Nam.',
+'',
+'A. NGUYÊN TẮC CHUẨN HÓA VĂN BẢN (văn bản đến từ giọng nói nên thường sai chính tả, thiếu dấu câu):',
+'1. Viết lại theo văn phong hành chính - báo cáo: trang trọng, khách quan, súc tích; không dùng khẩu ngữ.',
+'2. Sửa toàn bộ lỗi chính tả, dấu câu, viết hoa đầu câu và danh từ riêng tiếng Việt.',
+'3. Loại bỏ từ đệm khi nói (à, ừ, ờ, thì, kiểu như, nói chung, đại loại...) và các câu lặp ý.',
+'4. Trình bày dạng gạch đầu dòng, mỗi ý một dòng ngắn gọn, bắt đầu bằng ký tự "• ".',
+'5. Chuyển số đọc bằng chữ thành chữ số kèm đơn vị chuẩn. Ví dụ: "một tỷ hai trăm năm mươi triệu" thành "1,25 tỷ đồng"; "chín mươi hai phần trăm" thành "92%".',
+'6. TUYỆT ĐỐI KHÔNG bịa số liệu, không suy diễn kết quả, không thêm thành tích không có thật. Giữ nguyên mọi con số người dùng đã nói.',
+'',
+'B. NGUYÊN TẮC PHÂN TÍCH THEO BỘ PHẬN:',
+'7. Luôn đối chiếu nội dung người dùng với CHỈ DẪN CỦA BỘ PHẬN được cung cấp bên dưới (nội dung bắt buộc + khung trình bày chuẩn của công ty).',
+'8. Phát hiện hai nhóm vấn đề: (a) nội dung BẮT BUỘC còn THIẾU; (b) nội dung đã có nhưng TRÌNH BÀY CHƯA ĐÚNG chuẩn báo cáo (nói chung chung, thiếu số liệu, thiếu mốc thời gian, không so sánh chỉ tiêu, không nêu rõ đối tượng/mã hàng/khách hàng).',
+'9. Với mỗi nội dung còn thiếu, tạo một dòng gợi ý theo đúng khung mẫu của bộ phận, dạng: "• [Gợi ý] <tên chỉ tiêu>: ..." và dùng "..." làm chỗ trống để người dùng tự điền số liệu thật.',
+'10. Lời khuyên phải ngắn gọn, cụ thể, làm được ngay; nói rõ NÊN TRÌNH BÀY NHƯ THẾ NÀO cho đúng một bảng báo cáo của bộ phận đó.',
+'11. Nếu người dùng chưa khai báo bộ phận: chỉ chuẩn hóa văn phong và nhắc họ chọn bộ phận để được đối chiếu đầy đủ.',
+'12. Toàn bộ phản hồi bằng tiếng Việt.'
+].join('\n');
+
+function buildDeptInstructionText(g){
+  if(!g) return '';
+  let t = 'BỘ PHẬN: ' + g.deptName + '\n';
+  t += 'PHẠM VI BÁO CÁO: ' + g.tagline + '\n\n';
+  t += 'A. NỘI DUNG BẮT BUỘC THEO 5 MỤC CHUẨN\n';
+  SECTIONS.forEach(sec=>{
+    t += '\n' + sec.num + '. ' + sec.title + '\n';
+    t += ((g.checklist && g.checklist[sec.id]) || []).map(x=>'   - '+x).join('\n') + '\n';
+  });
+  t += '\nB. KHUNG TRÌNH BÀY CHUẨN (dấu "..." là chỗ điền số liệu thật)\n';
+  SECTIONS.forEach(sec=>{
+    const tpl = (g.template && g.template[sec.id]) || '';
+    t += '\n' + sec.num + '. ' + sec.title + '\n' + tpl.split('\n').map(l=>'   '+l).join('\n') + '\n';
+  });
+  t += '\nC. MẸO TRÌNH BÀY BẮT BUỘC TUÂN THỦ\n';
+  t += (g.tips||[]).map(x=>'   - '+x).join('\n') + '\n';
+  t += '\nD. VÍ DỤ MẪU ĐẠT CHUẨN (mục I)\n   ' + (g.example||'') + '\n';
+  return t;
+}
+function defaultDeptInstructions(){
+  const o={};
+  Object.values(GUIDES).forEach(g=>{ o[g.key]=buildDeptInstructionText(g); });
+  return o;
+}
+let aiInstructions = { system: DEFAULT_AI_SYSTEM_INSTRUCTION, depts: defaultDeptInstructions() };
+let activeInstrDept = 'kinhdoanh';
+
+/* ---- Từ điển thuật ngữ / sản phẩm để AI & bộ nhận diện giọng nói đoán đúng ---- */
+const DEFAULT_AI_KEYWORDS = [
+'# Cú pháp: Từ đúng = biến thể nghe nhầm 1, biến thể nghe nhầm 2',
+'UVS = u vê ét, u vi ét, u vê s, u v s, uvs',
+'Nhóm Thuốc = nhóm thuốt, nhóm thuóc, nhom thuoc',
+'Nhóm Mỹ phẩm = nhóm mỹ phẫm, nhom my pham',
+'Thực phẩm chức năng = thực phẩm chức nâng, tpcn, tê pê xê en',
+'GDP = gi đi pi, ghi đi pi, gdp',
+'SOP = ét ô pê, sốp, ét o pe',
+'COD = xi âu đi, co đê, cod',
+'NC = en xi, en cê',
+'IDECO = i đê cô, ai đê cô, y đê cô, ideco',
+'Long Châu = long chau, long trâu, longchau',
+'Pharmacity = pha ma xi ti, phamacity, pharmacy city',
+'An Khang = an khan, ankhang',
+'GTGT = giá trị gia tăng, gờ tê gờ tê',
+'TNCN = thu nhập cá nhân, tê en xê en',
+'BHXH = bảo hiểm xã hội, bê hát xê hát'
+].join('\n');
+let aiKeywords = DEFAULT_AI_KEYWORDS;
+
+function escapeRe(x){ return String(x||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function deaccentKeepLen(str){
+  return String(str||'').replace(/[^\u0000-\u007E]/g, c=>{
+    if(c==='đ') return 'd';
+    if(c==='Đ') return 'D';
+    const b=c.normalize('NFD')[0];
+    return /[a-zA-Z]/.test(b)?b:c;
+  });
+}
+function parseKeywordDict(raw){
+  const out=[];
+  String(raw||'').split('\n').forEach(line=>{
+    const l=line.trim();
+    if(!l || l.charAt(0)==='#') return;
+    const parts=l.split(/\s*[=:｜|]\s*/);
+    const term=(parts[0]||'').trim();
+    if(!term) return;
+    const aliases=(parts.slice(1).join(',')||'').split(/\s*,\s*/).map(x=>x.trim()).filter(Boolean);
+    out.push({ term:term, aliases:aliases });
+  });
+  return out;
+}
+function applyKeywordDict(text){
+  if(!text) return text;
+  const dict=parseKeywordDict(aiKeywords);
+  if(!dict.length) return text;
+  let out=String(text);
+  dict.forEach(d=>{
+    const pats=[d.term].concat(d.aliases);
+    pats.forEach(a=>{
+      const target=deaccentKeepLen(a).toLowerCase().trim();
+      if(target.length<2) return;
+      const flat=deaccentKeepLen(out).toLowerCase();
+      const re=new RegExp('(^|[^a-z0-9])('+escapeRe(target).replace(/\s+/g,'\\s+')+')(?![a-z0-9])','g');
+      const spans=[];
+      let m;
+      while((m=re.exec(flat))!==null){
+        const st=m.index+m[1].length;
+        spans.push([st, st+m[2].length]);
+        if(re.lastIndex<=m.index) re.lastIndex=m.index+1;
+      }
+      for(let i=spans.length-1;i>=0;i--){
+        if(out.slice(spans[i][0],spans[i][1])===d.term) continue;
+        out=out.slice(0,spans[i][0])+d.term+out.slice(spans[i][1]);
+      }
+    });
+  });
+  return out;
+}
+function keywordPromptBlock(){
+  const dict=parseKeywordDict(aiKeywords);
+  if(!dict.length) return '';
+  const L=['===== TỪ ĐIỂN THUẬT NGỮ / SẢN PHẨM CỦA CÔNG TY ====='];
+  L.push('Văn bản đến từ giọng nói nên các thuật ngữ sau thường bị nghe nhầm. BẮT BUỘC viết đúng chính tả như cột đầu; nếu gặp từ gần giống về âm, hãy tự sửa về đúng thuật ngữ:');
+  dict.slice(0,80).forEach(d=>{
+    L.push('- ' + d.term + (d.aliases.length ? ' (hay bị nghe nhầm: ' + d.aliases.join(', ') + ')' : ''));
+  });
+  L.push('===== HẾT TỪ ĐIỂN =====');
+  return L.join('\n');
+}
+
+/* ---- Làm sạch & làm đẹp văn bản AI trả về (chống lộ ký hiệu JSON) ---- */
+function cleanOutputText(raw, aggressive){
+  let x=String(raw||'');
+  x=x.replace(/```[a-zA-Z]*[ \t]*\r?\n?/g,'').replace(/```/g,'');
+  if(aggressive){
+    const keep=[];
+    x.split('\n').forEach(line=>{
+      const mn=/^\s*"?normalized"?\s*:\s*"?/i.exec(line);
+      if(mn){ keep.push(line.slice(mn[0].length)); return; }
+      const t=line.trim();
+      if(/^["{}\[\],]+$/.test(t)) return;
+      if(/^"?(completeness|verdict|missing|issues|advice)"?\s*:/i.test(t)) return;
+      keep.push(line);
+    });
+    x=keep.join('\n');
+  }
+  x=x.replace(/\\r\\n|\\n/g,'\n').replace(/\\t/g,' ').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+  if(aggressive){
+    x=x.replace(/^[\s"',{\[]+/,'').replace(/[\s"',}\]]+$/,'');
+  }
+  return x.trim();
+}
+function beautifyReport(txt){
+  const src=String(txt||'').replace(/\r/g,'').split('\n');
+  const out=[];
+  src.forEach(line=>{
+    let l=line.trim();
+    if(!l){ if(out.length && out[out.length-1]!=='') out.push(''); return; }
+    l=l.replace(/^["'\s]+/,'').replace(/["']+$/,'');
+    if(!l) return;
+    l=l.replace(/^[-*+·–—▪◦]\s*/,'• ');
+    l=l.replace(/^•+\s*/,'• ');
+    if(!/^•\s/.test(l) && !/^[IVX]+\.\s/.test(l)) l='• '+l;
+    l=l.replace(/[ \t]{2,}/g,' ');
+    l=l.replace(/\s+([,.;:!?%])/g,'$1');
+    l=l.replace(/^(•\s*)(\[Gợi ý\]\s*)?([a-zà-ỹ])/,(m,a,b,c)=>a+(b||'')+c.toUpperCase());
+    if(!/[.:!?…]$/.test(l) && !/\.\.\.$/.test(l)) l+='.';
+    out.push(l);
+  });
+  while(out.length && out[out.length-1]==='') out.pop();
+  return out.join('\n');
+}
+function extractJsonStringField(t,key){
+  const i=t.indexOf('"'+key+'"');
+  if(i<0) return '';
+  let j=t.indexOf(':', i+key.length+2);
+  if(j<0) return '';
+  j++;
+  while(j<t.length && /\s/.test(t[j])) j++;
+  if(t[j]!=='"') return '';
+  let k=j+1, out='';
+  while(k<t.length){
+    const c=t[k];
+    if(c==='\\'){
+      const n=t[k+1];
+      if(n==='n') out+='\n';
+      else if(n==='t') out+=' ';
+      else if(n==='r') out+='';
+      else if(n==='u'){ const cp=parseInt(t.slice(k+2,k+6),16); if(!isNaN(cp)) out+=String.fromCharCode(cp); k+=4; }
+      else if(n!==undefined) out+=n;
+      k+=2; continue;
+    }
+    if(c==='"') break;
+    out+=c; k++;
+  }
+  return out;
+}
+function extractJsonArrayField(t,key){
+  const i=t.indexOf('"'+key+'"');
+  if(i<0) return [];
+  const st=t.indexOf('[', i);
+  if(st<0) return [];
+  const out=[]; let k=st+1, cur=null;
+  while(k<t.length){
+    const c=t[k];
+    if(cur===null){
+      if(c===']') break;
+      if(c==='"'){ cur=''; k++; continue; }
+      k++; continue;
+    }
+    if(c==='\\'){ const n=t[k+1]; cur+=(n==='n'?'\n':(n==='t'?' ':(n===undefined?'':n))); k+=2; continue; }
+    if(c==='"'){ out.push(cur); cur=null; k++; continue; }
+    cur+=c; k++;
+  }
+  if(cur) out.push(cur);
+  return out.filter(x=>x && x.trim()).map(x=>x.trim());
+}
+function extractJsonIntField(t,key){
+  const m=new RegExp('"'+key+'"\\s*:\\s*(-?\\d+)').exec(t);
+  return m?parseInt(m[1],10):null;
+}
+function robustParseAI(raw, wantNormalized){
+  const t=cleanOutputText(raw,false);
+  let o=parseAIJson(t);
+  if(!o){
+    o={
+      normalized: extractJsonStringField(t,'normalized'),
+      completeness: extractJsonIntField(t,'completeness'),
+      verdict: extractJsonStringField(t,'verdict'),
+      missing: extractJsonArrayField(t,'missing'),
+      issues: extractJsonArrayField(t,'issues'),
+      advice: extractJsonArrayField(t,'advice')
+    };
+  }
+  const a=normalizeAnalysis(o);
+  if(wantNormalized && !a.normalized) a.normalized=cleanOutputText(raw,true);
+  return a;
+}
+
+/* ---- Bộ kiểm tra nhanh tại chỗ (không cần API) ---- */
+function noAccent(str){
+  return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
+}
+const CHECK_STOPWORDS = new Set(['va','cua','cho','theo','trong','voi','cac','cai','nhung','mot','hai','tren','duoi','tu','den','khi','neu','hoac','nhu','la','co','khong','da','dang','se','bi','duoc','the','con','ma','ra','vao','ve','so','tong','cu','the','ban','nguoi','ngay','thang','nam','muc','viec','lam','moi','chi','ke','hoach','tinh','hinh','danh','sach','noi','dung','phan','bo','sung','thuc','hien','tren','hon','nhieu','it','cao','thap']);
+function keyTokens(item){
+  return noAccent(item).replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(w=>w.length>2 && !CHECK_STOPWORDS.has(w));
+}
+function localCheck(secId){
+  const g=getDeptGuide(); if(!g) return null;
+  const list=(g.checklist && g.checklist[secId])||[];
+  const raw=(draft.sections[secId]||'');
+  const txt=noAccent(raw);
+  const missing=[]; let hit=0;
+  list.forEach(item=>{
+    const toks=keyTokens(item);
+    if(!toks.length){ hit++; return; }
+    const matched=toks.filter(t=>txt.indexOf(t)>=0).length;
+    if(matched/toks.length >= 0.4) hit++; else missing.push(item);
+  });
+  const issues=[];
+  if(raw.trim() && !/\d/.test(raw)) issues.push('Nội dung chưa có số liệu cụ thể — báo cáo cần con số để đối chiếu chỉ tiêu.');
+  if(raw.trim().length && raw.trim().length<40) issues.push('Nội dung còn quá ngắn so với khung báo cáo chuẩn của bộ phận.');
+  return {
+    completeness: list.length ? Math.round(hit/list.length*100) : 100,
+    missing:missing, issues:issues, advice:[], verdict:'', source:'local'
+  };
+}
+
+/* ---- Prompt engine: nạp chỉ dẫn theo bộ phận ---- */
+function getDeptInstruction(){
+  const g=getDeptGuide(); if(!g) return '';
+  const t=((aiInstructions.depts||{})[g.key]||'').trim();
+  return t || buildDeptInstructionText(g);
+}
+function buildAIPrompt(text, secId, mode){
+  const sec=SECTIONS.find(s=>s.id===secId)||SECTIONS[0];
+  const g=getDeptGuide();
+  const sys=((aiInstructions.system||'').trim()) || DEFAULT_AI_SYSTEM_INSTRUCTION;
+  const checkOnly = (mode==='check');
+  const L=[];
+  L.push('===== CHỈ DẪN HỆ THỐNG (thiết lập của công ty) =====');
+  L.push(sys);
+  L.push('');
+  const kw=keywordPromptBlock();
+  if(kw){ L.push(kw); L.push(''); }
+  if(g){
+    L.push('===== CHỈ DẪN RIÊNG CỦA BỘ PHẬN "'+g.deptName+'" =====');
+    L.push(getDeptInstruction());
+    L.push('===== HẾT CHỈ DẪN BỘ PHẬN =====');
+    L.push('');
+    L.push('NGƯỜI BÁO CÁO: '+((draft.info.name||'(chưa nhập tên)'))+' — Chức vụ: '+((draft.info.position||'(chưa nhập)'))+' — Bộ phận: '+g.deptName+' — Kỳ báo cáo: tháng '+draft.info.month+'/'+draft.info.year+'.');
+    L.push('');
+    L.push('TRỌNG TÂM XỬ LÝ LẦN NÀY — MỤC '+sec.num+'. '+sec.title);
+    L.push('Nội dung BẮT BUỘC phải có của mục này:');
+    L.push(((g.checklist&&g.checklist[secId])||[]).map(x=>'- '+x).join('\n'));
+    L.push('');
+    L.push('KHUNG TRÌNH BÀY CHUẨN của mục này:');
+    L.push((g.template&&g.template[secId])||'');
+  } else {
+    L.push('LƯU Ý: Người dùng CHƯA khai báo bộ phận nên không có chỉ dẫn riêng để đối chiếu.');
+    L.push('Chỉ chuẩn hóa văn phong. Trong mảng advice, thêm đúng một câu nhắc người dùng chọn bộ phận (Kinh doanh / Kế toán / Kho / Giao nhận / SOP) để AI đối chiếu đủ nội dung chuẩn.');
+  }
+  L.push('');
+  L.push('===== NỘI DUNG NGƯỜI DÙNG VỪA ĐỌC / NHẬP (mục '+sec.num+'. '+sec.title+') =====');
+  L.push((text||'').trim() || '(Chưa có nội dung. Hãy tạo đầy đủ các dòng "• [Gợi ý] ..." theo khung chuẩn để người dùng điền số liệu thật.)');
+  L.push('===== HẾT NỘI DUNG NGƯỜI DÙNG =====');
+  L.push('');
+  L.push('YÊU CẦU CÔNG VIỆC:');
+  if(checkOnly){
+    L.push('- CHỈ PHÂN TÍCH, KHÔNG viết lại văn bản. Để trường "normalized" là chuỗi rỗng.');
+  } else {
+    L.push('- Chuẩn hóa lại toàn bộ nội dung theo nguyên tắc ở chỉ dẫn hệ thống, đưa vào trường "normalized".');
+    L.push('- Sau phần nội dung đã chuẩn hóa, nếu còn thiếu nội dung bắt buộc thì thêm các dòng "• [Gợi ý] ...: ..." ở CUỐI để người dùng điền số liệu thật.');
+  }
+  L.push('- Chấm điểm mức độ đầy đủ so với danh sách nội dung bắt buộc (0-100) vào "completeness".');
+  L.push('- Liệt kê nội dung bắt buộc CÒN THIẾU vào mảng "missing" (viết theo đúng cách gọi trong chỉ dẫn bộ phận, kèm dấu ... để điền số liệu).');
+  L.push('- Liệt kê các điểm TRÌNH BÀY CHƯA ĐÚNG chuẩn vào mảng "issues" (mỗi lỗi một câu ngắn, nêu rõ sai ở đâu).');
+  L.push('- Đưa 2 đến 4 lời khuyên hành động được ngay vào mảng "advice", nói rõ nên trình bày như thế nào cho đúng bảng báo cáo của bộ phận.');
+  L.push('- "verdict" chỉ nhận một trong ba giá trị: "Đạt chuẩn", "Cần bổ sung", "Chưa đạt".');
+  L.push('');
+  L.push('ĐỊNH DẠNG TRẢ VỀ: CHỈ trả về DUY NHẤT một đối tượng JSON hợp lệ, không lời dẫn, không giải thích, không bọc trong khối mã markdown:');
+  L.push('{"normalized":"...","completeness":0,"verdict":"...","missing":["..."],"issues":["..."],"advice":["..."]}');
+  return L.join('\n');
+}
+function parseAIJson(raw){
+  if(!raw) return null;
+  let t=String(raw).trim();
+  if(t.indexOf('```')>=0){
+    const m=t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if(m) t=m[1].trim();
+  }
+  const a=t.indexOf('{'), b=t.lastIndexOf('}');
+  if(a<0||b<=a) return null;
+  const body=t.slice(a,b+1);
+  try{ return JSON.parse(body); }
+  catch(e){
+    try{ return JSON.parse(body.replace(/,\s*([}\]])/g,'$1')); }catch(e2){ return null; }
+  }
+}
+function normalizeAnalysis(o){
+  const arr=v=>Array.isArray(v)?v.map(x=>typeof x==='string'?x.trim():'').filter(Boolean).slice(0,12):[];
+  let c=(o&&o.completeness!=null)?parseInt(o.completeness,10):NaN;
+  if(isNaN(c)) c=null; else c=Math.max(0,Math.min(100,c));
+  return {
+    normalized:(o&&typeof o.normalized==='string')?o.normalized.trim():'',
+    completeness:c,
+    verdict:(o&&typeof o.verdict==='string')?o.verdict.trim():'',
+    missing:arr(o&&o.missing), issues:arr(o&&o.issues), advice:arr(o&&o.advice),
+    source:'ai'
+  };
+}
+function suggestLine(item){
+  let t=(item||'').trim();
+  if(!t) return '';
+  if(/^[•\-\u2022]/.test(t)) t=t.replace(/^[•\-\u2022]\s*/,'');
+  if(!/\[Gợi ý\]/.test(t)) t='[Gợi ý] '+t;
+  if(!/\.{3}|…/.test(t)) t=t.replace(/[.:\s]+$/,'')+': ...';
+  return '• '+t;
+}
+function appendSuggestionsTo(ta, list){
+  if(!ta||!list||!list.length) return 0;
+  const cur=(ta.value||'').replace(/\s+$/,'');
+  const lines=list.map(suggestLine).filter(Boolean);
+  const fresh=lines.filter(l=>cur.indexOf(l)<0);
+  if(!fresh.length) return 0;
+  ta.value=(cur?cur+'\n':'')+fresh.join('\n');
+  return fresh.length;
+}
+
+/* ---- Giao diện bảng phân tích ---- */
+function scoreTone(c){
+  if(c==null) return {bar:'bg-ink-300', text:'text-ink-500', ring:'border-ink-100 bg-ink-50/70'};
+  if(c>=85) return {bar:'bg-pine-500', text:'text-pine-700', ring:'border-pine-200 bg-pine-50/70'};
+  if(c>=55) return {bar:'bg-gold-500', text:'text-gold-600', ring:'border-gold-300 bg-gold-50/70'};
+  return {bar:'bg-signal-500', text:'text-signal-600', ring:'border-signal-100 bg-signal-50/70'};
+}
+function analysisHTML(a, secId, ctx){
+  const t=scoreTone(a.completeness);
+  const g=getDeptGuide();
+  const badge=a.source==='ai'?'🧠 AI đối chiếu chỉ dẫn bộ phận':'⚡ Kiểm tra nhanh tại chỗ';
+  const verdict=a.verdict||(a.completeness==null?'':(a.completeness>=85?'Đạt chuẩn':(a.completeness>=55?'Cần bổ sung':'Chưa đạt')));
+  let h='<div class="rounded-xl border '+t.ring+' p-3.5">';
+  h+='<div class="flex items-center gap-2 flex-wrap">';
+  h+='<span class="text-[11px] font-bold '+t.text+'">'+badge+(g?' · '+esc(g.deptName):'')+'</span>';
+  if(a.loading) h+='<span class="text-[10px] text-ink-400 animate-pulse">Đang phân tích sâu bằng AI…</span>';
+  h+='<span class="ml-auto text-[11px] font-bold font-disp '+t.text+'">'+(a.completeness==null?'—':a.completeness+'%')+(verdict?' · '+esc(verdict):'')+'</span>';
+  h+='</div>';
+  h+='<div class="mt-2 h-1.5 rounded-full bg-white/70 overflow-hidden border border-black/5"><div class="h-full '+t.bar+' transition-all duration-700" style="width:'+(a.completeness==null?0:a.completeness)+'%"></div></div>';
+  if(a.missing.length){
+    h+='<div class="mt-3"><div class="text-[11px] font-bold text-ink-700">📌 Nội dung bắt buộc còn thiếu ('+a.missing.length+')</div>';
+    h+='<ul class="mt-1.5 space-y-1">'+a.missing.map(m=>'<li class="flex items-start gap-1.5 text-[12px] text-ink-600 leading-relaxed"><span class="'+t.text+' mt-px">•</span><span>'+esc(m)+'</span></li>').join('')+'</ul></div>';
+  }
+  if(a.issues.length){
+    h+='<div class="mt-3"><div class="text-[11px] font-bold text-ink-700">⚠️ Trình bày chưa đúng chuẩn</div>';
+    h+='<ul class="mt-1.5 space-y-1">'+a.issues.map(m=>'<li class="flex items-start gap-1.5 text-[12px] text-ink-600 leading-relaxed"><span class="text-signal-500 mt-px">•</span><span>'+esc(m)+'</span></li>').join('')+'</ul></div>';
+  }
+  if(a.advice.length){
+    h+='<div class="mt-3"><div class="text-[11px] font-bold text-ink-700">💡 Nên trình bày như thế nào</div>';
+    h+='<ul class="mt-1.5 space-y-1">'+a.advice.map(m=>'<li class="flex items-start gap-1.5 text-[12px] text-ink-600 leading-relaxed"><span class="text-pine-500 mt-px">→</span><span>'+esc(m)+'</span></li>').join('')+'</ul></div>';
+  }
+  if(!a.missing.length && !a.issues.length && !a.advice.length && !a.loading){
+    h+='<div class="mt-2 text-[12px] text-pine-700 font-semibold">✓ Nội dung đã đủ ý theo chỉ dẫn của bộ phận.</div>';
+  }
+  h+='<div class="mt-3 flex flex-wrap gap-1.5">';
+  if(a.missing.length) h+='<button type="button" data-adv-act="fill" data-adv-sec="'+secId+'" data-adv-ctx="'+ctx+'" class="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-[11px] font-bold">➕ Chèn '+a.missing.length+' dòng gợi ý</button>';
+  if(g) h+='<button type="button" data-adv-act="tpl" data-adv-sec="'+secId+'" data-adv-ctx="'+ctx+'" class="px-2.5 py-1.5 rounded-lg border border-ink-100 bg-white text-ink-600 text-[11px] font-semibold hover:bg-ink-50">📋 Chèn khung trình bày chuẩn</button>';
+  if(ctx==='card'){
+    h+='<button type="button" data-adv-act="ai" data-adv-sec="'+secId+'" data-adv-ctx="card" class="px-2.5 py-1.5 rounded-lg border border-pine-200 bg-pine-50 text-pine-700 text-[11px] font-semibold hover:bg-pine-100">✨ AI viết lại mục này</button>';
+    h+='<button type="button" data-adv-act="hide" data-adv-sec="'+secId+'" data-adv-ctx="card" class="px-2.5 py-1.5 rounded-lg text-ink-400 text-[11px] font-semibold hover:text-signal-500 ml-auto">Ẩn</button>';
+  }
+  h+='</div></div>';
+  return h;
+}
+const advisingSet = {};
+function renderSectionAdvice(secId, a){
+  const box=document.querySelector('.sec-advice[data-advice="'+secId+'"]');
+  if(!box) return;
+  box.innerHTML=analysisHTML(a, secId, 'card');
+  box.classList.remove('hidden');
+}
+function hideSectionAdvice(secId){
+  const box=document.querySelector('.sec-advice[data-advice="'+secId+'"]');
+  if(box){ box.classList.add('hidden'); box.innerHTML=''; }
+}
+async function adviseSection(secId, opts){
+  opts=opts||{};
+  const g=getDeptGuide();
+  if(!g){
+    if(!opts.silent) toast('Hãy chọn bộ phận để AI đối chiếu chỉ dẫn báo cáo.','info');
+    return;
+  }
+  const text=(draft.sections[secId]||'').trim();
+  if(!text){
+    if(!opts.silent) toast('Mục này chưa có nội dung để đối chiếu.','info');
+    return;
+  }
+  const local=localCheck(secId);
+  const canAI=!!(geminiApiKey||qwenApiKey);
+  if(local) renderSectionAdvice(secId, Object.assign({}, local, {loading:canAI}));
+  if(!canAI) return;
+  if(advisingSet[secId]) return;
+  advisingSet[secId]=true;
+  try{
+    const raw=await callAI(buildAIPrompt(text, secId, 'check'),{json:true});
+    const a=robustParseAI(raw,false);
+    if(a.completeness==null && !a.missing.length && !a.issues.length && !a.advice.length){
+      if(local) renderSectionAdvice(secId, local);
+    } else {
+      renderSectionAdvice(secId, a);
+    }
+  }catch(err){
+    if(local) renderSectionAdvice(secId, local);
+    if(!opts.silent) toast('AI chưa đối chiếu được: '+err.message,'error');
+  }finally{
+    advisingSet[secId]=false;
+  }
+}
+function autoAdviseAfterVoice(secId){
+  const el=$('#aiAutoCheck');
+  if(el && !el.checked) return;
+  if(!getDeptGuide()) return;
+  setTimeout(()=>adviseSection(secId,{silent:true}), 250);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-adv-act]');
+  if(!b) return;
+  const secId=b.dataset.advSec, ctx=b.dataset.advCtx, act=b.dataset.advAct;
+  const g=getDeptGuide();
+  let ta=null;
+  if(ctx==='ai'){
+    const blk=document.querySelector('.ai-block[data-sec="'+secId+'"]');
+    ta=blk?blk.querySelector('.ai-output'):null;
+  } else {
+    ta=document.querySelector('textarea[data-sec="'+secId+'"]');
+  }
+  if(act==='hide'){ hideSectionAdvice(secId); return; }
+  if(act==='ai'){ runAIRewrite([secId]); return; }
+  if(!ta) return;
+  if(act==='fill'){
+    const box=b.closest('div').parentElement;
+    const items=[...box.querySelectorAll('ul')][0];
+    const list=items?[...items.querySelectorAll('li span:last-child')].map(x=>x.textContent):[];
+    const n=appendSuggestionsTo(ta,list);
+    if(ctx!=='ai'){ draft.sections[secId]=ta.value; updateWordCount(secId); updateProgress(); scheduleSave(); }
+    toast(n?('Đã chèn '+n+' dòng gợi ý — hãy điền số liệu thật vào các chỗ "..."'):'Các dòng gợi ý đã có sẵn trong nội dung.', n?'success':'info');
+  }
+  if(act==='tpl'){
+    if(!g) return;
+    const tpl=(g.template&&g.template[secId])||'';
+    if(!tpl) return;
+    const cur=(ta.value||'').trim();
+    ta.value=cur?(cur+'\n'+tpl):tpl;
+    if(ctx!=='ai'){ draft.sections[secId]=ta.value; updateWordCount(secId); updateProgress(); scheduleSave(); }
+    toast('Đã chèn khung trình bày chuẩn của bộ phận '+g.deptName+'.','success');
+  }
+});
+
+/* ---- Quản lý chỉ dẫn AI trong Cài đặt ---- */
+function renderInstrTabs(){
+  const wrap=$('#instrTabs'); if(!wrap) return;
+  wrap.innerHTML='';
+  Object.values(GUIDES).forEach(g=>{
+    const on=activeInstrDept===g.key;
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border transition '+(on?'bg-violet-600 text-white border-violet-600 shadow':'bg-white text-ink-600 border-ink-100 hover:border-violet-300');
+    b.textContent=g.icon+' '+g.deptName;
+    b.addEventListener('click',()=>{ stashInstrDept(); activeInstrDept=g.key; renderInstrTabs(); fillInstrDept(); });
+    wrap.appendChild(b);
+  });
+}
+function stashInstrDept(){
+  const ta=$('#instrDept');
+  if(ta && ta.value.trim()) aiInstructions.depts[activeInstrDept]=ta.value;
+}
+function fillInstrDept(){
+  const ta=$('#instrDept'); if(!ta) return;
+  ta.value=aiInstructions.depts[activeInstrDept]||buildDeptInstructionText(GUIDES[activeInstrDept]);
+  updateInstrCount();
+}
+function updateInstrCount(){
+  const ta=$('#instrDept'), el=$('#instrCount');
+  if(ta&&el) el.textContent=ta.value.length.toLocaleString('vi-VN')+' ký tự · '+GUIDES[activeInstrDept].deptName;
+}
+function updateKwCount(){
+  const ta=$('#instrKeywords'), el=$('#kwCount');
+  if(ta&&el) el.textContent=parseKeywordDict(ta.value).length+' từ khóa đang hoạt động';
+}
+function saveInstructions(){
+  stashInstrDept();
+  const sysEl=$('#instrSystem');
+  if(sysEl && sysEl.value.trim()) aiInstructions.system=sysEl.value;
+  const kwEl=$('#instrKeywords');
+  if(kwEl) aiKeywords=kwEl.value;
+  SETTINGS_REF.update({ ai_instructions:{ system:aiInstructions.system, depts:aiInstructions.depts, keywords:aiKeywords, updatedAt:Date.now() } })
+    .then(()=>{
+      $('#instrSavedNote').classList.remove('hidden');
+      toast('Đã lưu chỉ dẫn AI lên Firebase — áp dụng cho mọi máy.','success');
+    })
+    .catch(e=>{ console.error(e); toast('Không lưu được chỉ dẫn AI.','error'); });
+}
+function reloadInstrOne(){
+  aiInstructions.depts[activeInstrDept]=buildDeptInstructionText(GUIDES[activeInstrDept]);
+  fillInstrDept();
+  toast('Đã nạp lại chỉ dẫn gốc của bộ phận '+GUIDES[activeInstrDept].deptName+'. Nhớ bấm Lưu.','info');
+}
+function reloadInstrAll(){
+  showConfirm('Nạp lại toàn bộ chỉ dẫn?','Chỉ dẫn chung và chỉ dẫn của cả 5 bộ phận sẽ trở về nội dung gốc theo Sổ tay hướng dẫn.','Nạp lại',()=>{
+    aiInstructions={ system:DEFAULT_AI_SYSTEM_INSTRUCTION, depts:defaultDeptInstructions() };
+    aiKeywords=DEFAULT_AI_KEYWORDS;
+    const si=$('#instrSystem'); if(si) si.value=aiInstructions.system;
+    const kw=$('#instrKeywords'); if(kw){ kw.value=aiKeywords; updateKwCount(); }
+    fillInstrDept();
+    toast('Đã nạp lại toàn bộ chỉ dẫn gốc. Nhớ bấm Lưu chỉ dẫn AI.','info');
+  });
+}
+
 /* ===================== AI CONFIG STATE ===================== */
 const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JxeXMAjFtlRIWys4NznQ4LXou26sblM59e4b_qV1Xvsg';
 let geminiApiKey = DEFAULT_GEMINI_KEY;
@@ -909,7 +1516,7 @@ let aiProvider = 'auto';
 
 const now = new Date();
 let draft = {
-  info: { name:'', position:'', dept:'', month: now.getMonth()+1, year: now.getFullYear() },
+  info: { name:'', position:'', dept:'', date: todayISO(), month: now.getMonth()+1, year: now.getFullYear() },
   sections: { completed:'', unfinished:'', causes:'', plan:'', proposals:'' },
   attachments: [],
   updatedAt: null
@@ -950,6 +1557,42 @@ function saveDraft(){
 function scheduleSave(){
   const s=$('#saveStatus'); if(s) s.innerHTML='<span class="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse"></span>Đang lưu…';
   clearTimeout(saveTimer); saveTimer=setTimeout(saveDraft,400);
+}
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtVNDate(v){ if(!v) return ''; const d=new Date(v); return isNaN(d.getTime())?String(v):d.toLocaleDateString('vi-VN'); }
+function reportDateStr(r){ return r&&r.reportDate ? fmtVNDate(r.reportDate) : (r&&r.createdAt ? fmtVNDate(r.createdAt) : '—'); }
+function missingReporterFields(){
+  const m=[];
+  if(!(draft.info.name||'').trim()) m.push('Họ và tên');
+  if(!(draft.info.dept||'').trim()) m.push('Bộ phận');
+  if(!(draft.info.date||'').trim()) m.push('Ngày lập');
+  return m;
+}
+function updateRecordGuard(){
+  const el=$('#recGuard'); if(!el) return;
+  const mic=$('#bigMic'), m=missingReporterFields();
+  if(m.length){
+    el.classList.remove('hidden');
+    el.innerHTML='⚠️ Chưa khai báo: <b>'+m.join(' · ')+'</b><br>Điền đủ để AI tham chiếu đúng chỉ dẫn bộ phận trước khi thu âm.';
+    if(mic){ mic.classList.add('opacity-40'); mic.title='Cần khai báo Họ tên · Bộ phận · Ngày lập trước khi thu âm'; }
+  } else {
+    el.classList.add('hidden'); el.innerHTML='';
+    if(mic){ mic.classList.remove('opacity-40'); mic.title=''; }
+  }
+}
+function ensureReporterInfo(){
+  const m=missingReporterFields();
+  updateRecordGuard();
+  if(!m.length) return true;
+  toast('Vui lòng khai báo '+m.join(', ')+' trước khi thu âm — AI cần thông tin này để tham chiếu đúng chỉ dẫn bộ phận.','error');
+  const card=$('#f_name')?$('#f_name').closest('.bg-white'):null;
+  if(card){
+    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    window.scrollTo({top:Math.max(0,card.offsetTop-140),behavior:'smooth'});
+  }
+  const first=!(draft.info.name||'').trim()?'#f_name':(!(draft.info.dept||'').trim()?'#f_dept':'#f_date');
+  setTimeout(()=>{ const e=$(first); if(e) e.focus(); },350);
+  return false;
 }
 function wordCount(t){ return (t||'').trim() ? (t||'').trim().split(/\s+/).length : 0; }
 function capSentences(s){ return (s||'').replace(/(^|[.!?]\s+)(\S)/g,(m,pre,ch)=>pre+ch.toUpperCase()); }
@@ -1075,6 +1718,17 @@ function loadAISettings(){
     if(v.qwen_model) qwenModel=v.qwen_model;
     if(v.qwen_region) qwenRegion=v.qwen_region;
     if(v.ai_provider) aiProvider=v.ai_provider;
+    const ins=v.ai_instructions;
+    if(ins){
+      if(typeof ins.system==='string' && ins.system.trim()) aiInstructions.system=ins.system;
+      if(ins.depts && typeof ins.depts==='object'){
+        Object.keys(GUIDES).forEach(k=>{ if(typeof ins.depts[k]==='string' && ins.depts[k].trim()) aiInstructions.depts[k]=ins.depts[k]; });
+      }
+      if(typeof ins.keywords==='string' && ins.keywords.trim()) aiKeywords=ins.keywords;
+    }
+    const kwEl=$('#instrKeywords'); if(kwEl && document.activeElement!==kwEl){ kwEl.value=aiKeywords; updateKwCount(); }
+    const siEl=$('#instrSystem'); if(siEl && document.activeElement!==siEl) siEl.value=aiInstructions.system;
+    const diEl=$('#instrDept'); if(diEl && document.activeElement!==diEl){ diEl.value=aiInstructions.depts[activeInstrDept]||''; updateInstrCount(); }
     updateAIStatusUI();
     const gk=$('#geminiKey'); if(gk&&document.activeElement!==gk) gk.value=geminiApiKey;
     const gm=$('#geminiModel'); if(gm) gm.value=geminiModel;
@@ -1102,79 +1756,78 @@ function getDeptGuide(){
   return Object.values(GUIDES).find(g=>g.deptName===dept)||null;
 }
 function buildRewritePrompt(text,secId){
-  const sec=SECTIONS.find(s=>s.id===secId)||SECTIONS[0];
-  const g=getDeptGuide();
-  let guideBlock='';
-  if(g && g.checklist && g.checklist[secId]){
-    guideBlock=`DANH SÁCH NỘI DUNG BẮT BUỘC của mục "${sec.title}" đối với bộ phận ${g.deptName} (theo sổ tay hướng dẫn của công ty):
-${g.checklist[secId].map(p=>'- '+p).join('\n')}
-
-YÊU CẦU VỀ TÍNH ĐẦY ĐỦ:
-- Đối chiếu nội dung người dùng cung cấp với danh sách bắt buộc ở trên.
-- Nếu còn thiếu nội dung nào, hãy bổ sung các dòng GỢI Ý cho phần thiếu vào CUỐI mục, mỗi dòng bắt đầu bằng "• [Gợi ý] " và dùng "..." làm chỗ trống cho số liệu cụ thể (tuyệt đối KHÔNG tự bịa số liệu thật).
-- Nếu nội dung đã đầy đủ, không thêm gợi ý.`;
-  } else {
-    guideBlock=`LƯU Ý: Người dùng chưa chọn bộ phận cụ thể. Nếu thấy phù hợp, thêm một dòng cuối: "• [Gợi ý] Chọn bộ phận (Kinh doanh / Kế toán / Kho / Giao nhận / SOP) để AI gợi ý đủ nội dung chuẩn theo công ty."`;
-  }
-  const userText=(text||'').trim() || '(Chưa có nội dung. Hãy tạo các dòng "• [Gợi ý] ..." cho toàn bộ danh sách nội dung bắt buộc ở trên để người dùng điền số liệu thật.)';
-  return `Bạn là trợ lý AI chuyên viết báo cáo công việc cuối tháng chuyên nghiệp cho doanh nghiệp Việt Nam.
-
-NHIỆM VỤ 1 — CHUẨN HÓA VĂN BẢN:
-- Viết lại nội dung dưới đây với văn phong chuyên nghiệp, trang trọng, đúng chuẩn báo cáo công việc.
-- Sửa mọi lỗi chính tả, ngữ pháp tiếng Việt.
-- Diễn đạt rõ ràng, mạch lạc, súc tích; trình bày có cấu trúc bằng gạch đầu dòng, mỗi ý một dòng ngắn gọn.
-- Giữ nguyên ý nghĩa và số liệu gốc, KHÔNG bịa thêm số liệu.
-
-NHIỆM VỤ 2 — ĐẢM BẢO ĐẦY ĐỦ THEO BỘ PHẬN:
-${guideBlock}
-
-Chỉ trả về nội dung cuối cùng (đã chuẩn hóa + các dòng "[Gợi ý]" nếu có), KHÔNG thêm lời giải thích, KHÔNG thêm tiêu đề.
-
-Nội dung của người dùng (mục ${sec.num}. ${sec.title}):
-"""
-${userText}
-"""`;
+  return buildAIPrompt(text, secId, 'rewrite');
 }
 function isQuotaError(err){
   const m=(err.message||'').toLowerCase();
   return m.includes('429')||m.includes('quota')||m.includes('token')||m.includes('exhaust')||m.includes('limit')||m.includes('resource')||m.includes('hết');
 }
-async function callGemini(prompt){
+async function callGemini(prompt,opts){
   if(!geminiApiKey){ throw new Error('no-key-gemini'); }
   const url=`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${encodeURIComponent(geminiApiKey)}`;
-  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.4,maxOutputTokens:2048}})});
-  if(!res.ok){ let msg='Lỗi Gemini ('+res.status+')'; try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){} throw new Error(msg); }
-  const data=await res.json();
+  const cfg={temperature:0.35,maxOutputTokens:8192};
+  if(opts&&opts.json) cfg.responseMimeType='application/json';
+  const send=async(c)=>{
+    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:c})});
+    if(!res.ok){
+      let msg='Lỗi Gemini ('+res.status+')';
+      try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){}
+      const er=new Error(msg); er.status=res.status; throw er;
+    }
+    return await res.json();
+  };
+  let data;
+  try{ data=await send(cfg); }
+  catch(e){
+    if(e.status===400 && cfg.responseMimeType){ const c2=Object.assign({},cfg); delete c2.responseMimeType; data=await send(c2); }
+    else throw e;
+  }
   const text=(data&&data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts||[]).map(p=>p.text).join('');
   if(!text) throw new Error('Gemini không trả về nội dung.');
   return text.trim();
 }
-async function callQwen(prompt){
+async function callQwen(prompt,opts){
   if(!qwenApiKey){ throw new Error('no-key-qwen'); }
   const url=qwenRegion==='cn'
     ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
     : 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
-  const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+qwenApiKey,'Content-Type':'application/json'},body:JSON.stringify({model:qwenModel,messages:[{role:'user',content:prompt}],temperature:0.4})});
-  if(!res.ok){ let msg='Lỗi Qwen ('+res.status+')'; try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){} throw new Error(msg); }
-  const data=await res.json();
+  const send=async(useJson)=>{
+    const body={model:qwenModel,messages:[{role:'user',content:prompt}],temperature:0.35,max_tokens:4096};
+    if(useJson) body.response_format={type:'json_object'};
+    const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+qwenApiKey,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok){
+      let msg='Lỗi Qwen ('+res.status+')';
+      try{const j=await res.json();msg=(j&&j.error&&j.error.message)||msg;}catch(e){}
+      const er=new Error(msg); er.status=res.status; throw er;
+    }
+    return await res.json();
+  };
+  let data;
+  const wantJson=!!(opts&&opts.json);
+  try{ data=await send(wantJson); }
+  catch(e){
+    if(e.status===400 && wantJson) data=await send(false);
+    else throw e;
+  }
   const text=(data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
   if(!text) throw new Error('Qwen không trả về nội dung.');
   return text.trim();
 }
-async function callAI(prompt){
-  if(aiProvider==='qwen') return await callQwen(prompt);
-  if(aiProvider==='gemini') return await callGemini(prompt);
+async function callAI(prompt,opts){
+  opts=opts||{json:true};
+  if(aiProvider==='qwen') return await callQwen(prompt,opts);
+  if(aiProvider==='gemini') return await callGemini(prompt,opts);
   try {
-    return await callGemini(prompt);
+    return await callGemini(prompt,opts);
   } catch(err){
     if(err.message==='no-key-gemini'){
-      if(qwenApiKey){ toast('Gemini chưa có API Key — dùng Qwen AI.','info'); return await callQwen(prompt); }
+      if(qwenApiKey){ toast('Gemini chưa có API Key — dùng Qwen AI.','info'); return await callQwen(prompt,opts); }
       throw new Error('Chưa cấu hình API Key AI.');
     }
     if(qwenApiKey){
       const reason=isQuotaError(err)?'hết hạn mức token':'gặp lỗi';
       toast('Gemini '+reason+' — tự động chuyển sang Qwen AI.','info');
-      return await callQwen(prompt);
+      return await callQwen(prompt,opts);
     }
     throw err;
   }
@@ -1198,7 +1851,8 @@ function buildAIBlock(sec){
       <span class="ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-gold-50 text-gold-600">Đang xử lý…</span>
     </div>
     <div class="ai-loading shimmer h-24 rounded-xl"></div>
-    <textarea class="ai-output hidden w-full px-3 py-2.5 rounded-xl border border-pine-200 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm leading-relaxed bg-pine-50/40" rows="7"></textarea>`;
+    <textarea class="ai-output hidden w-full px-3 py-2.5 rounded-xl border border-pine-200 focus:border-pine-500 focus:ring-2 focus:ring-pine-100 outline-none text-sm leading-relaxed bg-pine-50/40" rows="7"></textarea>
+    <div class="ai-analysis mt-3"></div>`;
   return div;
 }
 function openAIModal(){ $('#aiModal').classList.remove('hidden'); }
@@ -1218,12 +1872,23 @@ async function runAIRewrite(secIds){
     const block=buildAIBlock(sec); container.appendChild(block);
     const status=block.querySelector('.ai-status'),loading=block.querySelector('.ai-loading'),output=block.querySelector('.ai-output');
     try{
-      const text=await callAI(buildRewritePrompt(original,id));
-      aiResultsStore[id]=text;
+      const raw=await callAI(buildRewritePrompt(original,id),{json:true});
+      const a=robustParseAI(raw,true);
+      let finalText=beautifyReport(applyKeywordDict(a.normalized||''));
+      if(!finalText.trim()) finalText=beautifyReport(original);
+      aiResultsStore[id]=finalText;
       loading.classList.add('hidden'); output.classList.remove('hidden');
-      status.textContent='Hoàn thành ✓'; status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full bg-pine-50 text-pine-600';
+      const sc=a?a.completeness:null;
+      status.textContent=(sc==null?'Hoàn thành ✓':'Đủ ý '+sc+'%');
+      status.className='ai-status text-[11px] font-semibold px-2 py-1 rounded-full '+((sc!=null&&sc<55)?'bg-signal-50 text-signal-600':((sc!=null&&sc<85)?'bg-gold-50 text-gold-600':'bg-pine-50 text-pine-600'));
       $('#aiApply').disabled=false;
-      await typewriter(output,text);
+      await typewriter(output,finalText);
+      const panel=block.querySelector('.ai-analysis');
+      if(panel){
+        const shown=(a.completeness!=null||a.missing.length||a.issues.length||a.advice.length)?a:localCheck(id);
+        if(shown) panel.innerHTML=analysisHTML(shown,id,'ai');
+      }
+      renderSectionAdvice(id,a);
     }catch(err){
       const noKey=['no-key','no-key-gemini','no-key-qwen'].includes(err.message)||(err.message||'').includes('Chưa cấu hình');
       if(noKey){ closeAIModal(); openSettings(); return; }
@@ -1283,6 +1948,7 @@ function renderGuideContent(){
           <div class="flex-1 min-w-[220px]">
             <h2 class="text-xl font-extrabold text-ink-900">Bộ phận ${g.deptName}</h2>
             <p class="text-sm text-ink-500 mt-0.5">${g.tagline}</p>
+            <span class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-50 border border-violet-200 text-violet-700 text-[10px] font-bold">🧠 Đã nạp vào chỉ dẫn AI — AI tự đối chiếu khi bạn khai bộ phận này</span>
           </div>
           <div class="flex gap-2 flex-wrap">
             <button onclick="copyGuideTemplate('${g.key}')" class="btn-lift inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-ink-100 bg-white text-ink-700 text-xs font-semibold hover:bg-ink-50">📋 Sao chép mẫu</button>
@@ -1369,11 +2035,13 @@ function buildSectionCards(){
               Đọc
             </button>
             <button class="sec-ai inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-gold-400 to-gold-600 text-ink-900 text-xs font-bold hover:opacity-90 transition" data-ai="${sec.id}" title="AI chuẩn hóa & gợi ý đủ ý">✨ AI</button>
-            <button class="sec-norm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink-100 text-xs font-semibold text-ink-600 hover:border-pine-400 hover:text-pine-600 transition" data-norm="${sec.id}" title="Chuẩn hóa văn phong">✨ Chuẩn hóa</button>
+            <button class="sec-norm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink-100 text-xs font-semibold text-ink-600 hover:border-pine-400 hover:text-pine-600 transition" data-norm="${sec.id}" title="Chuẩn hóa văn phong + đối chiếu chỉ dẫn bộ phận">✨ Chuẩn hóa</button>
+            <button class="sec-check inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-violet-200 bg-violet-50 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition" data-check="${sec.id}" title="AI đối chiếu chỉ dẫn của bộ phận & gợi ý cách trình bày đúng">🧠 Kiểm tra chuẩn</button>
             <button class="sec-clear text-xs font-semibold text-ink-400 hover:text-signal-500 px-2 py-1.5" data-clear="${sec.id}">Xóa</button>
             <span class="text-[11px] text-ink-200">|</span>
             ${sec.phrases.map(p=>`<button class="chip text-[11px] px-2.5 py-1 rounded-full bg-ink-50 text-ink-600 hover:bg-pine-50 hover:text-pine-700" data-phrase="${sec.id}" data-text="${esc(p)}">+ ${esc(p.length>34?p.slice(0,34)+'…':p)}</button>`).join('')}
           </div>
+          <div class="sec-advice hidden mt-3" data-advice="${sec.id}"></div>
         </div>
       </div>`;
     wrap.appendChild(card);
@@ -1388,15 +2056,21 @@ function buildSectionCards(){
   $$('.sec-mic').forEach(b=>b.addEventListener('click',()=>onSectionMic(b.dataset.target)));
   $$('.sec-ai').forEach(b=>b.addEventListener('click',()=>aiSection(b.dataset.ai)));
   $$('.sec-norm').forEach(b=>b.addEventListener('click',()=>normalizeSection(b.dataset.norm)));
-  $$('.sec-clear').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.clear;draft.sections[id]='';const ta=$(`textarea[data-sec="${id}"]`);ta.value='';updateWordCount(id);updateProgress();scheduleSave();}));
+  $$('.sec-check').forEach(b=>b.addEventListener('click',()=>adviseSection(b.dataset.check,{silent:false})));
+  $$('.sec-clear').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.clear;draft.sections[id]='';const ta=$(`textarea[data-sec="${id}"]`);ta.value='';updateWordCount(id);updateProgress();scheduleSave();hideSectionAdvice(id);}));
   $$('[data-phrase]').forEach(b=>b.addEventListener('click',()=>insertPhrase(b.dataset.phrase,b.dataset.text)));
 }
 function normalizeSection(secId){
   const ta=$(`textarea[data-sec="${secId}"]`);
   if(!ta.value.trim()){toast('Mục này chưa có nội dung để chuẩn hóa.','info');return;}
-  ta.value=smartProcess(ta.value);
+  ta.value=beautifyReport(applyKeywordDict(smartProcess(ta.value)));
   draft.sections[secId]=ta.value;updateWordCount(secId);updateProgress();scheduleSave();
-  toast('Đã chuẩn hóa văn phong mục này.','success');
+  if(getDeptGuide()){
+    toast('Đã chuẩn hóa — AI đang đối chiếu chỉ dẫn bộ phận…','success');
+    adviseSection(secId,{silent:true});
+  } else {
+    toast('Đã chuẩn hóa văn phong mục này.','success');
+  }
 }
 function insertPhrase(secId,text){
   const ta=$(`textarea[data-sec="${secId}"]`);
@@ -1478,6 +2152,8 @@ function loadDraftToForm(){
   $('#f_dept').value=draft.info.dept||'';
   $('#f_month').value=draft.info.month||now.getMonth()+1;
   $('#f_year').value=draft.info.year||now.getFullYear();
+  draft.info.date=draft.info.date||todayISO();
+  $('#f_date').value=draft.info.date;
   SECTIONS.forEach(s=>{$(`textarea[data-sec="${s.id}"]`).value=draft.sections[s.id]||'';});
   updateAllWordCounts();updateProgress();updateHeader();updateAvatar();renderAttachments();
 }
@@ -1487,6 +2163,11 @@ function bindInfoInputs(){
   $('#f_dept').addEventListener('change',e=>{draft.info.dept=e.target.value;scheduleSave();});
   $('#f_month').addEventListener('change',e=>{draft.info.month=+e.target.value;updateHeader();scheduleSave();});
   $('#f_year').addEventListener('change',e=>{draft.info.year=+e.target.value;updateHeader();scheduleSave();});
+  $('#f_date').addEventListener('change',e=>{draft.info.date=e.target.value;scheduleSave();updateRecordGuard();});
+  ['#f_name','#f_dept','#f_date'].forEach(sel=>{
+    $(sel).addEventListener('input',updateRecordGuard);
+    $(sel).addEventListener('change',updateRecordGuard);
+  });
 }
 function updateHeader(){
   const label=`${MONTHS[(draft.info.month||1)-1]}, ${draft.info.year||now.getFullYear()}`;
@@ -1567,6 +2248,7 @@ function releaseMicStream(){
 function onSectionMic(id){
   if(!speechSupported){toast('Trình duyệt không hỗ trợ nhận diện giọng nói.','error');return;}
   if(isRecording&&targetSection===id){stopRec();return;}
+  if(!ensureReporterInfo())return;
   selectTarget(id);if(!isRecording)startRec();
 }
 function selectTarget(id){
@@ -1575,6 +2257,7 @@ function selectTarget(id){
 }
 async function startRec(){
   if(!speechSupported||isRecording||micStarting)return;
+  if(!ensureReporterInfo())return;
   micStarting=true;
   const ta=$(`textarea[data-sec="${targetSection}"]`);
   rawBase=ta.value;rawFinal='';
@@ -1603,10 +2286,11 @@ function stopRec(){
   stopTimer();updateMicUI();
   const ta=$(`textarea[data-sec="${targetSection}"]`);
   const smart=$('#smartMode').checked;
-  ta.value=smart?smartProcess(ta.value):(autoCap?capSentences(ta.value):ta.value);
+  ta.value=applyKeywordDict(smart?smartProcess(ta.value):(autoCap?capSentences(ta.value):ta.value));
   draft.sections[targetSection]=ta.value;
   updateWordCount(targetSection);updateProgress();scheduleSave();
   $('#liveBox').innerHTML='<span class="text-white/40">Đã dừng. Bấm micro để đọc tiếp.</span>';
+  autoAdviseAfterVoice(targetSection);
 }
 function toggleMic(){isRecording?stopRec():startRec();}
 function updateMicUI(){
@@ -1640,6 +2324,7 @@ function collectReport(){
   return {
     name:(draft.info.name||'').trim(),position:(draft.info.position||'').trim(),dept:(draft.info.dept||'').trim(),
     month:draft.info.month||now.getMonth()+1,year:draft.info.year||now.getFullYear(),
+    reportDate:(draft.info.date||todayISO()),
     sections:{...draft.sections},
     attachments:(draft.attachments||[]).map(a=>({name:a.name,size:a.size,type:a.type,dataUrl:a.dataUrl})),
     createdAt:firebase.database.ServerValue.TIMESTAMP,clientTs:Date.now()
@@ -1648,6 +2333,7 @@ function collectReport(){
 function validate(){
   if(!(draft.info.name||'').trim()){toast('Vui lòng nhập họ và tên người báo cáo.','error');$('#f_name').focus();return false;}
   if(!(draft.info.dept||'').trim()){toast('Vui lòng chọn bộ phận.','error');$('#f_dept').focus();return false;}
+  if(!(draft.info.date||'').trim()){toast('Vui lòng chọn ngày lập báo cáo.','error');$('#f_date').focus();return false;}
   if(!SECTIONS.some(s=>(draft.sections[s.id]||'').trim().length>0)){toast('Báo cáo cần có ít nhất một mục nội dung.','error');return false;}
   return true;
 }
@@ -1665,7 +2351,7 @@ function submitReport(){
   }).catch(err=>{btn.disabled=false;btn.innerHTML=original;console.error(err);toast('Không gửi được báo cáo. Vui lòng kiểm tra kết nối.','error');});
 }
 function resetDraftForNextPerson(keepMonth){
-  draft.info={name:'',position:'',dept:'',month:keepMonth?(draft.info.month||now.getMonth()+1):(now.getMonth()+1),year:keepMonth?(draft.info.year||now.getFullYear()):now.getFullYear()};
+  draft.info={name:'',position:'',dept:'',date:todayISO(),month:keepMonth?(draft.info.month||now.getMonth()+1):(now.getMonth()+1),year:keepMonth?(draft.info.year||now.getFullYear()):now.getFullYear()};
   draft.sections={completed:'',unfinished:'',causes:'',plan:'',proposals:''};
   draft.attachments=[];saveDraft();loadDraftToForm();
 }
@@ -1694,7 +2380,7 @@ function reportToHTML(r){
     <h1>BÁO CÁO CÔNG VIỆC THÁNG</h1>
     <div style="text-align:center;color:#64748b;font-size:13px;margin-bottom:14px">${MONTHS[(r.month||1)-1]} / ${r.year||''}</div>
     <div class="meta"><span><b>Họ và tên:</b> ${esc(r.name||'')}</span><span><b>Chức vụ:</b> ${esc(r.position||'—')}</span></div>
-    <div class="meta"><span><b>Bộ phận:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}</span></div>
+    <div class="meta"><span><b>Bộ phận:</b> ${esc(r.dept||'—')}</span><span><b>Ngày lập:</b> ${reportDateStr(r)}</span></div>
     ${SECTIONS.map(s=>`<h2>${s.num}. ${s.title}</h2><p>${esc((r.sections&&r.sections[s.id]||'').trim()||'—')}</p>`).join('')}
     ${attachmentsHTML(r.attachments)}
     <div style="margin-top:34px;display:flex;justify-content:space-between;font-size:12px;color:#475569">
@@ -1705,7 +2391,7 @@ function reportToHTML(r){
 }
 function reportToText(r){
   let t=`BÁO CÁO CÔNG VIỆC THÁNG\n${MONTHS[(r.month||1)-1]} / ${r.year||''}\n`;
-  t+=`Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nBộ phận: ${r.dept||'—'}\nNgày lập: ${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):''}\n\n`;
+  t+=`Họ và tên: ${r.name||''}\nChức vụ: ${r.position||'—'}\nBộ phận: ${r.dept||'—'}\nNgày lập: ${reportDateStr(r)}\n\n`;
   SECTIONS.forEach(s=>{t+=`${s.num}. ${s.title}\n${(r.sections&&r.sections[s.id]||'').trim()||'—'}\n\n`;});
   if(r.attachments&&r.attachments.length){t+=`TỆP ĐÍNH KÈM:\n`;r.attachments.forEach(a=>t+=`- ${a.name} (${formatBytes(a.size)})\n`);t+='\n';}
   t+=`Người lập báo cáo: ${r.name||''}`;
@@ -1751,7 +2437,7 @@ function renderReports(){
   list.forEach((r,i)=>{
     const tr=document.createElement('tr');
     tr.className='hover:bg-pine-50/40 transition';
-    const dateStr=r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—';
+    const dateStr=reportDateStr(r);
     const attCount=(r.attachments||[]).length;
     tr.innerHTML=`
       <td class="px-4 py-3 text-ink-400 font-semibold font-disp">${i+1}</td>
@@ -1803,7 +2489,7 @@ function openView(id){
       <div><span class="text-ink-500">Họ tên:</span> <b>${esc(r.name||'—')}</b></div>
       <div><span class="text-ink-500">Chức vụ:</span> <b>${esc(r.position||'—')}</b></div>
       <div><span class="text-ink-500">Bộ phận:</span> <b>${esc(r.dept||'—')}</b></div>
-      <div><span class="text-ink-500">Ngày lập:</span> <b>${r.createdAt?new Date(r.createdAt).toLocaleDateString('vi-VN'):'—'}</b></div>
+      <div><span class="text-ink-500">Ngày lập:</span> <b>${reportDateStr(r)}</b></div>
     </div>
     ${SECTIONS.map(s=>`
       <div class="mb-4">
@@ -1858,6 +2544,11 @@ function resetSettings(){
   $('#qwenKey').value=qwenApiKey;$('#qwenModel').value=qwenModel;$('#qwenRegion').value=qwenRegion;
   $('#aiProvider').value=aiProvider;
   $('#aiSavedNote').classList.add('hidden');
+  $('#instrSavedNote').classList.add('hidden');
+  $('#instrSystem').value=aiInstructions.system||DEFAULT_AI_SYSTEM_INSTRUCTION;
+  $('#instrKeywords').value=aiKeywords||DEFAULT_AI_KEYWORDS;
+  updateKwCount();
+  renderInstrTabs(); fillInstrDept();
 }
 function verifyAdmin(){
   if($('#adminPass').value===ADMIN_PASSWORD){
@@ -2023,6 +2714,7 @@ function init(){
   $('#bigMic').addEventListener('click',toggleMic);
   $('#heroStart').addEventListener('click',()=>{
     if(!speechSupported){toast('Trình duyệt không hỗ trợ giọng nói, hãy gõ tay.','info');$('#f_name').focus();return;}
+    if(!ensureReporterInfo())return;
     if(!isRecording)startRec();
     const aside=document.querySelector('aside');
     if(aside)window.scrollTo({top:aside.offsetTop-140,behavior:'smooth'});
@@ -2066,6 +2758,16 @@ function init(){
   $('#savePass').addEventListener('click',saveNewPass);
   $('#resetPass').addEventListener('click',resetAppPass);
   $('#saveAI').addEventListener('click',saveAISettings);
+  $('#saveInstr').addEventListener('click',saveInstructions);
+  $('#instrReloadOne').addEventListener('click',reloadInstrOne);
+  $('#instrReloadAll').addEventListener('click',reloadInstrAll);
+  $('#instrDept').addEventListener('input',updateInstrCount);
+  $('#instrKeywords').addEventListener('input',updateKwCount);
+  $('#kwReset').addEventListener('click',()=>{ aiKeywords=DEFAULT_AI_KEYWORDS; $('#instrKeywords').value=aiKeywords; updateKwCount(); toast('Đã nạp lại danh sách từ khóa mẫu. Nhớ bấm Lưu chỉ dẫn AI.','info'); });
+  renderInstrTabs(); fillInstrDept();
+  $('#instrSystem').value=aiInstructions.system;
+  $('#instrKeywords').value=aiKeywords; updateKwCount();
+  updateRecordGuard();
   $('#adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')verifyAdmin();});
   $('#newPass2').addEventListener('keydown',e=>{if(e.key==='Enter')saveNewPass();});
   $('#toggleGeminiKey').addEventListener('click',()=>{const i=$('#geminiKey');i.type=i.type==='password'?'text':'password';});
