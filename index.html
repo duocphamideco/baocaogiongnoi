@@ -240,6 +240,24 @@
 
   <!-- ============ CREATE TAB ============ -->
   <section id="tab-create" class="tab-panel">
+    <!-- BĂNG BÁO CHẾ ĐỘ SỬA -->
+    <div id="editBanner" class="hidden mb-5 rounded-2xl border-2 border-gold-400 bg-gold-50 p-4 sm:p-5 shadow-card">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="w-10 h-10 rounded-xl bg-gold-500 text-white grid place-items-center shrink-0 shadow">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="font-bold text-ink-900">Đang chỉnh sửa báo cáo đã nộp</div>
+          <div id="editBannerInfo" class="text-xs text-ink-600 mt-0.5">—</div>
+        </div>
+        <button id="cancelEditBtn" class="btn-lift inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gold-300 text-ink-700 text-sm font-semibold hover:bg-gold-100 whitespace-nowrap">
+          ✕ Hủy chỉnh sửa
+        </button>
+      </div>
+      <div class="mt-2.5 text-[11px] text-ink-500 border-t border-gold-300/60 pt-2.5">
+        Sửa nội dung / thu âm lại bình thường, sau đó bấm <b class="text-gold-700">CẬP NHẬT BÁO CÁO</b> — bản ghi cũ sẽ được ghi đè, <b>không</b> tạo thêm bản trùng. Mọi góp ý đã có vẫn được giữ nguyên.
+      </div>
+    </div>
     <div class="reveal relative overflow-hidden rounded-2xl bg-ink-900 text-white p-6 sm:p-7 mb-6 shadow-soft">
       <svg class="strip-wave absolute inset-y-0 right-0 h-full w-[900px] opacity-[0.16] pointer-events-none" viewBox="0 0 900 120" preserveAspectRatio="none">
         <path d="M0,60 C75,10 150,110 300,60 C375,10 450,110 600,60 C675,10 750,110 900,60" stroke="#E5A63E" fill="none" stroke-width="2"/>
@@ -517,7 +535,7 @@
               <th class="text-left px-4 py-3">Bộ phận</th>
               <th class="text-left px-4 py-3">Kỳ báo cáo</th>
               <th class="text-left px-4 py-3">Ngày báo cáo</th>
-              <th class="text-right px-4 py-3 w-32">Thao tác</th>
+              <th class="text-right px-4 py-3 w-72">Thao tác</th>
             </tr>
           </thead>
           <tbody id="reportsTbody" class="divide-y divide-ink-100"></tbody>
@@ -568,7 +586,54 @@
       <button data-view-action="copy" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">📋 Sao chép</button>
       <button data-view-action="doc" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">📄 Tải Word</button>
       <button data-view-action="print" class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">🖨️ In</button>
+      <button id="viewEditBtn" class="px-4 py-2 rounded-xl bg-gold-50 border border-gold-300 text-gold-700 text-sm font-bold hover:bg-gold-100">✏️ Sửa</button>
+      <button id="viewFbBtn" class="px-4 py-2 rounded-xl bg-pine-50 border border-pine-200 text-pine-700 text-sm font-bold hover:bg-pine-100">💬 Góp ý</button>
       <button data-close-view class="px-4 py-2 rounded-xl bg-ink-900 text-white text-sm font-semibold hover:bg-ink-800">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedbackModal" class="hidden fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4">
+  <div class="modal-pop bg-white rounded-2xl shadow-soft w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div class="flex items-center justify-between p-5 border-b border-ink-100 bg-gradient-to-r from-gold-50 to-pine-50">
+      <h3 class="font-bold text-ink-900 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-white text-gold-600 grid place-items-center shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </span>
+        Góp ý cho báo cáo
+      </h3>
+      <button data-close-fb class="w-8 h-8 rounded-lg hover:bg-white/70 grid place-items-center text-ink-500">✕</button>
+    </div>
+    <div class="p-5 overflow-y-auto space-y-4">
+      <div id="fbTarget" class="rounded-xl bg-ink-50 border border-ink-100 px-4 py-3 text-sm"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wide text-ink-500 font-disp">Các góp ý đã lưu</span>
+          <span id="fbCountLabel" class="text-[11px] font-semibold text-ink-400 font-disp">0 góp ý</span>
+        </div>
+        <div id="fbList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+      </div>
+
+      <div class="rounded-xl border border-ink-100 p-4 bg-ink-50/40">
+        <label class="block">
+          <span class="text-xs font-semibold text-ink-600">Người góp ý</span>
+          <input id="fbAuthor" type="text" placeholder="VD: Giám đốc / Trưởng phòng Kinh doanh" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm bg-white" />
+        </label>
+        <label class="block mt-3">
+          <span class="text-xs font-semibold text-ink-600">Nội dung góp ý <span class="text-signal-500">*</span></span>
+          <textarea id="fbText" rows="5" placeholder="Nhập nhận xét, yêu cầu bổ sung hoặc hướng chỉnh sửa cho nhân viên…" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-100 focus:border-gold-500 focus:ring-2 focus:ring-gold-100 outline-none text-sm bg-white leading-relaxed resize-y"></textarea>
+        </label>
+        <div class="mt-1.5 text-[11px] text-ink-400 flex items-center gap-2">
+          <span id="fbCharCount" class="font-disp">0 ký tự</span> · Ctrl + Enter để lưu nhanh
+        </div>
+      </div>
+    </div>
+    <div class="p-4 border-t border-ink-100 flex items-center justify-end gap-2 bg-ink-50/60">
+      <span class="text-[11px] text-ink-400 mr-auto hidden sm:block">Góp ý lưu real-time lên Firebase, mọi máy đều xem được.</span>
+      <button data-close-fb class="px-4 py-2 rounded-xl border border-ink-100 bg-white text-sm font-semibold hover:bg-ink-50">Đóng</button>
+      <button id="fbSave" class="btn-lift px-5 py-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-ink-900 text-sm font-bold shadow">💾 Lưu góp ý</button>
     </div>
   </div>
 </div>
@@ -1533,6 +1598,8 @@ let timerId = null;
 let recStartTs = 0;
 let saveTimer = null;
 let currentViewId = null;
+let editingId = null;        /* id báo cáo đang được sửa (null = tạo mới) */
+let feedbackId = null;       /* id báo cáo đang mở popup góp ý */
 let confirmCb = null;
 let aiResultsStore = {};
 
@@ -1548,6 +1615,7 @@ const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6
 
 function loadDraft(){
   try{ const d = JSON.parse(localStorage.getItem('vr_draft')); if(d){ draft.info=Object.assign(draft.info,d.info||{}); draft.sections=Object.assign(draft.sections,d.sections||{});} }catch(e){}
+  try{ editingId = localStorage.getItem('vr_editing') || null; }catch(e){}
 }
 function saveDraft(){
   draft.updatedAt = Date.now();
@@ -2149,6 +2217,7 @@ function populateInfoSelects(){
 function loadDraftToForm(){
   $('#f_name').value=draft.info.name||'';
   $('#f_position').value=draft.info.position||'';
+  ensureDeptOption(draft.info.dept);
   $('#f_dept').value=draft.info.dept||'';
   $('#f_month').value=draft.info.month||now.getMonth()+1;
   $('#f_year').value=draft.info.year||now.getFullYear();
@@ -2340,15 +2409,41 @@ function validate(){
 function submitReport(){
   if(!validate())return;
   const btn=$('#submitBtn'),original=btn.innerHTML;
-  btn.disabled=true;btn.innerHTML='<svg class="w-4 h-4 spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Đang gửi…';
+  const editing=editingId;
+  btn.disabled=true;btn.innerHTML='<svg class="w-4 h-4 spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> '+(editing?'Đang cập nhật…':'Đang gửi…');
   const payload=collectReport();
-  REPORTS_REF.push(payload).then(()=>{
-    btn.disabled=false;btn.innerHTML=original;
+
+  const done=(msg)=>{
+    btn.disabled=false;
     if(isRecording)stopRec();
-    toast(`Đã nộp báo cáo của ${payload.name} thành công! 🎉`,'success');
-    resetDraftForNextPerson(true);switchTab('reports');
-    setTimeout(()=>toast('Sẵn sàng thêm báo cáo cho người tiếp theo.','info'),600);
-  }).catch(err=>{btn.disabled=false;btn.innerHTML=original;console.error(err);toast('Không gửi được báo cáo. Vui lòng kiểm tra kết nối.','error');});
+    exitEditMode(true);
+    toast(msg,'success');
+    resetDraftForNextPerson(true);
+    updateEditModeUI();
+    switchTab('reports');
+  };
+  const fail=(err)=>{
+    btn.disabled=false;btn.innerHTML=original;console.error(err);
+    toast(editing?'Không cập nhật được báo cáo. Kiểm tra kết nối.':'Không gửi được báo cáo. Vui lòng kiểm tra kết nối.','error');
+  };
+
+  if(editing){
+    /* GHI ĐÈ đúng bản ghi cũ — giữ nguyên createdAt và toàn bộ góp ý */
+    const upd={
+      name:payload.name,position:payload.position,dept:payload.dept,
+      month:payload.month,year:payload.year,reportDate:payload.reportDate,
+      sections:payload.sections,attachments:payload.attachments,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP,clientTs:payload.clientTs
+    };
+    REPORTS_REF.child(editing).update(upd)
+      .then(()=>done(`Đã cập nhật báo cáo của ${payload.name} thành công! ✅`))
+      .catch(fail);
+  } else {
+    REPORTS_REF.push(payload).then(()=>{
+      done(`Đã nộp báo cáo của ${payload.name} thành công! 🎉`);
+      setTimeout(()=>toast('Sẵn sàng thêm báo cáo cho người tiếp theo.','info'),600);
+    }).catch(fail);
+  }
 }
 function resetDraftForNextPerson(keepMonth){
   draft.info={name:'',position:'',dept:'',date:todayISO(),month:keepMonth?(draft.info.month||now.getMonth()+1):(now.getMonth()+1),year:keepMonth?(draft.info.year||now.getFullYear()):now.getFullYear()};
@@ -2365,7 +2460,7 @@ function clearForm(){
 function addNextPerson(){
   if(isRecording)stopRec();
   const hasContent=(draft.info.name||'').trim()||SECTIONS.some(s=>(draft.sections[s.id]||'').trim())||draft.attachments.length;
-  const doReset=()=>{resetDraftForNextPerson(true);switchTab('create');setTimeout(()=>$('#f_name').focus(),100);toast('Biểu mẫu đã sẵn sàng cho người tiếp theo.','info');};
+  const doReset=()=>{exitEditMode(true);updateEditModeUI();resetDraftForNextPerson(true);switchTab('create');setTimeout(()=>$('#f_name').focus(),100);toast('Biểu mẫu đã sẵn sàng cho người tiếp theo.','info');};
   if(hasContent)showConfirm('Tạo báo cáo cho người tiếp theo?','Nội dung đang soạn (chưa nộp) sẽ bị xóa. Vui lòng nộp trước nếu muốn lưu.','Tiếp tục',doReset);
   else doReset();
 }
@@ -2439,6 +2534,7 @@ function renderReports(){
     tr.className='hover:bg-pine-50/40 transition';
     const dateStr=reportDateStr(r);
     const attCount=(r.attachments||[]).length;
+    const fbCount=feedbackCount(r);
     tr.innerHTML=`
       <td class="px-4 py-3 text-ink-400 font-semibold font-disp">${i+1}</td>
       <td class="px-4 py-3">
@@ -2446,7 +2542,7 @@ function renderReports(){
           <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pine-500 to-pine-700 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
           <div class="min-w-0">
             <div class="font-bold text-ink-900 truncate">${esc(r.name||'—')}</div>
-            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}</div>
+            <div class="text-[11px] text-ink-500 truncate">${esc(r.position||'—')}${attCount?` · 📎 ${attCount} tệp`:''}${fbCount?` · <span class="text-gold-600 font-semibold">💬 ${fbCount} góp ý</span>`:''}${r.updatedAt?' · <span class="text-pine-600 font-semibold">✎ đã sửa</span>':''}</div>
           </div>
         </div>
       </td>
@@ -2454,9 +2550,15 @@ function renderReports(){
       <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded-md bg-pine-50 text-pine-700 text-[11px] font-semibold font-disp">${MONTHS[(r.month||1)-1]} / ${r.year||''}</span></td>
       <td class="px-4 py-3 text-ink-600 text-xs whitespace-nowrap font-disp">${dateStr}</td>
       <td class="px-4 py-3">
-        <div class="flex items-center justify-end gap-1.5">
+        <div class="flex flex-wrap items-center justify-end gap-1.5">
           <button class="act-view inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-pine-50 text-pine-700 text-xs font-semibold hover:bg-pine-100" title="Xem lại">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Xem
+          </button>
+          <button class="act-edit inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-50 text-gold-600 text-xs font-semibold hover:bg-gold-100" title="Sửa &amp; nộp lại báo cáo này">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Sửa
+          </button>
+          <button class="act-fb inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-ink-50 text-ink-700 border border-ink-100 text-xs font-semibold hover:bg-ink-100" title="Góp ý cho báo cáo này">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Góp ý${fbCount?`<span class="ml-0.5 px-1.5 rounded-full bg-gold-500 text-white text-[10px] font-bold font-disp">${fbCount}</span>`:''}
           </button>
           <button class="act-del inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-signal-50 text-signal-600 text-xs font-semibold hover:bg-signal-100" title="Xóa">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Xóa
@@ -2464,6 +2566,8 @@ function renderReports(){
         </div>
       </td>`;
     tr.querySelector('.act-view').addEventListener('click',()=>openView(r.id));
+    tr.querySelector('.act-edit').addEventListener('click',()=>startEditReport(r.id));
+    tr.querySelector('.act-fb').addEventListener('click',()=>openFeedback(r.id));
     tr.querySelector('.act-del').addEventListener('click',()=>deleteReport(r.id));
     tbody.appendChild(tr);
   });
@@ -2471,7 +2575,153 @@ function renderReports(){
 function deleteReport(id){
   const r=reports.find(x=>x.id===id);if(!r)return;
   showConfirm('Xóa báo cáo này?',`Báo cáo ${MONTHS[(r.month||1)-1]}/${r.year} của ${r.name||''} sẽ bị xóa vĩnh viễn trên hệ thống.`,'Xóa',()=>{
-    REPORTS_REF.child(id).remove().then(()=>toast('Đã xóa báo cáo.','info')).catch(err=>{console.error(err);toast('Không xóa được báo cáo.','error');});
+    REPORTS_REF.child(id).remove().then(()=>{
+      if(editingId===id){exitEditMode(true);updateEditModeUI();}
+      if(feedbackId===id)closeFeedback();
+      toast('Đã xóa báo cáo.','info');
+    }).catch(err=>{console.error(err);toast('Không xóa được báo cáo.','error');});
+  });
+}
+
+/* ===================== CHẾ ĐỘ SỬA BÁO CÁO ===================== */
+function ensureDeptOption(v){
+  if(!v) return;
+  const sel=$('#f_dept'); if(!sel) return;
+  if(![...sel.options].some(o=>o.value===v||o.text===v)){
+    const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o);
+  }
+}
+function updateEditModeUI(){
+  const banner=$('#editBanner'), btn=$('#submitBtn');
+  const r=editingId?reports.find(x=>x.id===editingId):null;
+  if(editingId&&r){
+    banner.classList.remove('hidden');
+    $('#editBannerInfo').innerHTML=`<b>${esc(r.name||'—')}</b> · ${esc(r.dept||'—')} · ${MONTHS[(r.month||1)-1]}/${r.year||''} · nộp ngày ${reportDateStr(r)}`;
+    btn.innerHTML='<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> CẬP NHẬT BÁO CÁO';
+    btn.className='btn-lift inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-ink-900 font-bold text-sm shadow-soft';
+  } else {
+    banner.classList.add('hidden');
+    btn.innerHTML='<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg> Nộp báo cáo';
+    btn.className='btn-lift inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pine-600 to-pine-800 text-white font-semibold text-sm shadow-soft';
+  }
+}
+function startEditReport(id){
+  const r=reports.find(x=>x.id===id); if(!r){toast('Không tìm thấy báo cáo.','error');return;}
+  const apply=()=>{
+    if(isRecording)stopRec();
+    editingId=id;
+    draft.info={
+      name:r.name||'', position:r.position||'', dept:r.dept||'',
+      month:r.month||now.getMonth()+1, year:r.year||now.getFullYear(),
+      date:r.reportDate||todayISO()
+    };
+    draft.sections={completed:'',unfinished:'',causes:'',plan:'',proposals:''};
+    SECTIONS.forEach(sc=>{draft.sections[sc.id]=(r.sections&&r.sections[sc.id])||'';});
+    draft.attachments=(r.attachments||[]).map(a=>({id:uid(),name:a.name,size:a.size,type:a.type||'',dataUrl:a.dataUrl||''}));
+    ensureDeptOption(draft.info.dept);
+    try{ localStorage.setItem('vr_editing', id); }catch(e){}
+    saveDraft(); loadDraftToForm(); updateRecordGuard(); updateEditModeUI();
+    switchTab('create');
+    window.scrollTo({top:0,behavior:'smooth'});
+    toast('Đã nạp báo cáo của '+(r.name||'')+' vào biểu mẫu. Sửa xong bấm CẬP NHẬT BÁO CÁO.','info');
+  };
+  const dirty=!editingId&&((draft.info.name||'').trim()||SECTIONS.some(sc=>(draft.sections[sc.id]||'').trim())||(draft.attachments||[]).length);
+  if(dirty)showConfirm('Mở báo cáo này để sửa?','Nội dung đang soạn dở trên biểu mẫu (chưa nộp) sẽ bị thay bằng nội dung của báo cáo được chọn.','Tiếp tục',apply);
+  else apply();
+}
+function exitEditMode(silent){
+  if(!editingId)return;
+  editingId=null;
+  try{ localStorage.removeItem('vr_editing'); }catch(e){}
+  updateEditModeUI();
+  if(!silent)toast('Đã thoát chế độ chỉnh sửa.','info');
+}
+function cancelEdit(){
+  if(!editingId)return;
+  showConfirm('Hủy chỉnh sửa?','Báo cáo trên hệ thống giữ nguyên như cũ. Biểu mẫu sẽ được xóa trắng để soạn báo cáo mới.','Hủy chỉnh sửa',()=>{
+    if(isRecording)stopRec();
+    exitEditMode(true);
+    resetDraftForNextPerson(true);
+    toast('Đã hủy chỉnh sửa — báo cáo cũ không thay đổi.','info');
+  });
+}
+
+/* ===================== GÓP Ý ===================== */
+function feedbackCount(r){ return r&&r.feedbacks?Object.keys(r.feedbacks).length:0; }
+function feedbackArray(r){
+  if(!r||!r.feedbacks)return[];
+  return Object.keys(r.feedbacks).map(k=>Object.assign({fid:k},r.feedbacks[k]||{}))
+    .sort((a,b)=>(b.at||0)-(a.at||0));
+}
+function fmtDateTime(v){
+  if(!v)return'';
+  const d=new Date(v); if(isNaN(d.getTime()))return String(v);
+  return d.toLocaleDateString('vi-VN')+' '+d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+}
+function openFeedback(id){
+  const r=reports.find(x=>x.id===id); if(!r){toast('Không tìm thấy báo cáo.','error');return;}
+  feedbackId=id;
+  $('#fbText').value='';
+  $('#fbAuthor').value=localStorage.getItem('vr_fb_author')||'';
+  updateFbCharCount();
+  renderFeedbackList();
+  $('#feedbackModal').classList.remove('hidden');
+  setTimeout(()=>$('#fbText').focus(),80);
+}
+function closeFeedback(){ $('#feedbackModal').classList.add('hidden'); feedbackId=null; }
+function updateFbCharCount(){ $('#fbCharCount').textContent=($('#fbText').value||'').length+' ký tự'; }
+function renderFeedbackList(){
+  const r=reports.find(x=>x.id===feedbackId); if(!r)return;
+  $('#fbTarget').innerHTML=`
+    <div class="flex items-center gap-3">
+      <span class="w-9 h-9 rounded-full bg-gradient-to-br from-pine-500 to-pine-700 text-white grid place-items-center text-xs font-bold shrink-0">${esc(initials(r.name))}</span>
+      <div class="min-w-0">
+        <div class="font-bold text-ink-900 truncate">${esc(r.name||'—')} <span class="text-ink-400 font-normal">· ${esc(r.position||'—')}</span></div>
+        <div class="text-[11px] text-ink-500">${esc(r.dept||'—')} · ${MONTHS[(r.month||1)-1]}/${r.year||''} · ngày ${reportDateStr(r)}</div>
+      </div>
+    </div>`;
+  const list=feedbackArray(r), box=$('#fbList');
+  $('#fbCountLabel').textContent=list.length+' góp ý';
+  if(!list.length){ box.innerHTML='<div class="text-xs text-ink-400 italic px-1 py-3">Chưa có góp ý nào cho báo cáo này.</div>'; return; }
+  box.innerHTML=list.map(f=>`
+    <div class="rounded-xl border border-gold-100 bg-gold-50/60 p-3">
+      <div class="flex items-start gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="text-[11px] font-bold text-gold-700">${esc(f.by||'Ẩn danh')} <span class="text-ink-400 font-normal font-disp">· ${esc(fmtDateTime(f.at))}</span></div>
+          <div class="text-sm text-ink-800 whitespace-pre-wrap leading-relaxed mt-1">${esc(f.text||'')}</div>
+        </div>
+        <button class="fb-del w-7 h-7 rounded-lg text-signal-500 hover:bg-signal-50 grid place-items-center shrink-0" data-fid="${esc(f.fid)}" title="Xóa góp ý">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+  $$('.fb-del',box).forEach(b=>b.addEventListener('click',()=>deleteFeedback(b.dataset.fid)));
+}
+function saveFeedback(){
+  if(!feedbackId){closeFeedback();return;}
+  const text=($('#fbText').value||'').trim();
+  const by=($('#fbAuthor').value||'').trim();
+  if(!text){toast('Vui lòng nhập nội dung góp ý.','error');$('#fbText').focus();return;}
+  const btn=$('#fbSave'),original=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='⏳ Đang lưu…';
+  localStorage.setItem('vr_fb_author',by);
+  REPORTS_REF.child(feedbackId).child('feedbacks').push({
+    text, by:by||'Ẩn danh', at:firebase.database.ServerValue.TIMESTAMP, clientTs:Date.now()
+  }).then(()=>{
+    btn.disabled=false;btn.innerHTML=original;
+    $('#fbText').value='';updateFbCharCount();
+    toast('Đã lưu góp ý lên hệ thống.','success');
+  }).catch(err=>{
+    btn.disabled=false;btn.innerHTML=original;console.error(err);
+    toast('Không lưu được góp ý. Kiểm tra kết nối Firebase.','error');
+  });
+}
+function deleteFeedback(fid){
+  if(!feedbackId||!fid)return;
+  showConfirm('Xóa góp ý này?','Nội dung góp ý sẽ bị xóa vĩnh viễn khỏi hệ thống.','Xóa',()=>{
+    REPORTS_REF.child(feedbackId).child('feedbacks').child(fid).remove()
+      .then(()=>toast('Đã xóa góp ý.','info'))
+      .catch(err=>{console.error(err);toast('Không xóa được góp ý.','error');});
   });
 }
 
@@ -2516,7 +2766,19 @@ function openView(id){
             </li>`;
           }).join('')}
         </ul>
-      </div>`:''}`;
+      </div>`:''}
+    ${(()=>{const fbs=feedbackArray(r);return fbs.length?`
+      <div class="mt-4">
+        <div class="font-bold text-ink-800 flex items-center gap-2 border-b border-ink-100 pb-1 mb-2">
+          <span class="w-6 h-6 rounded-md bg-gold-50 text-gold-600 grid place-items-center text-[11px]">💬</span>Góp ý (${fbs.length})
+        </div>
+        <div class="space-y-2">
+          ${fbs.map(f=>`<div class="rounded-xl border border-gold-100 bg-gold-50/60 p-3">
+            <div class="text-[11px] font-bold text-gold-700">${esc(f.by||'Ẩn danh')} <span class="text-ink-400 font-normal font-disp">· ${esc(fmtDateTime(f.at))}</span></div>
+            <div class="text-sm text-ink-800 whitespace-pre-wrap leading-relaxed mt-1">${esc(f.text||'')}</div>
+          </div>`).join('')}
+        </div>
+      </div>`:'';})()}`;
   $$('.att-dl',body).forEach(b=>b.addEventListener('click',()=>{
     const a=atts[+b.dataset.idx];if(!a||!a.dataUrl)return;
     const link=document.createElement('a');link.href=a.dataUrl;link.download=a.name;
@@ -2664,10 +2926,20 @@ function bindSyncStatus(){
 /* ===================== FIREBASE LISTENER ===================== */
 function bindReportsListener(){
   REPORTS_REF.on('value',snap=>{
-    const arr=[];snap.forEach(c=>arr.push({id:c.key,...c.val()}));
+    /* FIX: KHÔNG dùng snap.forEach(c=>arr.push(...)) — arr.push trả về SỐ (truthy)
+       khiến Firebase HỦY duyệt ngay sau bản ghi đầu tiên => danh sách bị ẩn.
+       Đọc thẳng từ snap.val() nên luôn lấy đủ 100% bản ghi. */
+    const val=snap.val()||{};
+    const arr=Object.keys(val).map(k=>{
+      const v=val[k];
+      return (v && typeof v==='object') ? Object.assign({id:k},v) : {id:k};
+    });
     arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     reports=arr;
     updateReportCount();renderReports();renderStats();
+    if(feedbackId && !$('#feedbackModal').classList.contains('hidden')) renderFeedbackList();
+    if(editingId && !reports.some(r=>r.id===editingId)) exitEditMode(true);
+    updateEditModeUI();
     $('#stripTotal').textContent=reports.length;
     $('#stripMonthCount').textContent=reports.filter(r=>r.month===now.getMonth()+1&&r.year===now.getFullYear()).length;
   },err=>{console.error(err);toast('Không tải được danh sách báo cáo từ Firebase.','error');});
@@ -2742,6 +3014,16 @@ function init(){
   $('#viewModal').addEventListener('click',e=>{if(e.target.id==='viewModal')closeView();});
   $$('[data-view-action]').forEach(b=>b.addEventListener('click',()=>{const r=reports.find(x=>x.id===currentViewId);if(r)doExport(b.dataset.viewAction,r);}));
 
+  $('#cancelEditBtn').addEventListener('click',cancelEdit);
+  $('#viewEditBtn').addEventListener('click',()=>{const id=currentViewId;closeView();if(id)startEditReport(id);});
+  $('#viewFbBtn').addEventListener('click',()=>{const id=currentViewId;closeView();if(id)openFeedback(id);});
+
+  $$('[data-close-fb]').forEach(b=>b.addEventListener('click',closeFeedback));
+  $('#feedbackModal').addEventListener('click',e=>{if(e.target.id==='feedbackModal')closeFeedback();});
+  $('#fbSave').addEventListener('click',saveFeedback);
+  $('#fbText').addEventListener('input',updateFbCharCount);
+  $('#fbText').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();saveFeedback();}});
+
   $$('[data-close-ai]').forEach(b=>b.addEventListener('click',closeAIModal));
   $('#aiModal').addEventListener('click',e=>{if(e.target.id==='aiModal')closeAIModal();});
   $('#aiApply').addEventListener('click',applyAIResults);
@@ -2784,14 +3066,15 @@ function init(){
       e.preventDefault();if(speechSupported)toggleMic();
     }
     if(e.key==='Escape'){
-      if(!$('#viewModal').classList.contains('hidden'))closeView();
+      if(!$('#feedbackModal').classList.contains('hidden'))closeFeedback();
+      else if(!$('#viewModal').classList.contains('hidden'))closeView();
       else if(!$('#aiModal').classList.contains('hidden'))closeAIModal();
       else if(!$('#settingsModal').classList.contains('hidden'))closeSettings();
       else if(!$('#confirmModal').classList.contains('hidden'))closeConfirm();
     }
   });
 
-  updateReportCount();renderReports();renderStats();updateMicUI();observeReveals();
+  updateReportCount();renderReports();renderStats();updateMicUI();observeReveals();updateEditModeUI();
   if(isAuthed())showApp();else showLogin();
 }
 document.addEventListener('DOMContentLoaded',init);
